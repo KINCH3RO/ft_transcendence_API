@@ -1,0 +1,167 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id                 String              @id @default(uuid())
+  userName           String              @unique
+  email              String              @unique
+  fullName           String
+  password           String?
+  verifiedAt         DateTime?
+  onlineStatus       Boolean
+  avatarUrl          String
+  bannerUrl          String
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+  associatedAccounts AssociatedAccount[]
+  profile            Profile             @relation(fields: [profileID], references: [id])
+  profileID          String              @unique
+  wonMatches         Matches[]           @relation("winner")
+  lostMatches        Matches[]           @relation("loser")
+  notifications      Notifications[]
+  achievements       Achievements[]
+  sentRequests       FriendRequests[]    @relation("sender")
+  receivedRequests   FriendRequests[]    @relation("receiver")
+  sentFriends        Friends[]           @relation("sender")
+  receiveFriends     Friends[]           @relation("receiver")
+  channels           ChannelUser[]
+  sendDM             DirectMessage[]     @relation("sender")
+  receiveDM          DirectMessage[]     @relation("receiver")
+  sentMessages       Message[]
+}
+
+model AssociatedAccount {
+  id       String   @id @default(uuid())
+  provider Provider
+  user     User     @relation(fields: [userID], references: [id])
+  userID   String
+  email    String
+}
+
+enum Provider {
+  GOOGLE
+  INTRA
+  GITHUB
+}
+
+model Profile {
+  id     String @id @default(uuid())
+  user   User?
+  rating Int
+  level  Int
+  coins  Int
+}
+
+model Matches {
+  id       Int    @id @default(autoincrement())
+  winner   User   @relation("winner", fields: [winnerID], references: [id])
+  winnerID String
+  loser    User   @relation("loser", fields: [loserID], references: [id])
+  loserID  String
+}
+
+model Notifications {
+  id     Int    @id @default(autoincrement())
+  user   User   @relation(fields: [userID], references: [id])
+  userID String
+}
+
+model Achievements {
+  id          Int    @id @default(autoincrement())
+  imgUrl      String
+  name        String
+  description String
+  reward      Int
+  users       User[]
+}
+
+model FriendRequests {
+  sender   User   @relation("sender", fields: [senderID], references: [id])
+  senderID String
+
+  receiver   User   @relation("receiver", fields: [receiverID], references: [id])
+  receiverID String
+
+  @@id([senderID, receiverID])
+}
+
+model Friends {
+  sender   User   @relation("sender", fields: [senderID], references: [id])
+  senderID String
+
+  receiver   User   @relation("receiver", fields: [receiverID], references: [id])
+  receiverID String
+
+  @@id([senderID, receiverID])
+}
+
+enum ChannelVisibility {
+  PRIVATE
+  PUBLIC
+  PROTECTED
+}
+
+enum ChannelRole {
+  OWNER
+  ADMINISTRATOR
+  MEMBER
+}
+
+enum ChannelStatus {
+  FREE
+  MUTED
+  BANNED
+}
+
+model Channel {
+  id         String            @id @default(uuid())
+  password   String?
+  visibility ChannelVisibility
+
+  channels ChannelUser[]
+  Message  Message[]
+}
+
+model ChannelUser {
+  user   User   @relation(fields: [userID], references: [id])
+  userID String
+
+  channel   Channel @relation(fields: [channelID], references: [id])
+  channelID String
+
+  role ChannelRole
+  status ChannelStatus
+  @@id([userID, channelID])
+}
+
+model DirectMessage {
+  id       Int    @unique @default(autoincrement())
+  sender   User   @relation("sender", fields: [senderID], references: [id])
+  senderID String @unique
+
+  receiver   User      @relation("receiver", fields: [receiverID], references: [id])
+  receiverID String
+  Message    Message[]
+
+  @@unique([senderID, receiverID])
+}
+
+model Message {
+  id       Int    @id @default(autoincrement())
+  sender   User   @relation(fields: [senderID], references: [id])
+  senderID String
+
+  directMessage   DirectMessage? @relation(fields: [directMessageID], references: [id])
+  directMessageID Int?
+
+  channel   Channel? @relation(fields: [channelID], references: [id])
+  channelID String?
+
+  content String
+}
