@@ -1,167 +1,191 @@
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
 }
 
 generator client {
-  provider = "prisma-client-js"
+    provider = "prisma-client-js"
 }
 
-model User {
-  id                 String              @id @default(uuid())
-  userName           String              @unique
-  email              String              @unique
-  fullName           String
-  password           String?
-  verifiedAt         DateTime?
-  onlineStatus       Boolean
-  avatarUrl          String
-  bannerUrl          String
-  createdAt          DateTime            @default(now())
-  updatedAt          DateTime            @updatedAt
-  associatedAccounts AssociatedAccount[]
-  profile            Profile             @relation(fields: [profileID], references: [id])
-  profileID          String              @unique
-  wonMatches         Matches[]           @relation("winner")
-  lostMatches        Matches[]           @relation("loser")
-  notifications      Notifications[]
-  achievements       Achievements[]
-  sentRequests       FriendRequests[]    @relation("sender")
-  receivedRequests   FriendRequests[]    @relation("receiver")
-  sentFriends        Friends[]           @relation("sender")
-  receiveFriends     Friends[]           @relation("receiver")
-  channels           ChannelUser[]
-  sendDM             DirectMessage[]     @relation("sender")
-  receiveDM          DirectMessage[]     @relation("receiver")
-  sentMessages       Message[]
+model user {
+    id                 String              @id @default(uuid())
+    userName           String              @unique
+    email              String              @unique
+    fullName           String
+    password           String?
+    verifiedAt         DateTime?
+    onlineStatus       Boolean
+    avatarUrl          String
+    bannerUrl          String
+    createdAt          DateTime            @default(now())
+    updatedAt          DateTime            @updatedAt
+    associatedAccounts associatedAccount[] @relation(name: "associatedAccountToUser")
+    profile            profile             @relation(name: "profileToUser", fields: [profileID], references: [id])
+    profileID          String              @unique
+    wonmatches         matches[]           @relation(name: "winner")
+    lostmatches        matches[]           @relation(name: "loser")
+    notifications      notifications[]     @relation(name: "notificationsToUser")
+    achievements       achievements[]      @relation(name: "achievementsToUser")
+    sentRequests       friendRequests[]    @relation(name: "senderReq")
+    receivedRequests   friendRequests[]    @relation(name: "receiverReq")
+    sentFriends        friendStatus[]      @relation(name: "sender")
+    receiveFriends     friendStatus[]      @relation(name: "receiver")
+    channels           channelUser[]       @relation(name: "channelUserToUser")
+    sendDM             directmessage[]     @relation(name: "senderDM")
+    receiveDM          directmessage[]     @relation(name: "receiverDM")
+    sentmessages       message[]           @relation(name: "messageToUser")
 }
 
-model AssociatedAccount {
-  id       String   @id @default(uuid())
-  provider Provider
-  user     User     @relation(fields: [userID], references: [id])
-  userID   String
-  email    String
+model associatedAccount {
+    id       String   @id @default(uuid())
+    provider provider
+    user     user     @relation(name: "associatedAccountToUser", fields: [userID], references: [id])
+    userID   String
+    email    String
 }
 
-enum Provider {
-  GOOGLE
-  INTRA
-  GITHUB
+model profile {
+    id     String @id @default(uuid())
+    user   user?  @relation(name: "profileToUser")
+    rating Int
+    level  Int
+    xp     Int
+    coins  Int
 }
 
-model Profile {
-  id     String @id @default(uuid())
-  user   User?
-  rating Int
-  level  Int
-  coins  Int
+model matches {
+    id          Int      @id @default(autoincrement())
+    winner      user     @relation(name: "winner", fields: [winnerID], references: [id])
+    winnerID    String
+    loser       user     @relation(name: "loser", fields: [loserID], references: [id])
+    loserID     String
+    winnerScore Int
+    loserScore  Int
+    date        DateTime @default(now())
+    gameMod     String
+    ranked      Boolean
 }
 
-model Matches {
-  id       Int    @id @default(autoincrement())
-  winner   User   @relation("winner", fields: [winnerID], references: [id])
-  winnerID String
-  loser    User   @relation("loser", fields: [loserID], references: [id])
-  loserID  String
+model notifications {
+    id     Int    @id @default(autoincrement())
+    user   user   @relation(name: "notificationsToUser", fields: [userID], references: [id])
+    userID String
 }
 
-model Notifications {
-  id     Int    @id @default(autoincrement())
-  user   User   @relation(fields: [userID], references: [id])
-  userID String
+model achievements {
+    id          Int    @id @default(autoincrement())
+    imgUrl      String
+    name        String
+    description String
+    reward      Int
+    users       user[] @relation(name: "achievementsToUser")
 }
 
-model Achievements {
-  id          Int    @id @default(autoincrement())
-  imgUrl      String
-  name        String
-  description String
-  reward      Int
-  users       User[]
+model friendRequests {
+    sender     user   @relation(name: "senderReq", fields: [senderID], references: [id])
+    senderID   String
+    receiver   user   @relation(name: "receiverReq", fields: [receiverID], references: [id])
+    receiverID String
+
+    @@id([senderID, receiverID])
 }
 
-model FriendRequests {
-  sender   User   @relation("sender", fields: [senderID], references: [id])
-  senderID String
+model friendStatus {
+    sender      user         @relation(name: "sender", fields: [senderID], references: [id])
+    senderID    String
+    receiver    user         @relation(name: "receiver", fields: [receiverID], references: [id])
+    receiverID  String
+    blockStatus actionStatus
+    muteStatus  actionStatus
 
-  receiver   User   @relation("receiver", fields: [receiverID], references: [id])
-  receiverID String
-
-  @@id([senderID, receiverID])
+    @@id([senderID, receiverID])
 }
 
-model Friends {
-  sender   User   @relation("sender", fields: [senderID], references: [id])
-  senderID String
-
-  receiver   User   @relation("receiver", fields: [receiverID], references: [id])
-  receiverID String
-
-  @@id([senderID, receiverID])
+model channel {
+    id         String            @id @default(uuid())
+    name       String
+    password   String?
+    visibility channelVisibility
+    channels   channelUser[]     @relation(name: "channelTochannelUser")
+    message    message[]         @relation(name: "channelTomessage")
 }
 
-enum ChannelVisibility {
-  PRIVATE
-  PUBLIC
-  PROTECTED
+model channelUser {
+    user      user          @relation(name: "channelUserToUser", fields: [userID], references: [id])
+    userID    String
+    channel   channel       @relation(name: "channelTochannelUser", fields: [channelID], references: [id])
+    channelID String
+    role      channelRole
+    status    channelStatus
+
+    @@id([userID, channelID])
 }
 
-enum ChannelRole {
-  OWNER
-  ADMINISTRATOR
-  MEMBER
+model directmessage {
+    id         Int       @unique @default(autoincrement())
+    sender     user      @relation(name: "senderDM", fields: [senderID], references: [id])
+    senderID   String    @unique
+    receiver   user      @relation(name: "receiverDM", fields: [receiverID], references: [id])
+    receiverID String
+    message    message[] @relation(name: "directmessageTomessage")
+
+    @@unique([senderID, receiverID])
 }
 
-enum ChannelStatus {
-  FREE
-  MUTED
-  BANNED
+model message {
+    id              Int            @id @default(autoincrement())
+    sender          user           @relation(name: "messageToUser", fields: [senderID], references: [id])
+    senderID        String
+    directmessage   directmessage? @relation(name: "directmessageTomessage", fields: [directmessageID], references: [id])
+    directmessageID Int?
+    channel         channel?       @relation(name: "channelTomessage", fields: [channelID], references: [id])
+    channelID       String?
+    content         String
+    attachment      attachment?
 }
 
-model Channel {
-  id         String            @id @default(uuid())
-  password   String?
-  visibility ChannelVisibility
-
-  channels ChannelUser[]
-  Message  Message[]
+model attachment {
+    id        Int      @id @default(autoincrement())
+    message   message  @relation(fields: [messageID], references: [id])
+    messageID Int      @unique
+    name      String
+    url       String
+    type      fileType
 }
 
-model ChannelUser {
-  user   User   @relation(fields: [userID], references: [id])
-  userID String
-
-  channel   Channel @relation(fields: [channelID], references: [id])
-  channelID String
-
-  role ChannelRole
-  status ChannelStatus
-  @@id([userID, channelID])
+enum fileType {
+    IMAGE
+    VIDEO
+    FILE
 }
 
-model DirectMessage {
-  id       Int    @unique @default(autoincrement())
-  sender   User   @relation("sender", fields: [senderID], references: [id])
-  senderID String @unique
-
-  receiver   User      @relation("receiver", fields: [receiverID], references: [id])
-  receiverID String
-  Message    Message[]
-
-  @@unique([senderID, receiverID])
+enum provider {
+    GOOGLE
+    INTRA
+    GITHUB
 }
 
-model Message {
-  id       Int    @id @default(autoincrement())
-  sender   User   @relation(fields: [senderID], references: [id])
-  senderID String
+enum channelVisibility {
+    PRIVATE
+    PUBLIC
+    PROTECTED
+}
 
-  directMessage   DirectMessage? @relation(fields: [directMessageID], references: [id])
-  directMessageID Int?
+enum channelRole {
+    OWNER
+    ADMINISTRATOR
+    MEMBER
+}
 
-  channel   Channel? @relation(fields: [channelID], references: [id])
-  channelID String?
+enum channelStatus {
+    FREE
+    MUTED
+    BANNED
+}
 
-  content String
+enum actionStatus {
+    BOTH
+    NONE
+    SENDER
+    RECEIVER
 }
