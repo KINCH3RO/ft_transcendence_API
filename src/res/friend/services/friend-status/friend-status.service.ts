@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from 'src/services/prisma/prisma.service';
 import { CreateFriendRequestDto, CreateFriendStatusDto } from '../../dto/create-friend.dto';
 import { UpdateFriendStatusDto } from '../../dto/update-friend.dto';
 import { FriendStatus } from '../../entities/friendStatus.entity';
 import { UUID } from 'crypto';
 import { FriendRequestService } from '../friend-request/friend-request.service';
 import { FriendRequest } from '../../entities/friendRequest.entity';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class FriendStatusService {
