@@ -1,0 +1,13 @@
+GET http://localhost:3000/users HTTP/1.1
+
+###
+
+POST http://localhost:3000/authentication/sign-up HTTP/1.1
+Content-Type: application/json
+
+{
+	"username" : "usertest1",
+	"password" : "passwordpassword",
+	"email" : "hat83202@gmail.com",
+    "fullname": "Hatim Rachid1"
+}
