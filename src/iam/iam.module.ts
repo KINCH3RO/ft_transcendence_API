@@ -6,11 +6,20 @@ import { PrismaModule } from 'src/prisma/prisma.module';
 import { UsersModule } from 'src/res/users/users.module';
 import { jwtConstants } from './jwt/jwtConstants';
 import { JwtModule } from '@nestjs/jwt';
- 
 
-console.log(jwtConstants.secret)
+import { APP_GUARD } from '@nestjs/core';
+import { AuthGuard } from './authentication/guards/access-token.guard';
+
+console.log(jwtConstants.secret);
 @Module({
-  providers: [HashingService, AuthenticationService],
+  providers: [
+    HashingService,
+    AuthenticationService,
+    {
+      provide: APP_GUARD,
+      useClass: AuthGuard,
+    },
+  ],
   controllers: [AuthenticationController],
   imports: [
     PrismaModule,
