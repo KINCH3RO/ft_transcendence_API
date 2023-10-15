@@ -7,7 +7,7 @@ export class HashingService {
 		const salt = await genSalt()
 		return hash(data,salt)
 	}
-	async compare(data: string | Buffer, enctypted: string): Promise<boolean> {
+	compare(data: string | Buffer, enctypted: string): Promise<boolean> {
 		return compare(data,enctypted)
 	}
 }

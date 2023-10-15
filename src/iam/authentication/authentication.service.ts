@@ -16,7 +16,7 @@ export class AuthenticationService {
   ) {}
 
   async signUp(signUpDto: SignUpDto) {
-    return this.prisma.user.create({
+    const user = await this.prisma.user.create({
       data: {
         email: signUpDto.email,
         fullName: signUpDto.fullname,
@@ -27,11 +27,16 @@ export class AuthenticationService {
         },
       },
     });
+	const payload = { sub: user.id, username: user.userName };
+    return {
+      access_token: await this.jwtService.signAsync(payload),
+    };
   }
 
   async signIn(signInDto: SignInDto) {
     const user = await this.userService.findByUsername(signInDto.username);
-    if (!user || this.hashingService.compare(user.password, signInDto.password))
+	const isEqual = await  this.hashingService.compare(signInDto.password, user.password)
+	if (!user || !isEqual)
       throw new UnauthorizedException();
     const payload = { sub: user.id, username: user.userName };
     return {
