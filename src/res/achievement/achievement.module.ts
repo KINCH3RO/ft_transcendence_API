@@ -1,10 +1,11 @@
 import { Module } from '@nestjs/common';
 import { AchievementService } from './achievement.service';
 import { AchievementController } from './achievement.controller';
-import { PrismaService } from 'src/services/prisma/prisma.service';
+import { PrismaModule } from 'src/prisma/prisma.module';
 
 @Module({
   controllers: [AchievementController],
-  providers: [AchievementService,PrismaService],
+  providers: [AchievementService],
+  imports: [PrismaModule]
 })
 export class AchievementModule {}
