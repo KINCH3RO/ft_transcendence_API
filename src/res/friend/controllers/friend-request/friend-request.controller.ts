@@ -1,4 +1,4 @@
-import { Controller, Query } from '@nestjs/common';
+import { Controller, HttpException, HttpStatus, Query } from '@nestjs/common';
 import { Post, Body, Get, Patch, Delete, Param } from '@nestjs/common';
 import { CreateFriendRequestDto } from '../../dto/create-friend.dto';
 import { FriendRequestService } from '../../services/friend-request/friend-request.service';
@@ -9,6 +9,9 @@ export class FriendRequestController {
 	constructor(private friendRequestService: FriendRequestService) { }
 	@Post()
 	async create(@Body() createFriendRequestDto: CreateFriendRequestDto): Promise<FriendRequest> {
+		const exist: boolean = await this.friendRequestService.checkExistence(createFriendRequestDto) > 0;
+		if (exist)
+			throw new HttpException('Friend Request already exists', HttpStatus.FORBIDDEN);
 		return this.friendRequestService.create(createFriendRequestDto);
 	}
 

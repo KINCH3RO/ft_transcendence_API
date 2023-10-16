@@ -47,4 +47,23 @@ export class FriendRequestService {
 				}
 			})
 	}
+
+	checkExistence(createFriendRequestDto: CreateFriendRequestDto): Promise<number> {
+		return this.prismaService.friendRequests.count({
+			where: {
+				OR: [
+					{
+						receiverID: createFriendRequestDto.receiverID,
+						senderID: createFriendRequestDto.senderID
+					}
+
+					, {
+						receiverID: createFriendRequestDto.senderID,
+						senderID: createFriendRequestDto.receiverID
+					}
+				]
+
+			}
+		})
+	}
 }

@@ -13,7 +13,7 @@ import { PrismaModule } from './prisma/prisma.module';
 @Module({
 	imports: [ServeStaticModule.forRoot({
 		rootPath: join(__dirname, '..', 'public'),
-		renderPath:"",
+		renderPath:"none",
 	}), ProfileModule, FriendModule, AchievementModule, MatchesModule, ChatModule, NotificationModule, PrismaModule],
 	controllers: [AppController],
 	providers: [AppService],
