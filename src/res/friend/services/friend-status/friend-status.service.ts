@@ -22,12 +22,12 @@ export class FriendStatusService {
 		return this.prismaService.friendStatus.findMany();
 	}
 
-	findOne(id: UUID) {
+	findOne(receiverID : string, senderID : string) {
 		return this.prismaService.friendStatus.findFirst({
 			where: {
 				OR: [
-					{ receiverID: id },
-					{ senderID: id }
+					{ receiverID: receiverID, senderID: senderID },
+					{ receiverID: senderID, senderID: receiverID },
 				]
 			}
 		})
@@ -38,14 +38,14 @@ export class FriendStatusService {
 			data: updatefriendStatusDto,
 			where: {
 				OR: [
-					{ senderID: updatefriendStatusDto.receiverID, receiverID: updatefriendStatusDto.receiverID },
-					{ receiverID: updatefriendStatusDto.receiverID, senderID: updatefriendStatusDto.receiverID }
+					{ senderID: updatefriendStatusDto.senderID, receiverID: updatefriendStatusDto.receiverID },
+					{ receiverID: updatefriendStatusDto.senderID, senderID: updatefriendStatusDto.receiverID }
 				]
 			}
 		})
 	}
 
-	remove(senderID: UUID, receiverID: UUID): Promise<{ count }> {
+	remove(senderID : string, receiverID : string): Promise<{ count }> {
 		return this.prismaService.friendStatus.deleteMany({
 			where: {
 				OR: [
@@ -59,13 +59,13 @@ export class FriendStatusService {
 
 
 
-	getFriendsList(userId: UUID): Promise<friendStatus[]> {
+	getFriendsList(userID : string): Promise<friendStatus[]> {
 		return this.prismaService.friendStatus.findMany({
 			where: {
 				OR:
 					[
-						{ senderID: userId },
-						{ receiverID: userId },
+						{ senderID: userID },
+						{ receiverID: userID },
 					]
 			}
 		})

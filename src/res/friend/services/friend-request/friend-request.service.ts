@@ -20,9 +20,9 @@ export class FriendRequestService {
 
 	}
 
-	async getFriendRequests(recieverId: UUID): Promise<FriendRequest[]> {
+	async getFriendRequests(receiverID : string): Promise<FriendRequest[]> {
 		return this.prismaService.friendRequests.findMany({
-			where: { receiverID: recieverId }
+			where: { receiverID: receiverID }
 		})
 	}
 
@@ -32,7 +32,7 @@ export class FriendRequestService {
 
 
 
-	remove(receiverID: UUID, senderID: UUID): Promise<{ count: number }> {
+	remove(receiverID : string, senderID : string): Promise<{ count: number }> {
 		return this.prismaService.friendRequests.deleteMany(
 			{
 				where: {

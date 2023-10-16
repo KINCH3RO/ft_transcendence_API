@@ -9,7 +9,7 @@ import { query } from 'express';
 export class FriendRequestController {
 	constructor(private friendRequestService: FriendRequestService) { }
 	@Post()
-	async create(@Headers('userID') userID: UUID, @Body() createFriendRequestDto: CreateFriendRequestDto) {
+	async create(@Headers('userID') userID : string, @Body() createFriendRequestDto: CreateFriendRequestDto) {
 		const friendReq: FriendRequest = await this.friendRequestService.findOne(createFriendRequestDto);
 		if (friendReq != null && friendReq.senderID != userID)
 			return this.friendRequestService.acceptRequest(createFriendRequestDto);
@@ -24,17 +24,17 @@ export class FriendRequestController {
 	}
 
 	@Get()
-	async findOne(@Query("senderID") senderID: UUID, @Query("receiverID") receiverID: UUID) {
+	async findOne(@Query("senderID") senderID : string, @Query("receiverID") receiverID : string) {
 		return this.friendRequestService.findOne({ senderID: senderID, receiverID: receiverID });
 	}
 	@Get('/receivedRequests/:id')
-	async getFriendRequests(@Headers('userID') userID: UUID) {
+	async getFriendRequests(@Headers('userID') userID : string) {
 		return this.friendRequestService.getFriendRequests(userID);
 	}
 
 	@Delete()
-	async remove(@Query('recieverID') recieverID: UUID, @Query('recieverID') senderID: UUID) {
-		return this.friendRequestService.remove(recieverID, senderID);
+	async remove(@Query('receiverID') receiverID : string, @Query('receiverID') senderID : string) {
+		return this.friendRequestService.remove(receiverID, senderID);
 	}
 
 	@Post("accept")

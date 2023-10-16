@@ -5,15 +5,15 @@ import { UUID } from "crypto";
 
 export class CreateFriendRequestDto {
 	@IsUUID()
-	senderID: UUID;
+	senderID : string;
 	@IsUUID()
-	receiverID: UUID;
+	receiverID : string;
 }
 
 export class CreateFriendStatusDto {
 	@IsUUID()
-	senderID: UUID;
+	senderID : string;
 	@IsUUID()
-	receiverID: UUID;
+	receiverID : string;
 
 }
