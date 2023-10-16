@@ -32,14 +32,14 @@ export class FriendRequestService {
 
 
 
-	remove(recieverId: UUID, senderId: UUID): Promise<FriendRequest> {
-		return this.prismaService.friendRequests.delete(
+	remove(receiverID: UUID, senderID: UUID): Promise<{ count: number }> {
+		return this.prismaService.friendRequests.deleteMany(
 			{
 				where: {
-					senderID_receiverID: {
-						receiverID: recieverId,
-						senderID: senderId
-					}
+					OR: [
+						{ senderID: senderID, receiverID: receiverID },
+						{ receiverID: senderID, senderID: receiverID }
+					]
 				}
 			})
 	}

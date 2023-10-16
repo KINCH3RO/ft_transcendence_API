@@ -33,25 +33,25 @@ export class FriendStatusService {
 		})
 	}
 
-	update(updatefriendStatusDto: UpdateFriendStatusDto): Promise<FriendStatus> {
-		return this.prismaService.friendStatus.update({
+	update(updatefriendStatusDto: UpdateFriendStatusDto): Promise<{ count }> {
+		return this.prismaService.friendStatus.updateMany({
 			data: updatefriendStatusDto,
 			where: {
-				senderID_receiverID: {
-					senderID: updatefriendStatusDto.senderID,
-					receiverID: updatefriendStatusDto.receiverID
-				}
+				OR: [
+					{ senderID: updatefriendStatusDto.receiverID, receiverID: updatefriendStatusDto.receiverID },
+					{ receiverID: updatefriendStatusDto.receiverID, senderID: updatefriendStatusDto.receiverID }
+				]
 			}
 		})
 	}
 
-	remove(senderID: UUID, receiverID: UUID): Promise<FriendStatus> {
-		return this.prismaService.friendStatus.delete({
+	remove(senderID: UUID, receiverID: UUID): Promise<{ count }> {
+		return this.prismaService.friendStatus.deleteMany({
 			where: {
-				senderID_receiverID: {
-					senderID: senderID,
-					receiverID: receiverID
-				}
+				OR: [
+					{ senderID: senderID, receiverID: receiverID },
+					{ receiverID: senderID, senderID: receiverID }
+				]
 			}
 		})
 	}
