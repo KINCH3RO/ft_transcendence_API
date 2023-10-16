@@ -5,9 +5,14 @@ import { FriendRequest } from '../../entities/friendRequest.entity';
 import { friendRequests } from '@prisma/client';
 import { UUID } from 'crypto';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { FriendStatus } from '../../entities/friendStatus.entity';
 @Injectable()
 export class FriendRequestService {
-	constructor(private prismaService: PrismaService) { }
+	constructor(private prismaService: PrismaService) {
+
+	}
+
+
 	async create(createFriendRequestDto: CreateFriendRequestDto): Promise<FriendRequest> {
 		return this.prismaService.friendRequests.create({
 			data: createFriendRequestDto
@@ -25,16 +30,7 @@ export class FriendRequestService {
 		return this.prismaService.friendRequests.findMany();
 	}
 
-	findOne(id: UUID): Promise<FriendRequest> {
-		return this.prismaService.friendRequests.findFirst({
-			where: {
-				OR: [
-					{ receiverID: id },
-					{ senderID: id }
-				]
-			}
-		})
-	}
+
 
 	remove(recieverId: UUID, senderId: UUID): Promise<FriendRequest> {
 		return this.prismaService.friendRequests.delete(
@@ -48,9 +44,10 @@ export class FriendRequestService {
 			})
 	}
 
-	checkExistence(createFriendRequestDto: CreateFriendRequestDto): Promise<number> {
-		return this.prismaService.friendRequests.count({
-			where: {
+	findOne(createFriendRequestDto: CreateFriendRequestDto): Promise<FriendRequest> {
+		return this.prismaService.friendRequests.findFirst({
+			where:
+			{
 				OR: [
 					{
 						receiverID: createFriendRequestDto.receiverID,
@@ -62,8 +59,25 @@ export class FriendRequestService {
 						senderID: createFriendRequestDto.receiverID
 					}
 				]
-
 			}
 		})
+	}
+
+	acceptRequest(createFriendRequestDto: CreateFriendRequestDto): Promise<[FriendStatus, any]> {
+		return this.prismaService.$transaction(
+			[
+				this.prismaService.friendStatus.create({ data: createFriendRequestDto }),
+				this.prismaService.friendRequests.deleteMany(
+					{
+						where:
+						{
+							OR: [
+								{ senderID: createFriendRequestDto.senderID, receiverID: createFriendRequestDto.receiverID },
+								{ receiverID: createFriendRequestDto.senderID, senderID: createFriendRequestDto.receiverID },
+							]
+						}
+					})
+			]
+		)
 	}
 }

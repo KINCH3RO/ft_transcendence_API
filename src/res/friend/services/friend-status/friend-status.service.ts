@@ -6,6 +6,7 @@ import { UUID } from 'crypto';
 import { FriendRequestService } from '../friend-request/friend-request.service';
 import { FriendRequest } from '../../entities/friendRequest.entity';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { friendStatus } from '@prisma/client';
 
 @Injectable()
 export class FriendStatusService {
@@ -55,20 +56,19 @@ export class FriendStatusService {
 		})
 	}
 
-	acceptRequest(createFriendRequestDto: CreateFriendRequestDto) :Promise<[FriendStatus,FriendRequest]> {
-		return this.prismaService.$transaction(
-			[
-				this.prismaService.friendStatus.create({ data: createFriendRequestDto }),
-				this.prismaService.friendRequests.delete(
-					{
-						where: {
-							senderID_receiverID: {
-								receiverID: createFriendRequestDto.receiverID,
-								senderID: createFriendRequestDto.senderID
-							}
-						}
-					})
-			]
-		)
+
+
+
+	getFriendsList(userId: UUID): Promise<friendStatus[]> {
+		return this.prismaService.friendStatus.findMany({
+			where: {
+				OR:
+					[
+						{ senderID: userId },
+						{ receiverID: userId },
+					]
+			}
+		})
 	}
+
 }

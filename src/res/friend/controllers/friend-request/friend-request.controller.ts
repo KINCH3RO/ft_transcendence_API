@@ -1,17 +1,20 @@
-import { Controller, HttpException, HttpStatus, Query } from '@nestjs/common';
+import { Controller, Headers, HttpException, HttpStatus, Query } from '@nestjs/common';
 import { Post, Body, Get, Patch, Delete, Param } from '@nestjs/common';
 import { CreateFriendRequestDto } from '../../dto/create-friend.dto';
 import { FriendRequestService } from '../../services/friend-request/friend-request.service';
 import { FriendRequest } from '../../entities/friendRequest.entity';
 import { UUID } from 'crypto';
-@Controller('friend-request')
+import { query } from 'express';
+@Controller('friendRequest')
 export class FriendRequestController {
 	constructor(private friendRequestService: FriendRequestService) { }
 	@Post()
-	async create(@Body() createFriendRequestDto: CreateFriendRequestDto): Promise<FriendRequest> {
-		const exist: boolean = await this.friendRequestService.checkExistence(createFriendRequestDto) > 0;
-		if (exist)
-			throw new HttpException('Friend Request already exists', HttpStatus.FORBIDDEN);
+	async create(@Headers('userID') userID: UUID, @Body() createFriendRequestDto: CreateFriendRequestDto) {
+		const friendReq: FriendRequest = await this.friendRequestService.findOne(createFriendRequestDto);
+		if (friendReq != null && friendReq.senderID != userID)
+			return this.friendRequestService.acceptRequest(createFriendRequestDto);
+		else if (friendReq)
+			throw new HttpException('Friend Request already exists', HttpStatus.UNAUTHORIZED);
 		return this.friendRequestService.create(createFriendRequestDto);
 	}
 
@@ -20,19 +23,22 @@ export class FriendRequestController {
 		return this.friendRequestService.findAll();
 	}
 
-	@Get(':id')
-	async findOne(@Param('id') id: UUID) {
-		return this.friendRequestService.findOne(id);
+	@Get()
+	async findOne(@Query("senderID") senderID: UUID, @Query("receiverID") receiverID: UUID) {
+		return this.friendRequestService.findOne({ senderID: senderID, receiverID: receiverID });
 	}
-
 	@Get('/receivedRequests/:id')
-	async getFriendRequests(@Param('id') receiverID: UUID) {
-		return this.friendRequestService.getFriendRequests(receiverID);
+	async getFriendRequests(@Headers('userID') userID: UUID) {
+		return this.friendRequestService.getFriendRequests(userID);
 	}
-
 
 	@Delete()
 	async remove(@Query('recieverID') recieverID: UUID, @Query('recieverID') senderID: UUID) {
 		return this.friendRequestService.remove(recieverID, senderID);
+	}
+
+	@Post("accept")
+	async acceptRequest(@Body() createFriendRequestDto: CreateFriendRequestDto) {
+		return this.friendRequestService.acceptRequest(createFriendRequestDto);
 	}
 }

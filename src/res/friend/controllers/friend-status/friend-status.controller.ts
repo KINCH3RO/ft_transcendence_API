@@ -6,11 +6,11 @@ import { UUID } from 'crypto';
 import { UpdateFriendStatusDto } from '../../dto/update-friend.dto';
 import { FriendRequestService } from '../../services/friend-request/friend-request.service';
 
-@Controller('friend-status')
+@Controller('friendStatus')
 export class FriendStatusController {
 
 
-	constructor(private friendStatusService: FriendStatusService, private friendRequestService: FriendRequestService) { }
+	constructor(private friendStatusService: FriendStatusService) { }
 	@Post()
 	async create(@Body() createFriendStatusDto: CreateFriendStatusDto) {
 		return this.friendStatusService.create(createFriendStatusDto);
@@ -26,6 +26,13 @@ export class FriendStatusController {
 		return this.friendStatusService.findOne(id);
 	}
 
+	@Get("friendsList/:id")
+	async findFriends(@Param("id") userId:UUID) {
+		return this.friendStatusService.getFriendsList(userId);
+	}
+
+
+
 
 	@Patch()
 	async update(@Body() updateFriendStatusDto: UpdateFriendStatusDto) {
@@ -37,8 +44,5 @@ export class FriendStatusController {
 		return this.friendStatusService.remove(recieverID, senderID);
 	}
 
-	@Post("acceptRequest")
-	async acceptRequest(@Body() createFriendRequestDto: CreateFriendRequestDto) {
-		return this.friendStatusService.acceptRequest(createFriendRequestDto);
-	}
+
 }
