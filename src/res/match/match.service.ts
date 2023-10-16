@@ -3,13 +3,13 @@ import { CreateMatchDto } from './dto/create-match.dto';
 import { UpdateMatchDto } from './dto/update-match.dto';
 
 @Injectable()
-export class MatchesService {
+export class MatchService {
   create(createMatchDto: CreateMatchDto) {
     return 'This action adds a new match';
   }
 
   findAll() {
-    return `This action returns all matches`;
+    return `This action returns all match`;
   }
 
   findOne(id: number) {
