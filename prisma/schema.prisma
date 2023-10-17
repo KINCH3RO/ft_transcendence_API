@@ -14,9 +14,9 @@ model user {
     fullName           String
     password           String?
     verifiedAt         DateTime?
-    onlineStatus       Boolean
-    avatarUrl          String
-    bannerUrl          String
+    onlineStatus       Boolean             @default(false)
+    avatarUrl          String              @default("")
+    bannerUrl          String			   @default("")
     createdAt          DateTime            @default(now())
     updatedAt          DateTime            @updatedAt
     associatedAccounts associatedAccount[] @relation(name: "associatedAccountToUser")
@@ -47,10 +47,10 @@ model associatedAccount {
 model profile {
     id     String @id @default(uuid())
     user   user?  @relation(name: "profileToUser")
-    rating Int
-    level  Int
-    xp     Int
-    coins  Int
+    rating Int  @default(0)
+    level  Int  @default(0)
+    xp     Int  @default(0)
+    coins  Int  @default(0)
 }
 
 model matches {
