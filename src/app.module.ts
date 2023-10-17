@@ -10,11 +10,13 @@ import { NotificationModule } from './res/notification/notification.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { PrismaModule } from './prisma/prisma.module';
+import { Socket } from 'dgram';
+import { WebSocketModule } from './res/web-socket/web-socket.module';
 @Module({
 	imports: [ServeStaticModule.forRoot({
 		rootPath: join(__dirname, '..', 'public'),
 		renderPath:"",
-	}), ProfileModule, FriendModule, AchievementModule, MatchesModule, ChatModule, NotificationModule, PrismaModule],
+	}), ProfileModule, FriendModule, AchievementModule, MatchesModule, ChatModule, NotificationModule, PrismaModule, WebSocketModule],
 	controllers: [AppController],
 	providers: [AppService],
 })
