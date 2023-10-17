@@ -4,7 +4,6 @@ import {
   HttpCode,
   Body,
   Post,
-  Get,
 } from '@nestjs/common';
 import { AuthenticationService } from './authentication.service';
 import { SignInDto } from './dto/sign-in.dto/sign-in.dto';
@@ -17,12 +16,12 @@ export class AuthenticationController {
   constructor(private authService: AuthenticationService) {}
 
   @HttpCode(HttpStatus.OK)
-  @Post('sign-in')
+  @Post('signIn')
   signIn(@Body() signInDto: SignInDto) {
     return this.authService.signIn(signInDto);
   }
 
-  @Post('sign-up')
+  @Post('signUp')
   signUp(@Body() signUpDto: SignUpDto) {
     return this.authService.signUp(signUpDto);
   }
