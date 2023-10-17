@@ -12,10 +12,10 @@ export class FriendStatusController {
 
 
 	constructor(private friendStatusService: FriendStatusService) { }
-	@Post()
-	async create(@Body() createFriendStatusDto: CreateFriendStatusDto) {
-		return this.friendStatusService.create(createFriendStatusDto);
-	}
+	// @Post()
+	// async create(@Body() createFriendStatusDto: CreateFriendStatusDto) {
+	// 	return this.friendStatusService.create(createFriendStatusDto);
+	// }
 
 	@Get()
 	async findAll() {

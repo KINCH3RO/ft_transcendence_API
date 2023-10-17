@@ -22,6 +22,9 @@ export class FriendRequestService {
 
 	async getFriendRequests(receiverID : string): Promise<FriendRequest[]> {
 		return this.prismaService.friendRequests.findMany({
+			include:{
+				sender:true
+			},
 			where: { receiverID: receiverID }
 		})
 	}

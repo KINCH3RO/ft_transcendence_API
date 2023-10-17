@@ -61,7 +61,12 @@ export class FriendStatusService {
 
 	getFriendsList(userID : string): Promise<friendStatus[]> {
 		return this.prismaService.friendStatus.findMany({
+			include :{
+				sender:true,
+				receiver:true
+			},
 			where: {
+
 				OR:
 					[
 						{ senderID: userID },
