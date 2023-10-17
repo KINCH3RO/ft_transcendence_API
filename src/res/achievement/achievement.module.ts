@@ -3,9 +3,10 @@ import { AchievementService } from './achievement.service';
 import { AchievementController } from './achievement.controller';
 import { PrismaModule } from 'src/prisma/prisma.module';
 
-
 @Module({
   controllers: [AchievementController],
+  providers: [AchievementService],
+  imports: [PrismaModule]
   providers: [AchievementService],
   imports: [PrismaModule]
 })
