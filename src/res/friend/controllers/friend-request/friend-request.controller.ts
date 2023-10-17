@@ -9,13 +9,9 @@ import { query } from 'express';
 export class FriendRequestController {
 	constructor(private friendRequestService: FriendRequestService) { }
 	@Post()
-	async create(@Headers('userID') userID : string, @Body() createFriendRequestDto: CreateFriendRequestDto) {
-		const friendReq: FriendRequest = await this.friendRequestService.findOne(createFriendRequestDto);
-		if (friendReq != null && friendReq.senderID != userID)
-			return this.friendRequestService.acceptRequest(createFriendRequestDto);
-		else if (friendReq)
-			throw new HttpException('Friend Request already exists', HttpStatus.UNAUTHORIZED);
-		return this.friendRequestService.create(createFriendRequestDto);
+	async create(@Headers('userID') userID: string, @Body() createFriendRequestDto: CreateFriendRequestDto) {
+		const exception: HttpException = new HttpException("", HttpStatus.FORBIDDEN)
+		return this.friendRequestService.sendRequest(userID, createFriendRequestDto, exception);
 	}
 
 	@Get()
@@ -24,16 +20,16 @@ export class FriendRequestController {
 	}
 
 	@Get()
-	async findOne(@Query("senderID") senderID : string, @Query("receiverID") receiverID : string) {
+	async findOne(@Query("senderID") senderID: string, @Query("receiverID") receiverID: string) {
 		return this.friendRequestService.findOne({ senderID: senderID, receiverID: receiverID });
 	}
 	@Get('/receivedRequests/:id')
-	async getFriendRequests(@Headers('userID') userID : string) {
+	async getFriendRequests(@Headers('userID') userID: string) {
 		return this.friendRequestService.getFriendRequests(userID);
 	}
 
 	@Delete()
-	async remove(@Query('receiverID') receiverID : string, @Query('receiverID') senderID : string) {
+	async remove(@Query('receiverID') receiverID: string, @Query('receiverID') senderID: string) {
 		return this.friendRequestService.remove(receiverID, senderID);
 	}
 

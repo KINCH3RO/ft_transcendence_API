@@ -6,7 +6,8 @@ import { UUID } from 'crypto';
 import { FriendRequestService } from '../friend-request/friend-request.service';
 import { FriendRequest } from '../../entities/friendRequest.entity';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { friendStatus } from '@prisma/client';
+import { $Enums, friendStatus } from '@prisma/client';
+import { WsException } from '@nestjs/websockets';
 
 @Injectable()
 export class FriendStatusService {
@@ -22,7 +23,7 @@ export class FriendStatusService {
 		return this.prismaService.friendStatus.findMany();
 	}
 
-	findOne(receiverID : string, senderID : string) {
+	findOne(receiverID: string, senderID: string) {
 		return this.prismaService.friendStatus.findFirst({
 			where: {
 				OR: [
@@ -45,7 +46,7 @@ export class FriendStatusService {
 		})
 	}
 
-	remove(senderID : string, receiverID : string): Promise<{ count }> {
+	remove(senderID: string, receiverID: string): Promise<{ count }> {
 		return this.prismaService.friendStatus.deleteMany({
 			where: {
 				OR: [
@@ -59,11 +60,11 @@ export class FriendStatusService {
 
 
 
-	getFriendsList(userID : string): Promise<friendStatus[]> {
+	getFriendsList(userID: string): Promise<friendStatus[]> {
 		return this.prismaService.friendStatus.findMany({
-			include :{
-				sender:true,
-				receiver:true
+			include: {
+				sender: true,
+				receiver: true
 			},
 			where: {
 
@@ -75,5 +76,65 @@ export class FriendStatusService {
 			}
 		})
 	}
+
+	async blockUser(userID: string, updateFriendStatusDto: UpdateFriendStatusDto) {
+		let friendStatus: FriendStatus = await this.findOne(updateFriendStatusDto.senderID, updateFriendStatusDto.receiverID);
+		if (!friendStatus)
+			throw new WsException("Forbidden");
+		const blockValue: $Enums.actionStatus = friendStatus.senderID == userID ? "SENDER" : "RECEIVER";
+		if (friendStatus.blockStatus == blockValue || friendStatus.blockStatus == "BOTH")
+			return new WsException("User already blocked");
+		if (friendStatus.blockStatus == "NONE")
+			friendStatus.blockStatus = blockValue;
+		else if (friendStatus.blockStatus != blockValue)
+			friendStatus.blockStatus = "BOTH";
+		return this.update(friendStatus);
+	}
+
+	async unblockUser(userID: string, updateFriendStatusDto: UpdateFriendStatusDto) {
+		let friendStatus: FriendStatus = await this.findOne(updateFriendStatusDto.senderID, updateFriendStatusDto.receiverID);
+		if (!friendStatus)
+			throw new WsException("Forbbiden")
+		const blockValue: $Enums.actionStatus = friendStatus.senderID == userID ? "RECEIVER" : "SENDER";
+
+		if (friendStatus.blockStatus == "NONE" || friendStatus.blockStatus == blockValue)
+			return new WsException("User is not Blocked");
+		if (friendStatus.blockStatus == "BOTH")
+			friendStatus.blockStatus = blockValue;
+		else if (friendStatus.blockStatus != blockValue)
+			friendStatus.blockStatus = "NONE";
+		return this.update(friendStatus);
+	}
+
+
+	async muteUser(userID: string, updateFriendStatusDto: UpdateFriendStatusDto) {
+		let friendStatus: FriendStatus = await this.findOne(updateFriendStatusDto.senderID, updateFriendStatusDto.receiverID);
+		if (!friendStatus)
+			throw new WsException("Forbidden");
+		const muteValue: $Enums.actionStatus = friendStatus.senderID == userID ? "SENDER" : "RECEIVER";
+		if (friendStatus.muteStatus == muteValue || friendStatus.muteStatus == "BOTH")
+			return new WsException("User already muted");
+		if (friendStatus.muteStatus == "NONE")
+			friendStatus.muteStatus = muteValue;
+		else if (friendStatus.muteStatus != muteValue)
+			friendStatus.muteStatus = "BOTH";
+		return this.update(friendStatus);
+	}
+
+	async unmuteUser(userID: string, updateFriendStatusDto: UpdateFriendStatusDto) {
+		let friendStatus: FriendStatus = await this.findOne(updateFriendStatusDto.senderID, updateFriendStatusDto.receiverID);
+		if (!friendStatus)
+			throw new WsException("Forbbiden")
+		const muteValue: $Enums.actionStatus = friendStatus.senderID == userID ? "RECEIVER" : "SENDER";
+
+		if (friendStatus.muteStatus == "NONE" || friendStatus.muteStatus == muteValue)
+			return new WsException("User is not mutee=d");
+		if (friendStatus.muteStatus == "BOTH")
+			friendStatus.muteStatus = muteValue;
+		else if (friendStatus.muteStatus != muteValue)
+			friendStatus.muteStatus = "NONE";
+		return this.update(friendStatus);
+	}
+
 
 }

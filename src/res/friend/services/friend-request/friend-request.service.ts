@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateFriendRequestDto } from '../../dto/create-friend.dto';
 import { UpdateFriendRequestDto } from '../../dto/update-friend.dto';
 import { FriendRequest } from '../../entities/friendRequest.entity';
@@ -6,6 +6,7 @@ import { friendRequests } from '@prisma/client';
 import { UUID } from 'crypto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { FriendStatus } from '../../entities/friendStatus.entity';
+import { WsException } from '@nestjs/websockets';
 @Injectable()
 export class FriendRequestService {
 	constructor(private prismaService: PrismaService) {
@@ -20,10 +21,10 @@ export class FriendRequestService {
 
 	}
 
-	async getFriendRequests(receiverID : string): Promise<FriendRequest[]> {
+	async getFriendRequests(receiverID: string): Promise<FriendRequest[]> {
 		return this.prismaService.friendRequests.findMany({
-			include:{
-				sender:true
+			include: {
+				sender: true
 			},
 			where: { receiverID: receiverID }
 		})
@@ -35,7 +36,7 @@ export class FriendRequestService {
 
 
 
-	remove(receiverID : string, senderID : string): Promise<{ count: number }> {
+	remove(receiverID: string, senderID: string): Promise<{ count: number }> {
 		return this.prismaService.friendRequests.deleteMany(
 			{
 				where: {
@@ -82,5 +83,15 @@ export class FriendRequestService {
 					})
 			]
 		)
+	}
+
+
+	async sendRequest(userID: string, createFriendRequestDto: CreateFriendRequestDto, Exception: WsException | HttpException) {
+		const friendReq: FriendRequest = await this.findOne(createFriendRequestDto);
+		if (friendReq != null && friendReq.senderID != userID)
+			return this.acceptRequest(createFriendRequestDto);
+		else if (friendReq)
+			throw Exception;
+		return this.create(createFriendRequestDto);
 	}
 }
