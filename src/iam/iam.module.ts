@@ -9,7 +9,6 @@ import { JwtModule } from '@nestjs/jwt';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './authentication/guards/access-token.guard';
 
-console.log(jwtConstants.secret);
 @Module({
   providers: [
     HashingService,
