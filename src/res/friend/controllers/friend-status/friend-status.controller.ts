@@ -65,6 +65,41 @@ export class FriendStatusController {
 		return this.friendStatusService.update(friendStatus);
 	}
 
+
+
+	@Patch("unblockUser")
+	async unBlockUser(@Headers('userID') userID: string, @Body() updateFriendStatusDto: UpdateFriendStatusDto) {
+		let friendStatus: FriendStatus = await this.friendStatusService.findOne(updateFriendStatusDto.senderID, updateFriendStatusDto.receiverID);
+		if (!friendStatus)
+			throw new HttpException("Forbbiden", HttpStatus.FORBIDDEN);
+		const blockValue: $Enums.actionStatus = friendStatus.senderID == userID ? "RECEIVER" : "SENDER";
+
+		if (friendStatus.blockStatus == "NONE" || friendStatus.blockStatus == blockValue)
+			return new HttpException("User is not Blocked", HttpStatus.ACCEPTED);
+		if (friendStatus.blockStatus == "BOTH")
+			friendStatus.blockStatus = blockValue;
+		else if (friendStatus.blockStatus != blockValue)
+			friendStatus.blockStatus = "NONE";
+		return this.friendStatusService.update(friendStatus);
+	}
+
+
+	@Patch("unmuteUser")
+	async unmuteUser(@Headers('userID') userID: string, @Body() updateFriendStatusDto: UpdateFriendStatusDto) {
+		let friendStatus: FriendStatus = await this.friendStatusService.findOne(updateFriendStatusDto.senderID, updateFriendStatusDto.receiverID);
+		if (!friendStatus)
+			throw new HttpException("Forbbiden", HttpStatus.FORBIDDEN);
+		const muteValue: $Enums.actionStatus = friendStatus.senderID == userID ? "RECEIVER" : "SENDER";
+
+		if (friendStatus.muteStatus == "NONE" || friendStatus.muteStatus == muteValue)
+			return new HttpException("User is not muteed", HttpStatus.ACCEPTED);
+		if (friendStatus.muteStatus == "BOTH")
+			friendStatus.muteStatus = muteValue;
+		else if (friendStatus.muteStatus != muteValue)
+			friendStatus.muteStatus = "NONE";
+		return this.friendStatusService.update(friendStatus);
+	}
+
 	@Delete()
 	async remove(@Query('receiverID') receiverID: string, @Query('receiverID') senderID: string) {
 		return this.friendStatusService.remove(receiverID, senderID);
