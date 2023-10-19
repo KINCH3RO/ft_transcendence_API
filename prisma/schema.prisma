@@ -16,7 +16,7 @@ model user {
     verifiedAt         DateTime?
     onlineStatus       Boolean             @default(false)
     avatarUrl          String              @default("")
-    bannerUrl          String			   @default("")
+    bannerUrl          String              @default("")
     createdAt          DateTime            @default(now())
     updatedAt          DateTime            @updatedAt
     associatedAccounts associatedAccount[] @relation(name: "associatedAccountToUser")
@@ -47,10 +47,10 @@ model associatedAccount {
 model profile {
     id     String @id @default(uuid())
     user   user?  @relation(name: "profileToUser")
-    rating Int  @default(0)
-    level  Int  @default(0)
-    xp     Int  @default(0)
-    coins  Int  @default(0)
+    rating Int    @default(0)
+    level  Int    @default(0)
+    xp     Int    @default(0)
+    coins  Int    @default(0)
 }
 
 model matches {
@@ -151,6 +151,8 @@ model attachment {
     messageID Int      @unique
     name      String
     url       String
+    size      Int
+    mimeType  String
     type      fileType
 }
 
