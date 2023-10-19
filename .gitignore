@@ -36,3 +36,6 @@ lerna-debug.log*
 prisma/migrations
 .env
 .vscode
+
+#uploadFileIgnore
+public/upload/*
