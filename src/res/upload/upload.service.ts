@@ -7,11 +7,10 @@ import { UploadedFile } from './uploaded-file/uploaded-file.interface';
 @Injectable()
 export class UploadService implements OnApplicationBootstrap {
 	onApplicationBootstrap() {
-		mkdir("public/upload/banners", { recursive: true }, () => { })
-		mkdir("public/upload/avatars", { recursive: true }, () => { })
-		mkdir("public/upload/messages", { recursive: true }, () => { })
-		mkdir("public/upload/channels", { recursive: true }, () => { })
-
+		mkdir("public/upload/banners", { recursive: true }, (err) => {throw err })
+		mkdir("public/upload/avatars", { recursive: true }, (err) => {throw err })
+		mkdir("public/upload/messages", { recursive: true }, (err) => {throw err })
+		mkdir("public/upload/channels", { recursive: true }, (err) => {throw err })
 	}
 
 	genRandomFileName(fileName: string) {
@@ -35,7 +34,6 @@ export class UploadService implements OnApplicationBootstrap {
 			type: this.detectType(file.originalname),
 			url: fileName.replace("public/", "")
 		}
-
 	}
 
 	private detectType(fileName: string) {
