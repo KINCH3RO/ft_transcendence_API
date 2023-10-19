@@ -8,8 +8,12 @@ import { ChatModule } from './res/chat/chat.module';
 import { NotificationModule } from './res/notification/notification.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
+import { IamModule } from './iam/iam.module';
+import { UsersModule } from './res/users/users.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { MatchModule } from './res/match/match.module';
+import { ConfigModule } from '@nestjs/config';
+
 @Module({
   imports: [
     ServeStaticModule.forRoot({
@@ -19,10 +23,13 @@ import { MatchModule } from './res/match/match.module';
     ProfileModule,
     FriendModule,
     AchievementModule,
+    MatchModule,
     ChatModule,
     NotificationModule,
+    IamModule,
+    UsersModule,
     PrismaModule,
-    MatchModule,
+    ConfigModule.forRoot({ isGlobal: true }),
   ],
   controllers: [AppController],
   providers: [AppService],
