@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { provider } from '@prisma/client';
 
 @Injectable()
 export class UsersService {
@@ -30,4 +31,19 @@ export class UsersService {
   remove(id: string) {
     return this.prisma.user.delete({ where: { id } });
   }
+
+  findByProviderId(providerID: string, providerType: provider) {
+    return this.prisma.user.findFirst({
+      where: {
+        associatedAccounts: {
+          some: {
+            providerID,
+            provider: providerType,
+          },
+        },
+      },
+    });
+  }
+
+  
 }

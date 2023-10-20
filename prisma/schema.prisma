@@ -38,10 +38,11 @@ model user {
 
 model associatedAccount {
     id       String   @id @default(uuid())
-    provider provider
     user     user     @relation(name: "associatedAccountToUser", fields: [userID], references: [id])
     userID   String
+    provider provider
     email    String
+	providerID String
 }
 
 model profile {

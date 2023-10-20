@@ -8,6 +8,11 @@ import { jwtConstants } from './jwt/jwtConstants';
 import { JwtModule } from '@nestjs/jwt';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './authentication/guards/access-token.guard';
+import { GoogleAuthenticationService } from './authentication/social/google/google-authentication.service';
+import { GoogleAuthenticationController } from './authentication/social/google/google-authentication.controller';
+import { GoogleStrategy } from './authentication/social/google/google.strategy';
+import { GoogleOAuthGuard } from './authentication/social/google/google-oauth.guard';
+console.log(jwtConstants.secret)
 
 @Module({
   providers: [
@@ -17,8 +22,11 @@ import { AuthGuard } from './authentication/guards/access-token.guard';
       provide: APP_GUARD,
       useClass: AuthGuard,
     },
+    GoogleAuthenticationService,
+    GoogleStrategy,
+    GoogleOAuthGuard,
   ],
-  controllers: [AuthenticationController],
+  controllers: [AuthenticationController, GoogleAuthenticationController],
   imports: [
     PrismaModule,
     UsersModule,
