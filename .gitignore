@@ -36,3 +36,7 @@ lerna-debug.log*
 prisma/migrations
 .env
 .vscode
+
+# http tests
+test.http
+room.http

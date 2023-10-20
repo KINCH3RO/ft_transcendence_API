@@ -26,5 +26,6 @@ import { AuthGuard } from './authentication/guards/access-token.guard';
       secret: jwtConstants.secret,
     }),
   ],
+  exports: [HashingService],
 })
 export class IamModule {}
