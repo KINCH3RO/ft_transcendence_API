@@ -21,6 +21,6 @@ export class Channel implements channel {
 	name: string;
 	password: string;
 	visibility: $Enums.channelVisibility;
-	channels: channelUser[];
+	channels: ChannelUser[];
 	message: Message[];
 }

@@ -15,17 +15,17 @@ export class ChannelService {
   async create(createChannelDto: CreateChannelDto, id: string) {
     return this.prisma.channel.create({
       data: {
-          imageUrl: createChannelDto.imageUrl,
-          name: createChannelDto.name,
-          visibility: createChannelDto.visibility,
-          password: await this.hashingService.hash(createChannelDto.password),
-          channels: {
-            create: {
-              userID: id,
-              role: "OWNER",
-              status: "FREE",
-            }
-          }
+        imageUrl: createChannelDto.imageUrl,
+        name: createChannelDto.name,
+        visibility: createChannelDto.visibility,
+        password: await this.hashingService.hash(createChannelDto.password),
+        channels: {
+          create: {
+            userID: id,
+            role: 'OWNER',
+            status: 'FREE',
+          },
+        },
       },
     });
   }
@@ -39,7 +39,17 @@ export class ChannelService {
   }
 
   update(id: string, updateChannelDto: UpdateChannelDto) {
-    return `This action updates a #${id} channel`;
+    return this.prisma.channel.update({
+      where: {
+        id
+      },
+      data: {
+        imageUrl: updateChannelDto.imageUrl,
+        name: updateChannelDto.name,
+        password: updateChannelDto.password,
+        visibility: updateChannelDto.visibility,
+      },
+    });
   }
 
   remove(id: string) {
