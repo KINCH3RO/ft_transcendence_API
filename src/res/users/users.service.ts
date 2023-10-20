@@ -45,5 +45,23 @@ export class UsersService {
     });
   }
 
-  
+  createByProvider(providerData, providerType: provider) {
+    return this.prisma.user.create({
+      data: {
+        email: providerData.email,
+        fullName: providerData.fullName,
+        userName: providerData.displayName,
+        profile: {
+          create: {},
+        },
+        associatedAccounts: {
+          create: {
+            email: providerData.email,
+            provider: 'GOOGLE',
+            providerID: providerData.id,
+          },
+        },
+      },
+    });
+  }
 }

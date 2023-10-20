@@ -12,6 +12,7 @@ import { GoogleAuthenticationService } from './authentication/social/google/goog
 import { GoogleAuthenticationController } from './authentication/social/google/google-authentication.controller';
 import { GoogleStrategy } from './authentication/social/google/google.strategy';
 import { GoogleOAuthGuard } from './authentication/social/google/google-oauth.guard';
+import { TokenService } from './jwt/token.service';
 console.log(jwtConstants.secret)
 
 @Module({
@@ -25,6 +26,7 @@ console.log(jwtConstants.secret)
     GoogleAuthenticationService,
     GoogleStrategy,
     GoogleOAuthGuard,
+    TokenService,
   ],
   controllers: [AuthenticationController, GoogleAuthenticationController],
   imports: [
