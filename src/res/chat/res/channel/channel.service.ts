@@ -3,7 +3,6 @@ import { CreateChannelDto } from './dto/create-channel.dto';
 import { UpdateChannelDto } from './dto/update-channel.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { HashingService } from 'src/iam/hashing/hashing.service';
-import { channel } from 'diagnostics_channel';
 
 @Injectable()
 export class ChannelService {
@@ -41,7 +40,7 @@ export class ChannelService {
   update(id: string, updateChannelDto: UpdateChannelDto) {
     return this.prisma.channel.update({
       where: {
-        id
+        id,
       },
       data: {
         imageUrl: updateChannelDto.imageUrl,
@@ -53,6 +52,18 @@ export class ChannelService {
   }
 
   remove(id: string) {
-    return this.prisma.channel.delete({ where: { id } });
+    const deleteMessages = this.prisma.message.deleteMany({
+      where: { channelID: id },
+    });
+    const deleteUsers = this.prisma.channelUser.deleteMany({
+      where: { channelID: id },
+    });
+    const deleteChannel = this.prisma.channel.delete({ where: { id } });
+
+    return this.prisma.$transaction([
+      deleteMessages,
+      deleteUsers,
+      deleteChannel,
+    ]);
   }
 }
