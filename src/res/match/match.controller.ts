@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { MatchService } from './match.service';
 import { CreateMatchDto } from './dto/create-match.dto';
@@ -28,8 +29,8 @@ export class MatchController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.matchService.findOne(+id);
+  findOne(@Param('id', ParseIntPipe) id: number) {
+    return this.matchService.findOne(id);
   }
 
   @Patch(':id')
@@ -38,7 +39,7 @@ export class MatchController {
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.matchService.remove(+id);
+  remove(@Param('id', ParseIntPipe) id: number) {
+    return this.matchService.remove(id);
   }
 }

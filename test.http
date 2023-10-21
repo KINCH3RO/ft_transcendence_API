@@ -50,11 +50,27 @@ Content-Type: application/json
 GET http://localhost:3001/match HTTP/1.1
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyMzhiYTJmNy1lNTExLTQ4NDAtYTAyNC05NzllZTgyMThhN2UiLCJ1c2VybmFtZSI6ImFub3RoZXJ1c2VyMTIzIiwiaWF0IjoxNjk3ODk5NDc2fQ.gTI1ZaraBWhVzC6Ufrjiy2eFUjTXaZst8VFVtFsGx6c
 
+###
+GET http://localhost:3001/match/26 HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyMzhiYTJmNy1lNTExLTQ4NDAtYTAyNC05NzllZTgyMThhN2UiLCJ1c2VybmFtZSI6ImFub3RoZXJ1c2VyMTIzIiwiaWF0IjoxNjk3ODk5NDc2fQ.gTI1ZaraBWhVzC6Ufrjiy2eFUjTXaZst8VFVtFsGx6c
 
+###
+PATCH  http://localhost:3001/match/26 HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyMzhiYTJmNy1lNTExLTQ4NDAtYTAyNC05NzllZTgyMThhN2UiLCJ1c2VybmFtZSI6ImFub3RoZXJ1c2VyMTIzIiwiaWF0IjoxNjk3ODk5NDc2fQ.gTI1ZaraBWhVzC6Ufrjiy2eFUjTXaZst8VFVtFsGx6c
+Content-Type: application/json
+
+{
+	"winnerID": "238ba2f7-e511-4840-a024-979ee8218a7e",
+	"loserID": "a40a9ba4-da23-476a-b7d3-7d48807b2b4e",
+	"winnerScore": 6,
+	"loserScore": 3,
+	"gameMode": "CLASSIC",
+	"ranked": true
+}
 
 ###
 POST http://localhost:3001/match HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIwZWQ3ZjgwZi0zYmMxLTRkNTMtYWYzNy1lNDk2Y2ExYzYxMzIiLCJ1c2VybmFtZSI6InVzZXJ0ZXN0MjMiLCJpYXQiOjE2OTc4OTQwNzN9.aXzNpNl5gkN2MPpz_lIgWkRmJEq84B0cLZpNzJjSWQs
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyMzhiYTJmNy1lNTExLTQ4NDAtYTAyNC05NzllZTgyMThhN2UiLCJ1c2VybmFtZSI6ImFub3RoZXJ1c2VyMTIzIiwiaWF0IjoxNjk3ODk5NDc2fQ.gTI1ZaraBWhVzC6Ufrjiy2eFUjTXaZst8VFVtFsGx6c
 Content-Type: application/json
 
 {
@@ -67,6 +83,10 @@ Content-Type: application/json
 }
 
 ###
+DELETE http://localhost:3001/match/26 HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyMzhiYTJmNy1lNTExLTQ4NDAtYTAyNC05NzllZTgyMThhN2UiLCJ1c2VybmFtZSI6ImFub3RoZXJ1c2VyMTIzIiwiaWF0IjoxNjk3ODk5NDc2fQ.gTI1ZaraBWhVzC6Ufrjiy2eFUjTXaZst8VFVtFsGx6c
+
+###
 
 GET http://localhost:3001/users HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIwZWQ3ZjgwZi0zYmMxLTRkNTMtYWYzNy1lNDk2Y2ExYzYxMzIiLCJ1c2VybmFtZSI6InVzZXJ0ZXN0MjMiLCJpYXQiOjE2OTc4OTQwNzN9.aXzNpNl5gkN2MPpz_lIgWkRmJEq84B0cLZpNzJjSWQs
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyMzhiYTJmNy1lNTExLTQ4NDAtYTAyNC05NzllZTgyMThhN2UiLCJ1c2VybmFtZSI6ImFub3RoZXJ1c2VyMTIzIiwiaWF0IjoxNjk3ODk5NDc2fQ.gTI1ZaraBWhVzC6Ufrjiy2eFUjTXaZst8VFVtFsGx6c

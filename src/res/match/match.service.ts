@@ -51,15 +51,49 @@ export class MatchService {
     return result;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} match`;
+  async findOne(id: number) {
+    this.logger.log(`findOne for match with id: ${id}`);
+
+    const result = await this.prismaService.matches.findUnique({
+      where: {
+        id: id,
+      },
+    });
+
+    this.logger.verbose(result);
+    return result;
   }
 
-  update(id: number, updateMatchDto: UpdateMatchDto) {
-    return `This action updates a #${id} match`;
+  async update(id: number, updateMatchDto: UpdateMatchDto) {
+    const result = await this.prismaService.matches.update({
+      where: {
+        id,
+      },
+      data: {
+        winnerID: updateMatchDto.winnerID,
+        loserID: updateMatchDto.loserID,
+        winnerScore: updateMatchDto.winnerScore,
+        loserScore: updateMatchDto.loserScore,
+        gameMode: updateMatchDto.gameMode,
+        ranked: updateMatchDto.ranked,
+      },
+    });
+    this.logger.debug(
+      `update Match ${result.winnerID} vs ${result.loserID} date: ${result.date}`,
+    );
+    return result;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} match`;
+  async remove(id: number) {
+    const result = await this.prismaService.matches.delete({
+      where: {
+        id: id,
+      },
+    });
+
+    this.logger.debug(
+      `delete Match ${result.winnerID} vs ${result.loserID} date: ${result.date}`,
+    );
+    return result;
   }
 }
