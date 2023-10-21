@@ -1,26 +1,56 @@
-import { Injectable } from '@nestjs/common';
-import { CreateAchievementDto } from './dto/create-achievement.dto';
-import { UpdateAchievementDto } from './dto/update-achievement.dto';
+import { Injectable, Logger } from '@nestjs/common';
+import { AssignAchievementDto } from './dto/assign-achievement.dto';
+import { ActiveUserData } from 'src/iam/interfaces/active-user.interface';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class AchievementService {
-  create(createAchievementDto: CreateAchievementDto) {
-    return 'This action adds a new achievement';
+  constructor(private readonly prismaService: PrismaService) {}
+  private readonly logger = new Logger(AchievementService.name);
+
+  async assign(
+    user: ActiveUserData,
+    assignAchievementDto: AssignAchievementDto,
+  ) {
+    const result = await this.prismaService.achievements.update({
+      where: { id: assignAchievementDto.id },
+      data: {
+        users: {
+          connect: { id: user.sub },
+        },
+      },
+    });
+
+    this.logger.debug(`assign Achievement ${result.name} to ${user.username}`);
+    return result;
   }
 
-  findAll() {
-    return `This action returns all achievement`;
+  async findAllUser(user: ActiveUserData) {
+    this.logger.log(`findAll Achievements for user ${user.username}`);
+
+    const result = await this.prismaService.achievements.findMany({
+      where: {
+        users: {
+          some: {
+            id: user.sub,
+          },
+        },
+      },
+    });
+
+    this.logger.verbose(result);
+    return result;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} achievement`;
-  }
+  async findOne(id: number) {
+    this.logger.log(`findOne Achievement with id: ${id}`);
+    const result = await this.prismaService.achievements.findUnique({
+      where: {
+        id,
+      },
+    });
 
-  update(id: number, updateAchievementDto: UpdateAchievementDto) {
-    return `This action updates a #${id} achievement`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} achievement`;
+    this.logger.verbose(result);
+    return result;
   }
 }

@@ -7,7 +7,6 @@ import {
   Param,
   Delete,
   ParseIntPipe,
-  ParseUUIDPipe,
 } from '@nestjs/common';
 import { MatchService } from './match.service';
 import { CreateMatchDto } from './dto/create-match.dto';
