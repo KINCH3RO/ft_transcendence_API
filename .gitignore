@@ -40,3 +40,4 @@ prisma/migrations
 # http tests
 test.http
 room.http
+channelUser.http

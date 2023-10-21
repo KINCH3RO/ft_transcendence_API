@@ -10,9 +10,8 @@ export class ChannelController {
   constructor(private readonly channelService: ChannelService) {}
 
   @Post()
-  create(@ActiveUser() user:ActiveUserData,@Body() createChannelDto: CreateChannelDto) {
+  create(@ActiveUser() user:ActiveUserData, @Body() createChannelDto: CreateChannelDto) {
     return this.channelService.create(createChannelDto, user.sub);
-
   }
 
   @Get()
