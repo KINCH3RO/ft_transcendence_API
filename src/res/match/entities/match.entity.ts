@@ -12,6 +12,5 @@ export class Match implements matches {
 }
 
 export enum gameMode {
-  'RANKED',
-  'NORMAL',
+  'CLASSIC',
 }

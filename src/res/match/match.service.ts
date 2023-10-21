@@ -9,28 +9,45 @@ export class MatchService {
   constructor(private readonly prismaService: PrismaService) {}
   private readonly logger = new Logger(MatchService.name);
 
-  create(createMatchDto: CreateMatchDto) {
-    return 'This action adds a new match';
+  async create(createMatchDto: CreateMatchDto) {
+    const result = await this.prismaService.matches.create({
+      data: {
+        winnerID: createMatchDto.winnerID,
+        loserID: createMatchDto.loserID,
+        winnerScore: createMatchDto.winnerScore,
+        loserScore: createMatchDto.loserScore,
+        gameMode: createMatchDto.gameMode,
+        ranked: createMatchDto.ranked,
+      },
+    });
+
+    this.logger.debug(
+      `create Match ${result.winnerID} vs ${result.loserID} date: ${result.date}`,
+    );
+    return result;
   }
 
   async findAll(user: ActiveUserData) {
-    this.logger.debug(user);
     this.logger.log(`findAll for ${user.username}`);
 
     const result = await this.prismaService.matches.findMany({
       where: {
         OR: [
           {
-            loserID: user.sub,
+            winnerID: {
+              equals: user.sub,
+            },
           },
           {
-            winnerID: user.sub,
+            loserID: {
+              equals: user.sub,
+            },
           },
         ],
       },
     });
 
-    this.logger.log(result);
+    this.logger.verbose(result);
     return result;
   }
 

@@ -1,6 +1,8 @@
 GET http://localhost:3001/users HTTP/1.1
 
 ###
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIwZWQ3ZjgwZi0zYmMxLTRkNTMtYWYzNy1lNDk2Y2ExYzYxMzIiLCJ1c2VybmFtZSI6InVzZXJ0ZXN0MjMiLCJpYXQiOjE2OTc4OTQwNzN9.aXzNpNl5gkN2MPpz_lIgWkRmJEq84B0cLZpNzJjSWQs
+###
 
 POST http://localhost:3001/authentication/signUp HTTP/1.1
 Content-Type: application/json
@@ -10,6 +12,20 @@ Content-Type: application/json
 	"password" : "passwordpassword",
 	"email" : "hat8232022@gmail.com",
     "fullname": "Hatim Rachid1"
+}
+
+###
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyMzhiYTJmNy1lNTExLTQ4NDAtYTAyNC05NzllZTgyMThhN2UiLCJ1c2VybmFtZSI6ImFub3RoZXJ1c2VyMTIzIiwiaWF0IjoxNjk3ODk5NDc2fQ.gTI1ZaraBWhVzC6Ufrjiy2eFUjTXaZst8VFVtFsGx6c
+###
+
+POST http://localhost:3001/authentication/signUp HTTP/1.1
+Content-Type: application/json
+
+{
+	"username" : "anotheruser123",
+	"password" : "passwordpassword",
+	"email" : "som8232022@gmail.com",
+    "fullname": "Some Guy2"
 }
 
 ### 
@@ -22,8 +38,17 @@ Content-Type: application/json
 }
 
 ### 
+POST http://localhost:3001/authentication/signIn HTTP/1.1
+Content-Type: application/json
+
+{
+	"username" : "KINCHERO",
+	"password" : "password"
+}
+
+### 
 GET http://localhost:3001/match HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIwZWQ3ZjgwZi0zYmMxLTRkNTMtYWYzNy1lNDk2Y2ExYzYxMzIiLCJ1c2VybmFtZSI6InVzZXJ0ZXN0MjMiLCJpYXQiOjE2OTc4OTQwNzN9.aXzNpNl5gkN2MPpz_lIgWkRmJEq84B0cLZpNzJjSWQs
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyMzhiYTJmNy1lNTExLTQ4NDAtYTAyNC05NzllZTgyMThhN2UiLCJ1c2VybmFtZSI6ImFub3RoZXJ1c2VyMTIzIiwiaWF0IjoxNjk3ODk5NDc2fQ.gTI1ZaraBWhVzC6Ufrjiy2eFUjTXaZst8VFVtFsGx6c
 
 
 
@@ -33,5 +58,15 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIwZWQ3ZjgwZ
 Content-Type: application/json
 
 {
-	
+	"winnerID": "238ba2f7-e511-4840-a024-979ee8218a7e",
+	"loserID": "a40a9ba4-da23-476a-b7d3-7d48807b2b4e",
+	"winnerScore": 5,
+	"loserScore": 3,
+	"gameMode": "CLASSIC",
+	"ranked": true
 }
+
+###
+
+GET http://localhost:3001/users HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIwZWQ3ZjgwZi0zYmMxLTRkNTMtYWYzNy1lNDk2Y2ExYzYxMzIiLCJ1c2VybmFtZSI6InVzZXJ0ZXN0MjMiLCJpYXQiOjE2OTc4OTQwNzN9.aXzNpNl5gkN2MPpz_lIgWkRmJEq84B0cLZpNzJjSWQs
