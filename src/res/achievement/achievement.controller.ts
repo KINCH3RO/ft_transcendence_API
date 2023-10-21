@@ -16,7 +16,7 @@ export class AchievementController {
   constructor(private readonly achievementService: AchievementService) {}
 
   @Post()
-  create(
+  assign(
     @ActiveUser() user: ActiveUserData,
     @Body() assignAchievementDto: AssignAchievementDto,
   ) {

@@ -49,7 +49,7 @@ export class MatchService {
 
     const result = await this.prismaService.matches.findUnique({
       where: {
-        id: id,
+        id,
       },
     });
 
@@ -84,7 +84,7 @@ export class MatchService {
     try {
       result = await this.prismaService.matches.delete({
         where: {
-          id: id,
+          id,
         },
       });
     } catch (error) {

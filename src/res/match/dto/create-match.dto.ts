@@ -17,11 +17,9 @@ export class CreateMatchDto {
   loserID: string;
 
   @IsNumber()
-  @IsNotEmpty()
   winnerScore: number;
 
   @IsNumber()
-  @IsNotEmpty()
   loserScore: number;
 
   @IsEnum(gameMode)
