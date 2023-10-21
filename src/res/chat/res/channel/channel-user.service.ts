@@ -46,7 +46,9 @@ export class ChannelUserService {
   }
 
   remove(deleteChannelUserDto: CreateChannelUserDto) {
-    return this.prisma.channelUser.delete({ where: { userID_channelID: deleteChannelUserDto } });
+    return this.prisma.channelUser.delete({
+      where: { userID_channelID: deleteChannelUserDto },
+    });
   }
 
   async ban(
@@ -74,10 +76,7 @@ export class ChannelUserService {
     return this.update(target);
   }
 
-  async kick(
-    userID: string,
-    targetChannelUserDto: CreateChannelUserDto
-  ) {
+  async kick(userID: string, targetChannelUserDto: CreateChannelUserDto) {
     let actorChannelUserDto: CreateChannelUserDto = {
       channelID: targetChannelUserDto.channelID,
       userID: userID,
