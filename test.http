@@ -61,7 +61,7 @@ GET http://localhost:3001/users HTTP/1.1
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyMzhiYTJmNy1lNTExLTQ4NDAtYTAyNC05NzllZTgyMThhN2UiLCJ1c2VybmFtZSI6ImFub3RoZXJ1c2VyMTIzIiwiaWF0IjoxNjk3ODk5NDc2fQ.gTI1ZaraBWhVzC6Ufrjiy2eFUjTXaZst8VFVtFsGx6c
 
 ###
-GET http://localhost:3001/achievement/user/1 HTTP/1.1
+GET http://localhost:3001/achievement/user/10 HTTP/1.1
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyMzhiYTJmNy1lNTExLTQ4NDAtYTAyNC05NzllZTgyMThhN2UiLCJ1c2VybmFtZSI6ImFub3RoZXJ1c2VyMTIzIiwiaWF0IjoxNjk3ODk5NDc2fQ.gTI1ZaraBWhVzC6Ufrjiy2eFUjTXaZst8VFVtFsGx6c
 
 ###
@@ -74,6 +74,5 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyMzhiYTJmN
 Content-Type: application/json
 
 {
-	"id": 2,
-	"name":"dsad"
+	"id": 10
 }

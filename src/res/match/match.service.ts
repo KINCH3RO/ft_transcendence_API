@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { CreateMatchDto } from './dto/create-match.dto';
 import { UpdateMatchDto } from './dto/update-match.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -58,12 +58,20 @@ export class MatchService {
   }
 
   async update(id: number, updateMatchDto: UpdateMatchDto) {
-    const result = await this.prismaService.matches.update({
-      where: {
-        id,
-      },
-      data: updateMatchDto,
-    });
+    let result = null;
+
+    try {
+      result = await this.prismaService.matches.update({
+        where: {
+          id,
+        },
+        data: updateMatchDto,
+      });
+    } catch (error) {
+      this.logger.error(`Attempted to update match id: ${id}`);
+      throw new HttpException("Match doesn't exists", HttpStatus.NOT_FOUND);
+    }
+
     this.logger.debug(
       `update Match ${result.winnerID} vs ${result.loserID} date: ${result.date}`,
     );
@@ -71,11 +79,18 @@ export class MatchService {
   }
 
   async remove(id: number) {
-    const result = await this.prismaService.matches.delete({
-      where: {
-        id: id,
-      },
-    });
+    let result = null;
+
+    try {
+      result = await this.prismaService.matches.delete({
+        where: {
+          id: id,
+        },
+      });
+    } catch (error) {
+      this.logger.error(`Attempted to delete match id: ${id}`);
+      throw new HttpException("Match doesn't exist", HttpStatus.NOT_FOUND);
+    }
 
     this.logger.debug(
       `delete Match ${result.winnerID} vs ${result.loserID} date: ${result.date}`,
