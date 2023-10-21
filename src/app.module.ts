@@ -13,12 +13,13 @@ import { UsersModule } from './res/users/users.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { MatchModule } from './res/match/match.module';
 import { ConfigModule } from '@nestjs/config';
+import { UploadModule } from './res/upload/upload.module';
 
 @Module({
   imports: [
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'public'),
-      renderPath: '',
+      renderPath: 'none',
     }),
     ProfileModule,
     FriendModule,
@@ -30,6 +31,7 @@ import { ConfigModule } from '@nestjs/config';
     UsersModule,
     PrismaModule,
     ConfigModule.forRoot({ isGlobal: true }),
+    UploadModule,
   ],
   controllers: [AppController],
   providers: [AppService],
