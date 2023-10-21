@@ -2,7 +2,7 @@ GET http://localhost:3001/users HTTP/1.1
 
 ###
 
-POST http://localhost:3001/authentication/sign-up HTTP/1.1
+POST http://localhost:3001/authentication/signUp HTTP/1.1
 Content-Type: application/json
 
 {
@@ -13,7 +13,7 @@ Content-Type: application/json
 }
 
 ### 
-POST http://localhost:3001/authentication/sign-in HTTP/1.1
+POST http://localhost:3001/authentication/signIn HTTP/1.1
 Content-Type: application/json
 
 {
@@ -22,5 +22,16 @@ Content-Type: application/json
 }
 
 ### 
-GET http://localhost:3001/ HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxYjBlY2IyOC1hMGE0LTRlMzQtOWMxNS0yZDFjYjk3ODI2NjAiLCJ1c2VybmFtZSI6InVzZXJ0ZXN0MjMiLCJpYXQiOjE2OTc1NTIzNDl9.wq2z8mxhXtrJjEh2jPaHYqzH_JB97WOnOQtKfusmwxY
+GET http://localhost:3001/match HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIwZWQ3ZjgwZi0zYmMxLTRkNTMtYWYzNy1lNDk2Y2ExYzYxMzIiLCJ1c2VybmFtZSI6InVzZXJ0ZXN0MjMiLCJpYXQiOjE2OTc4OTQwNzN9.aXzNpNl5gkN2MPpz_lIgWkRmJEq84B0cLZpNzJjSWQs
+
+
+
+###
+POST http://localhost:3001/match HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIwZWQ3ZjgwZi0zYmMxLTRkNTMtYWYzNy1lNDk2Y2ExYzYxMzIiLCJ1c2VybmFtZSI6InVzZXJ0ZXN0MjMiLCJpYXQiOjE2OTc4OTQwNzN9.aXzNpNl5gkN2MPpz_lIgWkRmJEq84B0cLZpNzJjSWQs
+Content-Type: application/json
+
+{
+	
+}

@@ -10,6 +10,8 @@ import {
 import { MatchService } from './match.service';
 import { CreateMatchDto } from './dto/create-match.dto';
 import { UpdateMatchDto } from './dto/update-match.dto';
+import { ActiveUser } from 'src/iam/authentication/decorators/active-user.decorator';
+import { ActiveUserData } from 'src/iam/interfaces/active-user.interface';
 
 @Controller('match')
 export class MatchController {
@@ -21,8 +23,8 @@ export class MatchController {
   }
 
   @Get()
-  findAll() {
-    return this.matchService.findAll();
+  findAll(@ActiveUser() user: ActiveUserData) {
+    return this.matchService.findAll(user);
   }
 
   @Get(':id')
