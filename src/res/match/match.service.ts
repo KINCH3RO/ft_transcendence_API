@@ -11,14 +11,7 @@ export class MatchService {
 
   async create(createMatchDto: CreateMatchDto) {
     const result = await this.prismaService.matches.create({
-      data: {
-        winnerID: createMatchDto.winnerID,
-        loserID: createMatchDto.loserID,
-        winnerScore: createMatchDto.winnerScore,
-        loserScore: createMatchDto.loserScore,
-        gameMode: createMatchDto.gameMode,
-        ranked: createMatchDto.ranked,
-      },
+      data: createMatchDto,
     });
 
     this.logger.debug(
@@ -69,14 +62,7 @@ export class MatchService {
       where: {
         id,
       },
-      data: {
-        winnerID: updateMatchDto.winnerID,
-        loserID: updateMatchDto.loserID,
-        winnerScore: updateMatchDto.winnerScore,
-        loserScore: updateMatchDto.loserScore,
-        gameMode: updateMatchDto.gameMode,
-        ranked: updateMatchDto.ranked,
-      },
+      data: updateMatchDto,
     });
     this.logger.debug(
       `update Match ${result.winnerID} vs ${result.loserID} date: ${result.date}`,
