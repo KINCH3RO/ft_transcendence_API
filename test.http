@@ -1,5 +1,5 @@
 GET http://localhost:3001/users HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI5MDNkMTQxNC01MGE4LTQyMGQtOWI5Ny01ZTBlYTcxNmZjOGYiLCJ1c2VybmFtZSI6InVzZXJ0ZXN0MjMiLCJpYXQiOjE2OTc4MjkyMTB9.YuCJaLrVLONyRMri5e8wVdJSQw68LdweMlbxvw14uqY
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkZWE4NjYyMy01ZDEyLTRkMzItOWMyMi03MWVlY2EzOTg0N2YiLCJ1c2VybmFtZSI6Im1lZC1naGFsaSIsImlhdCI6MTY5Nzg5NjUyOH0.-VEBPnl-odMJ3KKssarwJxmCObclfQv-K40Rk3L36pY
 
 ###
 
@@ -25,3 +25,9 @@ Content-Type: application/json
 ### 
 GET http://localhost:3001/ HTTP/1.1
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJiZGI2OTRhYi01MTc0LTRkYzgtOWZkMy1lMDBjNWVlMzMyNWIiLCJ1c2VybmFtZSI6InVzZXJ0ZXN0MjMiLCJpYXQiOjE2OTc4MDQyNjJ9.kr5s5shHVj3TaqC95lmbmoz22Ysj7EvBZkJqma07tKQ
+
+
+###
+GET https://api.github.com/user/emails HTTP/1.1
+Authorization: Bearer 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
+

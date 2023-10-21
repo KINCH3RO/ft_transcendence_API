@@ -6,25 +6,25 @@ import {
   HttpCode,
   HttpStatus,
 } from '@nestjs/common';
-import { GoogleOAuthGuard } from './google-oauth.guard';
 import { Public } from '../../decorators/public.decorator';
+import { FortytwoOAuthGuard } from './fortytwo-oauth.guard';
 import { ProviderAuthenticationService } from '../provider-authentication.service';
 
 @Public()
-@Controller('googleAuthentication')
-export class GoogleAuthenticationController {
+@Controller('fortytwoAuthentication')
+export class FortytwoAuthenticationController {
   constructor(
     private providerAuthenticationService: ProviderAuthenticationService,
   ) {}
   @Get('login')
-  @UseGuards(GoogleOAuthGuard)
+  @UseGuards(FortytwoOAuthGuard)
   handleLogin() {
     return 'login';
   }
 
   @Get('redirect')
   @HttpCode(HttpStatus.OK)
-  @UseGuards(GoogleOAuthGuard)
+  @UseGuards(FortytwoOAuthGuard)
   handleRedirect(@Req() request) {
     return this.providerAuthenticationService.signIn(request.user);
   }

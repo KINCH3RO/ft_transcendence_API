@@ -9,6 +9,7 @@ export class AppController {
 
   @Get()
   getHello(@ActiveUser() user): string {
+	console.log(user)
     return user;
   }
 }

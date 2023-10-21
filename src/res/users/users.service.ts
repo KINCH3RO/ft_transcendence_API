@@ -3,13 +3,25 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { provider } from '@prisma/client';
+import { ProviderUserData } from 'src/iam/interfaces/provider-data.interface';
+import { SignUpDto } from 'src/iam/authentication/dto/sign-up.dto/sign-up.dto';
 
 @Injectable()
 export class UsersService {
   constructor(private prisma: PrismaService) {}
 
-  create(createUserDto: CreateUserDto) {
-    return 'This action adds a new user';
+  create(signUpDto: SignUpDto) {
+    return this.prisma.user.create({
+      data: {
+        email: signUpDto.email,
+        fullName: signUpDto.fullname,
+        password: signUpDto.password,
+        userName: signUpDto.username,
+        profile: {
+          create: {},
+        },
+      },
+    });
   }
 
   findAll() {
@@ -45,20 +57,21 @@ export class UsersService {
     });
   }
 
-  createByProvider(providerData, providerType: provider) {
+  createByProvider(providerUserData: ProviderUserData, providerType: provider) {
     return this.prisma.user.create({
       data: {
-        email: providerData.email,
-        fullName: providerData.fullName,
-        userName: providerData.displayName,
+        email: providerUserData.email,
+        fullName: providerUserData.fullName,
+        userName: providerUserData.username,
+        avatarUrl: providerUserData.photo,
         profile: {
           create: {},
         },
         associatedAccounts: {
           create: {
-            email: providerData.email,
-            provider: 'GOOGLE',
-            providerID: providerData.id,
+            providerID: providerUserData.id,
+            email: providerUserData.email,
+            provider: providerUserData.providerType,
           },
         },
       },
