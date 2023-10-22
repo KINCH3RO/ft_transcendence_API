@@ -39,3 +39,4 @@ prisma/migrations
 
 #uploadFileIgnore
 public/upload/*
+test.http
