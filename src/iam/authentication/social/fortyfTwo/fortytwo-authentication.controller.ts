@@ -31,6 +31,6 @@ export class FortytwoAuthenticationController {
       request.user,
     );
     response.cookie('USER', access_token);
-    response.redirect('http://localhost:3000/');
+    response.redirect(process.env.FRONTEND_HOST);
   }
 }
