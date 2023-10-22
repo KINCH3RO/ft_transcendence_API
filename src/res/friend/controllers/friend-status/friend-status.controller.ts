@@ -6,6 +6,8 @@ import { UUID } from 'crypto';
 import { UpdateFriendStatusDto } from '../../dto/update-friend.dto';
 import { FriendRequestService } from '../../services/friend-request/friend-request.service';
 import { $Enums } from '@prisma/client';
+import { ActiveUser } from 'src/iam/authentication/decorators/active-user.decorator';
+import { ActiveUserData } from 'src/iam/interfaces/active-user.interface';
 
 @Controller('friendStatus')
 export class FriendStatusController {
@@ -22,82 +24,37 @@ export class FriendStatusController {
 		return this.friendStatusService.findAll();
 	}
 
+	@Get("list")
+	async findFriends(@ActiveUser() userData: ActiveUserData) {
+		return this.friendStatusService.getFriendsList(userData.sub);
+	}
 	@Get(':id')
 	async findOne(@Query("senderID") senderID: string, @Query("receiverID") receiverID: string) {
 		return this.friendStatusService.findOne(senderID, receiverID);
 	}
 
-	@Get("friendsList/:id")
-	async findFriends(@Param("id") userID: string) {
-		return this.friendStatusService.getFriendsList(userID);
-	}
-
-
-
 
 	@Patch("blockUser")
-	async blockUser(@Headers('userID') userID: string, @Body() updateFriendStatusDto: UpdateFriendStatusDto) {
-		let friendStatus: FriendStatus = await this.friendStatusService.findOne(updateFriendStatusDto.senderID, updateFriendStatusDto.receiverID);
-		if (!friendStatus)
-			throw new HttpException("Forbbiden", HttpStatus.FORBIDDEN);
-		const blockValue: $Enums.actionStatus = friendStatus.senderID == userID ? "SENDER" : "RECEIVER";
-		if (friendStatus.blockStatus == blockValue || friendStatus.blockStatus == "BOTH")
-			return new HttpException("User already Blocked", HttpStatus.ACCEPTED);
-		if (friendStatus.blockStatus == "NONE")
-			friendStatus.blockStatus = blockValue;
-		else if (friendStatus.blockStatus != blockValue)
-			friendStatus.blockStatus = "BOTH";
-		return this.friendStatusService.update(friendStatus);
+	async blockUser(@ActiveUser() activeUser: ActiveUserData, @Body() updateFriendStatusDto: UpdateFriendStatusDto) {
+		this.friendStatusService.blockUser(activeUser.sub, updateFriendStatusDto);
 	}
 
 	@Patch("muteUser")
-	async updateUser(@Headers('userID') userID: string, @Body() updateFriendStatusDto: UpdateFriendStatusDto) {
-		let friendStatus: FriendStatus = await this.friendStatusService.findOne(updateFriendStatusDto.senderID, updateFriendStatusDto.receiverID);
-		if (!friendStatus)
-			throw new HttpException("Forbbiden", HttpStatus.FORBIDDEN);
-		const muteValue: $Enums.actionStatus = friendStatus.senderID == userID ? "SENDER" : "RECEIVER";
-		if (friendStatus.muteStatus == muteValue || friendStatus.muteStatus == "BOTH")
-			return new HttpException("User already muteed", HttpStatus.ACCEPTED);
-		if (friendStatus.muteStatus == "NONE")
-			friendStatus.muteStatus = muteValue;
-		else if (friendStatus.muteStatus != muteValue)
-			friendStatus.muteStatus = "BOTH";
-		return this.friendStatusService.update(friendStatus);
+	async updateUser(@ActiveUser() activeUser: ActiveUserData, @Body() updateFriendStatusDto: UpdateFriendStatusDto) {
+		this.friendStatusService.muteUser(activeUser.sub, updateFriendStatusDto);
 	}
 
 
 
 	@Patch("unblockUser")
-	async unBlockUser(@Headers('userID') userID: string, @Body() updateFriendStatusDto: UpdateFriendStatusDto) {
-		let friendStatus: FriendStatus = await this.friendStatusService.findOne(updateFriendStatusDto.senderID, updateFriendStatusDto.receiverID);
-		if (!friendStatus)
-			throw new HttpException("Forbbiden", HttpStatus.FORBIDDEN);
-		const blockValue: $Enums.actionStatus = friendStatus.senderID == userID ? "RECEIVER" : "SENDER";
-
-		if (friendStatus.blockStatus == "NONE" || friendStatus.blockStatus == blockValue)
-			return new HttpException("User is not Blocked", HttpStatus.ACCEPTED);
-		if (friendStatus.blockStatus == "BOTH")
-			friendStatus.blockStatus = blockValue;
-		else if (friendStatus.blockStatus != blockValue)
-			friendStatus.blockStatus = "NONE";
-		return this.friendStatusService.update(friendStatus);
+	async unBlockUser(@ActiveUser() activeUser: ActiveUserData, @Body() updateFriendStatusDto: UpdateFriendStatusDto) {
+		this.friendStatusService.unblockUser(activeUser.sub, updateFriendStatusDto);
 	}
 
 
 	@Patch("unmuteUser")
-	async unmuteUser(@Headers('userID') userID: string, @Body() updateFriendStatusDto: UpdateFriendStatusDto) {
-		let friendStatus: FriendStatus = await this.friendStatusService.findOne(updateFriendStatusDto.senderID, updateFriendStatusDto.receiverID);
-		if (!friendStatus)
-			throw new HttpException("Forbbiden", HttpStatus.FORBIDDEN);
-		const muteValue: $Enums.actionStatus = friendStatus.senderID == userID ? "RECEIVER" : "SENDER";
-
-		if (friendStatus.muteStatus == "NONE" || friendStatus.muteStatus == muteValue)
-			return new HttpException("User is not muteed", HttpStatus.ACCEPTED);
-		if (friendStatus.muteStatus == "BOTH")
-			friendStatus.muteStatus = muteValue;
-		else if (friendStatus.muteStatus != muteValue)
-			friendStatus.muteStatus = "NONE";
-		return this.friendStatusService.update(friendStatus);
+	async unmuteUser(@ActiveUser() activeUser: ActiveUserData, @Body() updateFriendStatusDto: UpdateFriendStatusDto) {
+		this.friendStatusService.unmuteUser(activeUser.sub, updateFriendStatusDto);
 	}
 
 	@Delete()

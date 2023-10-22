@@ -5,10 +5,14 @@ import { FriendStatusService } from './services/friend-status/friend-status.serv
 import { FriendRequestService } from './services/friend-request/friend-request.service';
 import { PrismaModule } from 'src/prisma/prisma.module';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { friendRequests, user } from '@prisma/client';
 
 @Module({
 	controllers: [FriendRequestController, FriendStatusController],
 	providers: [FriendStatusService, FriendRequestService],
 	imports: [PrismaModule],
 })
-export class FriendModule { }
+export class FriendModule  {
+
+
+}

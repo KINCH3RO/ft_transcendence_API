@@ -1,17 +1,23 @@
 import { Controller, Headers, HttpException, HttpStatus, Query } from '@nestjs/common';
 import { Post, Body, Get, Patch, Delete, Param } from '@nestjs/common';
-import { CreateFriendRequestDto } from '../../dto/create-friend.dto';
+import { CreateFriendRequestDb, CreateFriendRequestDto } from '../../dto/create-friend.dto';
 import { FriendRequestService } from '../../services/friend-request/friend-request.service';
 import { FriendRequest } from '../../entities/friendRequest.entity';
 import { UUID } from 'crypto';
 import { query } from 'express';
+import { ActiveUser } from 'src/iam/authentication/decorators/active-user.decorator';
+import { ActiveUserData } from 'src/iam/interfaces/active-user.interface';
 @Controller('friendRequest')
 export class FriendRequestController {
 	constructor(private friendRequestService: FriendRequestService) { }
 	@Post()
-	async create(@Headers('userID') userID: string, @Body() createFriendRequestDto: CreateFriendRequestDto) {
+	async create(@ActiveUser() activeUser: ActiveUserData, @Body() createFriendRequestDto: CreateFriendRequestDto) {
 		const exception: HttpException = new HttpException("", HttpStatus.FORBIDDEN)
-		return this.friendRequestService.sendRequest(userID, createFriendRequestDto, exception);
+		return this.friendRequestService.sendRequest(activeUser.sub,
+			{
+				senderID: activeUser.sub,
+				receiverID: createFriendRequestDto.receiverID
+			}, exception);
 	}
 
 	@Get()
@@ -23,9 +29,9 @@ export class FriendRequestController {
 	async findOne(@Query("senderID") senderID: string, @Query("receiverID") receiverID: string) {
 		return this.friendRequestService.findOne({ senderID: senderID, receiverID: receiverID });
 	}
-	@Get('/receivedRequests/:id')
-	async getFriendRequests(@Headers('userID') userID: string) {
-		return this.friendRequestService.getFriendRequests(userID);
+	@Get('/received')
+	async getFriendRequests(@ActiveUser() sub: ActiveUserData) {
+		return this.friendRequestService.getFriendRequests(sub.sub);
 	}
 
 	@Delete()
@@ -34,7 +40,7 @@ export class FriendRequestController {
 	}
 
 	@Post("accept")
-	async acceptRequest(@Body() createFriendRequestDto: CreateFriendRequestDto) {
+	async acceptRequest(@ActiveUser() activeUser: ActiveUserData, @Body() createFriendRequestDto: CreateFriendRequestDb) {
 		return this.friendRequestService.acceptRequest(createFriendRequestDto);
 	}
 }

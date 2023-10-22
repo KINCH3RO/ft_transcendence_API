@@ -1,5 +1,5 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { CreateFriendRequestDto } from '../../dto/create-friend.dto';
+import {  CreateFriendRequestDb } from '../../dto/create-friend.dto';
 import { UpdateFriendRequestDto } from '../../dto/update-friend.dto';
 import { FriendRequest } from '../../entities/friendRequest.entity';
 import { friendRequests } from '@prisma/client';
@@ -14,9 +14,9 @@ export class FriendRequestService {
 	}
 
 
-	async create(createFriendRequestDto: CreateFriendRequestDto): Promise<FriendRequest> {
+	async create(createFriendRequestDb: CreateFriendRequestDb): Promise<FriendRequest> {
 		return this.prismaService.friendRequests.create({
-			data: createFriendRequestDto
+			data: createFriendRequestDb
 		})
 
 	}
@@ -48,36 +48,36 @@ export class FriendRequestService {
 			})
 	}
 
-	findOne(createFriendRequestDto: CreateFriendRequestDto): Promise<FriendRequest> {
+	findOne(createFriendRequestDb: CreateFriendRequestDb): Promise<FriendRequest> {
 		return this.prismaService.friendRequests.findFirst({
 			where:
 			{
 				OR: [
 					{
-						receiverID: createFriendRequestDto.receiverID,
-						senderID: createFriendRequestDto.senderID
+						receiverID: createFriendRequestDb.receiverID,
+						senderID: createFriendRequestDb.senderID
 					}
 
 					, {
-						receiverID: createFriendRequestDto.senderID,
-						senderID: createFriendRequestDto.receiverID
+						receiverID: createFriendRequestDb.senderID,
+						senderID: createFriendRequestDb.receiverID
 					}
 				]
 			}
 		})
 	}
 
-	acceptRequest(createFriendRequestDto: CreateFriendRequestDto): Promise<[FriendStatus, any]> {
+	acceptRequest(createFriendRequestDb: CreateFriendRequestDb): Promise<[FriendStatus, any]> {
 		return this.prismaService.$transaction(
 			[
-				this.prismaService.friendStatus.create({ data: createFriendRequestDto }),
+				this.prismaService.friendStatus.create({ data: createFriendRequestDb }),
 				this.prismaService.friendRequests.deleteMany(
 					{
 						where:
 						{
 							OR: [
-								{ senderID: createFriendRequestDto.senderID, receiverID: createFriendRequestDto.receiverID },
-								{ receiverID: createFriendRequestDto.senderID, senderID: createFriendRequestDto.receiverID },
+								{ senderID: createFriendRequestDb.senderID, receiverID: createFriendRequestDb.receiverID },
+								{ receiverID: createFriendRequestDb.senderID, senderID: createFriendRequestDb.receiverID },
 							]
 						}
 					})
@@ -86,12 +86,12 @@ export class FriendRequestService {
 	}
 
 
-	async sendRequest(userID: string, createFriendRequestDto: CreateFriendRequestDto, Exception: WsException | HttpException) {
-		const friendReq: FriendRequest = await this.findOne(createFriendRequestDto);
+	async sendRequest(userID: string, createFriendRequestDb: CreateFriendRequestDb, Exception: WsException | HttpException) {
+		const friendReq: FriendRequest = await this.findOne(createFriendRequestDb);
 		if (friendReq != null && friendReq.senderID != userID)
-			return this.acceptRequest(createFriendRequestDto);
+			return this.acceptRequest(createFriendRequestDb);
 		else if (friendReq)
 			throw Exception;
-		return this.create(createFriendRequestDto);
+		return this.create(createFriendRequestDb);
 	}
 }

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateFriendRequestDto, CreateFriendStatusDto } from '../../dto/create-friend.dto';
 import { UpdateFriendStatusDto } from '../../dto/update-friend.dto';
 import { FriendStatus } from '../../entities/friendStatus.entity';
@@ -60,11 +60,25 @@ export class FriendStatusService {
 
 
 
-	getFriendsList(userID: string): Promise<friendStatus[]> {
-		return this.prismaService.friendStatus.findMany({
+	async getFriendsList(userID: string): Promise<friendStatus[]> {
+		const friends: friendStatus[] = await this.prismaService.friendStatus.findMany({
 			include: {
-				sender: true,
-				receiver: true
+				sender: {
+					select:
+					{
+						avatarUrl: true,
+						userName: true,
+						id: true,
+					}
+				},
+				receiver: {
+					select:
+					{
+						avatarUrl: true,
+						userName: true,
+						id: true,
+					}
+				}
 			},
 			where: {
 
@@ -75,7 +89,25 @@ export class FriendStatusService {
 					]
 			}
 		})
+
+		return friends.map((data: FriendStatus) => {
+			let baseData = {
+				blockStatus: data.blockStatus,
+				muteStatus: data.muteStatus,
+				receiverID: data.receiverID,
+				senderID: data.senderID,
+			}
+
+			if (userID != data.receiverID)
+				baseData["friend"] = data.receiver;
+			if (userID != data.senderID)
+				baseData["friend"] = data.sender;
+			baseData["sender"] = (userID == data.senderID)
+			return baseData;
+		});
+
 	}
+
 
 	async blockUser(userID: string, updateFriendStatusDto: UpdateFriendStatusDto) {
 		let friendStatus: FriendStatus = await this.findOne(updateFriendStatusDto.senderID, updateFriendStatusDto.receiverID);
@@ -94,7 +126,8 @@ export class FriendStatusService {
 	async unblockUser(userID: string, updateFriendStatusDto: UpdateFriendStatusDto) {
 		let friendStatus: FriendStatus = await this.findOne(updateFriendStatusDto.senderID, updateFriendStatusDto.receiverID);
 		if (!friendStatus)
-			throw new WsException("Forbbiden")
+			throw new HttpException("Forbbiden", HttpStatus.FORBIDDEN);
+
 		const blockValue: $Enums.actionStatus = friendStatus.senderID == userID ? "RECEIVER" : "SENDER";
 
 		if (friendStatus.blockStatus == "NONE" || friendStatus.blockStatus == blockValue)
@@ -124,9 +157,8 @@ export class FriendStatusService {
 	async unmuteUser(userID: string, updateFriendStatusDto: UpdateFriendStatusDto) {
 		let friendStatus: FriendStatus = await this.findOne(updateFriendStatusDto.senderID, updateFriendStatusDto.receiverID);
 		if (!friendStatus)
-			throw new WsException("Forbbiden")
+			throw new HttpException("Forbbiden", HttpStatus.FORBIDDEN);
 		const muteValue: $Enums.actionStatus = friendStatus.senderID == userID ? "RECEIVER" : "SENDER";
-
 		if (friendStatus.muteStatus == "NONE" || friendStatus.muteStatus == muteValue)
 			return new WsException("User is not mutee=d");
 		if (friendStatus.muteStatus == "BOTH")

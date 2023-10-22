@@ -4,16 +4,25 @@ import { UUID } from "crypto";
 
 
 export class CreateFriendRequestDto {
+
 	@IsUUID()
-	senderID : string;
-	@IsUUID()
-	receiverID : string;
+	receiverID: string;
+}
+
+export interface CreateFriendRequestDb {
+	senderID: string;
+	receiverID: string;
+
 }
 
 export class CreateFriendStatusDto {
 	@IsUUID()
-	senderID : string;
+	senderID: string;
 	@IsUUID()
-	receiverID : string;
+	receiverID: string;
 
 }
+
+
+
+
