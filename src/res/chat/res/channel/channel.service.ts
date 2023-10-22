@@ -1,8 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, Injectable } from '@nestjs/common';
 import { CreateChannelDto } from './dto/create-channel.dto';
 import { UpdateChannelDto } from './dto/update-channel.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { HashingService } from 'src/iam/hashing/hashing.service';
+import { channelUser } from '@prisma/client';
 
 @Injectable()
 export class ChannelService {
@@ -51,19 +52,32 @@ export class ChannelService {
     });
   }
 
-  remove(id: string) {
+  async remove(userId: string, channelId: string) {
+    const actor: channelUser = await this.prisma.channelUser.findUnique({
+      where: { userID_channelID: { channelID: channelId, userID: userId } },
+    })
+
+    if (!actor && actor.role != 'OWNER')
+      throw new HttpException('nice try', 500);
+
     const deleteMessages = this.prisma.message.deleteMany({
-      where: { channelID: id },
+      where: { channelID: channelId },
     });
     const deleteUsers = this.prisma.channelUser.deleteMany({
-      where: { channelID: id },
+      where: { channelID: channelId },
     });
-    const deleteChannel = this.prisma.channel.delete({ where: { id } });
+    const deleteChannel = this.prisma.channel.delete({ where: { id: channelId } });
 
     return this.prisma.$transaction([
       deleteMessages,
       deleteUsers,
       deleteChannel,
     ]);
+  }
+
+  findChannelByName(name: string) {
+    return this.prisma.channel.findMany({
+      where: { name: { startsWith: name, mode: 'insensitive' } },
+    });
   }
 }
