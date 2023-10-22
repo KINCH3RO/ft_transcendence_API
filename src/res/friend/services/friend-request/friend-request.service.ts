@@ -1,15 +1,16 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import {  CreateFriendRequestDb } from '../../dto/create-friend.dto';
+import { CreateFriendRequestDb } from '../../dto/create-friend.dto';
 import { UpdateFriendRequestDto } from '../../dto/update-friend.dto';
 import { FriendRequest } from '../../entities/friendRequest.entity';
-import { friendRequests } from '@prisma/client';
+import { friendRequests, friendStatus } from '@prisma/client';
 import { UUID } from 'crypto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { FriendStatus } from '../../entities/friendStatus.entity';
 import { WsException } from '@nestjs/websockets';
+import { FriendStatusService } from '../friend-status/friend-status.service';
 @Injectable()
 export class FriendRequestService {
-	constructor(private prismaService: PrismaService) {
+	constructor(private prismaService: PrismaService, private friendStatusService: FriendStatusService) {
 
 	}
 
@@ -86,12 +87,17 @@ export class FriendRequestService {
 	}
 
 
-	async sendRequest(userID: string, createFriendRequestDb: CreateFriendRequestDb, Exception: WsException | HttpException) {
+	async sendRequest(userID: string, createFriendRequestDb: CreateFriendRequestDb) {
+		const friendStatus: friendStatus = await this.friendStatusService.findOne(createFriendRequestDb.senderID, createFriendRequestDb.senderID)
+		if (createFriendRequestDb.senderID == createFriendRequestDb.receiverID)
+			throw new HttpException("", HttpStatus.FORBIDDEN);
+		if (friendStatus)
+			throw new HttpException("", HttpStatus.FORBIDDEN);
 		const friendReq: FriendRequest = await this.findOne(createFriendRequestDb);
 		if (friendReq != null && friendReq.senderID != userID)
 			return this.acceptRequest(createFriendRequestDb);
 		else if (friendReq)
-			throw Exception;
+			throw new HttpException("", HttpStatus.FORBIDDEN);
 		return this.create(createFriendRequestDb);
 	}
 }

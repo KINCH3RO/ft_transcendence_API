@@ -12,12 +12,12 @@ export class FriendRequestController {
 	constructor(private friendRequestService: FriendRequestService) { }
 	@Post()
 	async create(@ActiveUser() activeUser: ActiveUserData, @Body() createFriendRequestDto: CreateFriendRequestDto) {
-		const exception: HttpException = new HttpException("", HttpStatus.FORBIDDEN)
+
 		return this.friendRequestService.sendRequest(activeUser.sub,
 			{
 				senderID: activeUser.sub,
 				receiverID: createFriendRequestDto.receiverID
-			}, exception);
+			});
 	}
 
 	@Get()

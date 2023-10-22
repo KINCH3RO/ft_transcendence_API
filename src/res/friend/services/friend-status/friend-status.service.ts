@@ -13,7 +13,7 @@ import { WsException } from '@nestjs/websockets';
 export class FriendStatusService {
 
 
-	constructor(private prismaService: PrismaService, private friendRequestService: FriendRequestService) { }
+	constructor(private prismaService: PrismaService) { }
 
 	create(createFriendStatusDto: CreateFriendStatusDto): Promise<FriendStatus> {
 		return this.prismaService.friendStatus.create({ data: createFriendStatusDto })
