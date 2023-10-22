@@ -10,8 +10,8 @@ generator client {
 model user {
     id                 String              @id @default(uuid())
     userName           String              @unique
-    email              String              @unique
-    fullName           String
+    email              String?              @unique
+    fullName           String?
     password           String?
     verifiedAt         DateTime?
     onlineStatus       Boolean             @default(false)
@@ -38,10 +38,11 @@ model user {
 
 model associatedAccount {
     id       String   @id @default(uuid())
-    provider provider
     user     user     @relation(name: "associatedAccountToUser", fields: [userID], references: [id])
     userID   String
-    email    String
+    provider provider
+    email    String?
+	providerID String
 }
 
 model profile {
