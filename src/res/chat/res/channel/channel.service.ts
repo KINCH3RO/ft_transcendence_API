@@ -77,7 +77,7 @@ export class ChannelService {
 
   findChannelByName(name: string) {
     return this.prisma.channel.findMany({
-      where: { name: { startsWith: name, mode: 'insensitive' } },
+      where: { name: { startsWith: name, mode: 'insensitive' }, visibility: { not: 'PRIVATE' } },
     });
   }
 }
