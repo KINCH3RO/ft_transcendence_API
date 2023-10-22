@@ -77,4 +77,16 @@ export class UsersService {
       },
     });
   }
+
+  findByName(name: string) {
+    return this.prisma.user.findMany({
+      where: {
+        userName: {
+          startsWith: name,
+		  mode: 'insensitive'
+        },
+      },
+      take: 20,
+    });
+  }
 }

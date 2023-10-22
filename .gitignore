@@ -39,4 +39,6 @@ prisma/migrations
 
 #uploadFileIgnore
 public/upload/*
+
 test.http
+docker-compose.yml
