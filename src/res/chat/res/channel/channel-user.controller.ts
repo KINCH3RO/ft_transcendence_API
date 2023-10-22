@@ -1,13 +1,14 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
 import { ChannelUserService } from './channel-user.service';
 import { UpdateChannelUserDto } from './dto/update-channelUser.dto';
 import { CreateChannelUserDto } from './dto/create-channelUser.dto';
 import { ActiveUser } from 'src/iam/authentication/decorators/active-user.decorator';
 import { ActiveUserData } from 'src/iam/interfaces/active-user.interface';
+import { JoinChannelDto } from './dto/join-channel.dto';
 
 @Controller('channelUser')
 export class ChannelUserController {
-	constructor(private readonly channelUserService: ChannelUserService) {}
+  constructor(private readonly channelUserService: ChannelUserService) {}
 
   @Get()
   findOne(@Body() createChannelUserDto: CreateChannelUserDto) {
@@ -17,6 +18,15 @@ export class ChannelUserController {
   @Post()
   create(@Body() createChannelUserDto: CreateChannelUserDto) {
     return this.channelUserService.create(createChannelUserDto);
+  }
+
+  @Get(':channelId')
+  joinChannel(
+    @ActiveUser() user: ActiveUserData,
+    @Param('channelId') channelId: string,
+    @Body() joinChannelDto: JoinChannelDto,
+  ) {
+    return this.channelUserService.joinChannel(user.sub, channelId, joinChannelDto)
   }
 
   @Patch()
@@ -33,6 +43,4 @@ export class ChannelUserController {
   kick(@ActiveUser() user: ActiveUserData, @Body() targetChannelUserDto: CreateChannelUserDto) {
     return this.channelUserService.kick(user.sub, targetChannelUserDto);
   }
-
-
 }

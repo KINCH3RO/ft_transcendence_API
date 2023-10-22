@@ -41,3 +41,6 @@ prisma/migrations
 test.http
 room.http
 channelUser.http
+
+# tmps
+my_space

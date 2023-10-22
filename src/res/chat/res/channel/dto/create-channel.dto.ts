@@ -10,8 +10,7 @@ export class CreateChannelDto {
 	name: string;
 
 	@MinLength(8)
-	@IsNotEmpty()
-	password: string;
+	password?: string;
 
 	@IsNotEmpty()
 	visibility: $Enums.channelVisibility;

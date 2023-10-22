@@ -1,12 +1,18 @@
-import { HttpException, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { UpdateChannelUserDto } from './dto/update-channelUser.dto';
 import { CreateChannelUserDto } from './dto/create-channelUser.dto';
-import { $Enums } from '@prisma/client';
+import { $Enums, channel } from '@prisma/client';
+import { JoinChannelDto } from './dto/join-channel.dto';
+import { HashingService } from 'src/iam/hashing/hashing.service';
+import { join } from 'path';
 
 @Injectable()
 export class ChannelUserService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private hashingService: HashingService,
+  ) {}
 
   create(createChannelUserDto: CreateChannelUserDto) {
     return this.prisma.channelUser.create({
@@ -95,5 +101,39 @@ export class ChannelUserService {
     )
       throw new HttpException('nice try', 500);
     return this.remove(targetChannelUserDto);
+  }
+
+  async joinChannel(
+    userId: string,
+    channelId: string,
+    joinChannelDto: JoinChannelDto,
+  ) {
+
+    const targetChannel: channel = await this.prisma.channel.findUnique({
+      where: { id: channelId },
+    });
+
+    if (targetChannel.visibility == 'PROTECTED')
+    {
+      if (joinChannelDto.password == undefined)
+        throw new HttpException('This channel Protected', HttpStatus.FORBIDDEN);
+
+      const validPass = await this.hashingService.compare(joinChannelDto.password, targetChannel.password)
+
+      if (!validPass)
+        throw new HttpException('Invalid password', HttpStatus.FORBIDDEN);
+    }
+
+    if (targetChannel.visibility == 'PRIVATE')
+    {
+      return 'where is the link?'
+    }
+
+    const createChannelUserDto: CreateChannelUserDto = {
+      channelID: channelId,
+      userID: userId,
+    };
+
+    return this.create(createChannelUserDto);
   }
 }

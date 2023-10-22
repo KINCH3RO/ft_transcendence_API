@@ -1,4 +1,4 @@
-import { HttpException, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateChannelDto } from './dto/create-channel.dto';
 import { UpdateChannelDto } from './dto/update-channel.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -38,7 +38,7 @@ export class ChannelService {
     return this.prisma.channel.findUnique({ where: { id } });
   }
 
-  update(id: string, updateChannelDto: UpdateChannelDto) {
+  async update(id: string, updateChannelDto: UpdateChannelDto) {
     return this.prisma.channel.update({
       where: {
         id,
@@ -46,7 +46,7 @@ export class ChannelService {
       data: {
         imageUrl: updateChannelDto.imageUrl,
         name: updateChannelDto.name,
-        password: updateChannelDto.password,
+        password: await this.hashingService.hash(updateChannelDto.password),
         visibility: updateChannelDto.visibility,
       },
     });
@@ -58,7 +58,7 @@ export class ChannelService {
     })
 
     if (!actor && actor.role != 'OWNER')
-      throw new HttpException('nice try', 500);
+      throw new HttpException('Nice try', HttpStatus.FORBIDDEN);
 
     const deleteMessages = this.prisma.message.deleteMany({
       where: { channelID: channelId },
