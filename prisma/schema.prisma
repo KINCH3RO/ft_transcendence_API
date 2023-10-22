@@ -10,13 +10,13 @@ generator client {
 model user {
     id                 String              @id @default(uuid())
     userName           String              @unique
-    email              String              @unique
-    fullName           String
+    email              String?              @unique
+    fullName           String?
     password           String?
     verifiedAt         DateTime?
     onlineStatus       Boolean             @default(false)
     avatarUrl          String              @default("")
-    bannerUrl          String			   @default("")
+    bannerUrl          String              @default("")
     createdAt          DateTime            @default(now())
     updatedAt          DateTime            @updatedAt
     associatedAccounts associatedAccount[] @relation(name: "associatedAccountToUser")
@@ -38,19 +38,20 @@ model user {
 
 model associatedAccount {
     id       String   @id @default(uuid())
-    provider provider
     user     user     @relation(name: "associatedAccountToUser", fields: [userID], references: [id])
     userID   String
-    email    String
+    provider provider
+    email    String?
+	providerID String
 }
 
 model profile {
     id     String @id @default(uuid())
     user   user?  @relation(name: "profileToUser")
-    rating Int  @default(0)
-    level  Int  @default(0)
-    xp     Int  @default(0)
-    coins  Int  @default(0)
+    rating Int    @default(0)
+    level  Int    @default(0)
+    xp     Int    @default(0)
+    coins  Int    @default(0)
 }
 
 model matches {
@@ -151,6 +152,8 @@ model attachment {
     messageID Int      @unique
     name      String
     url       String
+    size      Int
+    mimeType  String
     type      fileType
 }
 
