@@ -18,7 +18,7 @@ import { ConfigModule } from '@nestjs/config';
   imports: [
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'public'),
-      renderPath: '',
+      renderPath: 'none',
     }),
     ProfileModule,
     FriendModule,

@@ -5,6 +5,7 @@ import {
   Req,
   HttpCode,
   HttpStatus,
+  Res,
 } from '@nestjs/common';
 import { GoogleOAuthGuard } from './google-oauth.guard';
 import { Public } from '../../decorators/public.decorator';
@@ -25,7 +26,11 @@ export class GoogleAuthenticationController {
   @Get('redirect')
   @HttpCode(HttpStatus.OK)
   @UseGuards(GoogleOAuthGuard)
-  handleRedirect(@Req() request) {
-    return this.providerAuthenticationService.signIn(request.user);
+  async handleRedirect(@Req() request, @Res({ passthrough: true }) response) {
+    const { access_token } = await this.providerAuthenticationService.signIn(
+      request.user,
+    );
+    response.cookie('USER', access_token);
+    response.redirect('http://localhost:3000/');
   }
 }

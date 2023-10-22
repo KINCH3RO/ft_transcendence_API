@@ -5,6 +5,7 @@ import {
   Req,
   HttpCode,
   HttpStatus,
+  Res,
 } from '@nestjs/common';
 import { Public } from '../../decorators/public.decorator';
 import { GithubOAuthGuard } from './github-oauth.guard';
@@ -25,7 +26,11 @@ export class GithubAuthenticationController {
   @Get('redirect')
   @HttpCode(HttpStatus.OK)
   @UseGuards(GithubOAuthGuard)
-  handleRedirect(@Req() request) {
-    return this.providerAuthenticationService.signIn(request.user);
+  async handleRedirect(@Req() request, @Res({ passthrough: true }) response) {
+    const { access_token } = await this.providerAuthenticationService.signIn(
+      request.user,
+    );
+    response.cookie('USER', access_token);
+    response.redirect('http://localhost:3000/');
   }
 }

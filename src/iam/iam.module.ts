@@ -18,7 +18,7 @@ import { GithubStrategy } from './authentication/social/github/github.strategy';
 import { FortytwoAuthenticationController } from './authentication/social/fortyfTwo/fortytwo-authentication.controller';
 import { FortyTwoStrategy } from './authentication/social/fortyfTwo/fortytwo.strategy';
 import { FortytwoOAuthGuard } from './authentication/social/fortyfTwo/fortytwo-oauth.guard';
-console.log(jwtConstants.secret);
+
 
 @Module({
   providers: [

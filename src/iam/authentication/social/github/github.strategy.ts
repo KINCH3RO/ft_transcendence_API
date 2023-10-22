@@ -23,10 +23,9 @@ export class GithubStrategy extends PassportStrategy(Strategy, 'github') {
       username: profile.username,
       photo: profile.photos[0].value,
       fullName: null,
-      email: null, 
+      email: null,
       providerType: provider.GITHUB,
     };
-	console.log(user)
     done(null, user);
   }
 }

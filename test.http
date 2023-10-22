@@ -7,10 +7,10 @@ POST http://localhost:3001/authentication/signUp HTTP/1.1
 Content-Type: application/json
 
 {
-	"username" : "usertest23",
+	"username" : "rachidXXXX",
 	"password" : "passwordpassword",
-	"email" : "hat8232022@gmail.com",
-    "fullname": "Hatim Rachid1"
+	"email" : "rash@gmail.com",
+    "fullname": "Rachid BEN"
 }
 
 ### 
@@ -24,10 +24,9 @@ Content-Type: application/json
 
 ### 
 GET http://localhost:3001/ HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJiZGI2OTRhYi01MTc0LTRkYzgtOWZkMy1lMDBjNWVlMzMyNWIiLCJ1c2VybmFtZSI6InVzZXJ0ZXN0MjMiLCJpYXQiOjE2OTc4MDQyNjJ9.kr5s5shHVj3TaqC95lmbmoz22Ysj7EvBZkJqma07tKQ
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI3OTUzODZkYi1mZDAzLTRmYzgtOTZmZi00Njk4NWQxYWEwNzUiLCJ1c2VybmFtZSI6InJhY2hpZFhYWFgiLCJpYXQiOjE2OTc5MTM5MDN9.9n5RHghvmoZiAteLmExKzV73Yb6YBs2lRcCnVYIZaWg
 
 
 ###
 GET https://api.github.com/user/emails HTTP/1.1
 Authorization: Bearer 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
-
