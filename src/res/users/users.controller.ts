@@ -20,7 +20,10 @@ export class UsersController {
   findAll() {
     return this.usersService.findAll();
   }
-
+  @Get('/current')
+  findActive(@ActiveUser() user: ActiveUserData) {
+    return this.usersService.findOne(user.sub);
+  }
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.usersService.findOne(id);
@@ -40,11 +43,4 @@ export class UsersController {
   findByName(@Param('name') name: string) {
     return this.usersService.findByName(name);
   }
-
-//   @Get('/active')
-//   findActive(@ActiveUser() user: ActiveUserData) {
-//     // return this.usersService.findOne(user.sub);
-// 	console.log("aaa")
-// 	return "hello"
-//   }
 }
