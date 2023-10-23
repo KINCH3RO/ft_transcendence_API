@@ -41,10 +41,10 @@ export class UsersController {
     return this.usersService.findByName(name);
   }
 
-  @Get('/active')
-  findActive(@ActiveUser() user: ActiveUserData) {
-    // return this.usersService.findOne(user.sub);
-	console.log("aaa")
-	return "hello"
-  }
+//   @Get('/active')
+//   findActive(@ActiveUser() user: ActiveUserData) {
+//     // return this.usersService.findOne(user.sub);
+// 	console.log("aaa")
+// 	return "hello"
+//   }
 }
