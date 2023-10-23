@@ -20,13 +20,12 @@ export class ChannelUserController {
     return this.channelUserService.create(createChannelUserDto);
   }
 
-  @Get(':channelId')
+  @Post('joinChannel')
   joinChannel(
     @ActiveUser() user: ActiveUserData,
-    @Param('channelId') channelId: string,
     @Body() joinChannelDto: JoinChannelDto,
   ) {
-    return this.channelUserService.joinChannel(user.sub, channelId, joinChannelDto)
+    return this.channelUserService.joinChannel(user.sub, joinChannelDto)
   }
 
   @Patch()
@@ -35,12 +34,23 @@ export class ChannelUserController {
   }
 
   @Patch("ban")
-  ban(@ActiveUser() user: ActiveUserData, @Body() targetChannelUserDto: CreateChannelUserDto) {
-    return this.channelUserService.ban(user.sub, targetChannelUserDto, "BANNED");
+  ban(@ActiveUser() user: ActiveUserData, @Body() targetChannelUserDto: UpdateChannelUserDto) {
+    return this.channelUserService.event(user.sub, targetChannelUserDto, "BANNED");
+  }
+
+
+  @Patch("mute")
+  mute(@ActiveUser() user: ActiveUserData, @Body() targetChannelUserDto: UpdateChannelUserDto) {
+    return this.channelUserService.event(user.sub, targetChannelUserDto, "MUTED");
+  }
+
+  @Patch("free")
+  free(@ActiveUser() user: ActiveUserData, @Body() targetChannelUserDto: UpdateChannelUserDto) {
+    return this.channelUserService.event(user.sub, targetChannelUserDto, "FREE");
   }
 
   @Delete("kick")
-  kick(@ActiveUser() user: ActiveUserData, @Body() targetChannelUserDto: CreateChannelUserDto) {
+  kick(@ActiveUser() user: ActiveUserData, @Body() targetChannelUserDto: UpdateChannelUserDto) {
     return this.channelUserService.kick(user.sub, targetChannelUserDto);
   }
 }

@@ -38,10 +38,10 @@ export class ChannelService {
     return this.prisma.channel.findUnique({ where: { id } });
   }
 
-  async update(id: string, updateChannelDto: UpdateChannelDto) {
+  async update(updateChannelDto: UpdateChannelDto) {
     return this.prisma.channel.update({
       where: {
-        id,
+        id: updateChannelDto.id
       },
       data: {
         imageUrl: updateChannelDto.imageUrl,
@@ -52,21 +52,21 @@ export class ChannelService {
     });
   }
 
-  async remove(userId: string, channelId: string) {
+  async remove(userId: string, removeChannelDto: UpdateChannelDto) {
     const actor: channelUser = await this.prisma.channelUser.findUnique({
-      where: { userID_channelID: { channelID: channelId, userID: userId } },
+      where: { userID_channelID: { channelID: removeChannelDto.id, userID: userId } },
     })
 
     if (!actor && actor.role != 'OWNER')
       throw new HttpException('Nice try', HttpStatus.FORBIDDEN);
 
     const deleteMessages = this.prisma.message.deleteMany({
-      where: { channelID: channelId },
+      where: { channelID: removeChannelDto.id },
     });
     const deleteUsers = this.prisma.channelUser.deleteMany({
-      where: { channelID: channelId },
+      where: { channelID: removeChannelDto.id },
     });
-    const deleteChannel = this.prisma.channel.delete({ where: { id: channelId } });
+    const deleteChannel = this.prisma.channel.delete({ where: { id: removeChannelDto.id } });
 
     return this.prisma.$transaction([
       deleteMessages,

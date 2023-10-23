@@ -2,10 +2,9 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { UpdateChannelUserDto } from './dto/update-channelUser.dto';
 import { CreateChannelUserDto } from './dto/create-channelUser.dto';
-import { $Enums, channel } from '@prisma/client';
+import { $Enums } from '@prisma/client';
 import { JoinChannelDto } from './dto/join-channel.dto';
 import { HashingService } from 'src/iam/hashing/hashing.service';
-import { join } from 'path';
 
 @Injectable()
 export class ChannelUserService {
@@ -41,12 +40,13 @@ export class ChannelUserService {
       where: {
         userID_channelID: {
           channelID: updateChannelUserDto.channelID,
-          userID: updateChannelUserDto.userID,
+          userID: updateChannelUserDto.userID
         },
       },
       data: {
         role: updateChannelUserDto.role,
         status: updateChannelUserDto.status,
+        duration: updateChannelUserDto.duration
       },
     });
   }
@@ -57,18 +57,20 @@ export class ChannelUserService {
     });
   }
 
-  async ban(
+  async event(
     userID: string,
-    targetChannelUserDto: CreateChannelUserDto,
-    status: $Enums.channelStatus,
+    targetChannelUserDto: UpdateChannelUserDto,
+    status: $Enums.channelStatus
   ) {
     let actorChannelUserDto: CreateChannelUserDto = {
       channelID: targetChannelUserDto.channelID,
       userID: userID,
     };
 
-    const promises = [];
+    let duration = targetChannelUserDto.duration;
+    duration = duration != undefined ? duration : BigInt(0);
 
+    const promises = [];
     promises.push(this.findOne(actorChannelUserDto));
     promises.push(this.findOne(targetChannelUserDto));
 
@@ -76,7 +78,10 @@ export class ChannelUserService {
 
     if (target.role != 'OWNER' && actor.role == 'OWNER') target.status = status;
     else if (actor.role == 'ADMINISTRATOR' && target.role == 'MEMBER')
+    {
       target.status = status;
+      target.duration = duration ? BigInt(Date.now()) + duration : duration;
+    }
     else throw new HttpException('nice try', 500);
 
     return this.update(target);
@@ -103,34 +108,43 @@ export class ChannelUserService {
     return this.remove(targetChannelUserDto);
   }
 
-  async joinChannel(
-    userId: string,
-    channelId: string,
-    joinChannelDto: JoinChannelDto,
-  ) {
+  async joinChannel(userId: string, joinChannelDto: JoinChannelDto) {
+    const promises = [];
+    const findChannelUserDto: CreateChannelUserDto = {
+      channelID: joinChannelDto.channelID,
+      userID: userId
+    }
 
-    const targetChannel: channel = await this.prisma.channel.findUnique({
-      where: { id: channelId },
-    });
+    promises.push(this.prisma.channel.findUnique({
+        where: { id: joinChannelDto.channelID },
+      }));
+    promises.push(this.findOne(findChannelUserDto));
 
-    if (targetChannel.visibility == 'PROTECTED')
-    {
+    const [targetChannel, targetChannelUser] = await Promise.all(promises);
+
+    if (targetChannel.visibility == 'PROTECTED') {
       if (joinChannelDto.password == undefined)
         throw new HttpException('This channel Protected', HttpStatus.FORBIDDEN);
 
-      const validPass = await this.hashingService.compare(joinChannelDto.password, targetChannel.password)
+      const validPass = await this.hashingService.compare(
+        joinChannelDto.password,
+        targetChannel.password,
+      );
 
       if (!validPass)
         throw new HttpException('Invalid password', HttpStatus.FORBIDDEN);
     }
 
-    if (targetChannel.visibility == 'PRIVATE')
-    {
-      return 'where is the link?'
+    if (targetChannel.visibility == 'PRIVATE') {
+      return 'where is the link?';
+    }
+
+    if (targetChannelUser.duration != 0 && targetChannel.duration > Date.now() ) {
+      throw new HttpException(`You are ${targetChannelUser.status}, Try again after ${targetChannel.duration - Date.now()}.`, HttpStatus.FORBIDDEN);
     }
 
     const createChannelUserDto: CreateChannelUserDto = {
-      channelID: channelId,
+      channelID: joinChannelDto.channelID,
       userID: userId,
     };
 
