@@ -6,11 +6,12 @@ import { FriendRequestService } from './services/friend-request/friend-request.s
 import { PrismaModule } from 'src/prisma/prisma.module';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { friendRequests, user } from '@prisma/client';
+import { WebSocketModule } from '../web-socket/web-socket.module';
 
 @Module({
 	controllers: [FriendRequestController, FriendStatusController],
 	providers: [FriendStatusService, FriendRequestService],
-	imports: [PrismaModule],
+	imports: [PrismaModule,WebSocketModule],
 })
 export class FriendModule  {
 

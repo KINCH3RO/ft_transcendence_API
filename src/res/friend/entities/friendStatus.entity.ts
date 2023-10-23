@@ -9,4 +9,7 @@ export class FriendStatus implements friendStatus {
 	sender?:user;
 	receiver?:user;
 
+	isSender?:boolean
+	friend?:user;
+
 }

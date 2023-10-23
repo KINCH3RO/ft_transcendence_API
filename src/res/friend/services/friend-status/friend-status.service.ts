@@ -8,12 +8,13 @@ import { FriendRequest } from '../../entities/friendRequest.entity';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { $Enums, friendStatus } from '@prisma/client';
 import { WsException } from '@nestjs/websockets';
+import { WebSocketService } from 'src/res/web-socket/web-socket.service';
 
 @Injectable()
 export class FriendStatusService {
 
 
-	constructor(private prismaService: PrismaService) { }
+	constructor(private prismaService: PrismaService, private webSocketService: WebSocketService) { }
 
 	create(createFriendStatusDto: CreateFriendStatusDto): Promise<FriendStatus> {
 		return this.prismaService.friendStatus.create({ data: createFriendStatusDto })
@@ -69,6 +70,7 @@ export class FriendStatusService {
 						avatarUrl: true,
 						userName: true,
 						id: true,
+						onlineStatus:true
 					}
 				},
 				receiver: {
@@ -77,6 +79,8 @@ export class FriendStatusService {
 						avatarUrl: true,
 						userName: true,
 						id: true,
+						onlineStatus:true
+
 					}
 				}
 			},
@@ -91,7 +95,7 @@ export class FriendStatusService {
 		})
 
 		return friends.map((data: FriendStatus) => {
-			let baseData = {
+			let baseData : FriendStatus = {
 				blockStatus: data.blockStatus,
 				muteStatus: data.muteStatus,
 				receiverID: data.receiverID,
@@ -102,7 +106,8 @@ export class FriendStatusService {
 				baseData["friend"] = data.receiver;
 			if (userID != data.senderID)
 				baseData["friend"] = data.sender;
-			baseData["sender"] = (userID == data.senderID)
+			baseData["isSender"] = (userID == data.senderID)
+			baseData["friend"].onlineStatus = this.webSocketService.isOnline(baseData["friend"].id)
 			return baseData;
 		});
 
