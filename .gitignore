@@ -37,6 +37,9 @@ prisma/migrations
 .env
 .vscode
 
+#uploadFileIgnore
+public/upload/*
+
 # http tests
 test.http
 room.http
