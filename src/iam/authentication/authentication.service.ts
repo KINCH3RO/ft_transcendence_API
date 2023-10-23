@@ -1,7 +1,4 @@
-import {
-  Injectable,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { HashingService } from '../hashing/hashing.service';
 import { SignUpDto } from './dto/sign-up.dto/sign-up.dto';
 import { SignInDto } from './dto/sign-in.dto/sign-in.dto';
@@ -30,7 +27,7 @@ export class AuthenticationService {
       user.password,
     );
     if (!user || !isEqual)
-      throw new UnauthorizedException({ message: 'wrong passowrd' });
+      throw new UnauthorizedException({ message: 'wrong password' });
     return this.tokenService.getJwtToken(user);
   }
 }
