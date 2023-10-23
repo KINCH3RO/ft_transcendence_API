@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { WebSocketGateway } from './web-socket.gateway';
+import { WebSocketGateway } from './chat.gateway';
 import { WebSocketService } from './web-socket.service';
 
 describe('WebSocketGateway', () => {

@@ -14,6 +14,7 @@ import { PrismaModule } from './prisma/prisma.module';
 import { MatchModule } from './res/match/match.module';
 import { ConfigModule } from '@nestjs/config';
 import { UploadModule } from './res/upload/upload.module';
+import { WebSocketModule } from './res/web-socket/web-socket.module';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { UploadModule } from './res/upload/upload.module';
     PrismaModule,
     ConfigModule.forRoot({ isGlobal: true }),
     UploadModule,
+	WebSocketModule
   ],
   controllers: [AppController],
   providers: [AppService],
