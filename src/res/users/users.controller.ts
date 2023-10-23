@@ -9,6 +9,8 @@ import {
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { ActiveUser } from 'src/iam/authentication/decorators/active-user.decorator';
+import { ActiveUserData } from 'src/iam/interfaces/active-user.interface';
 
 @Controller('users')
 export class UsersController {
@@ -38,4 +40,11 @@ export class UsersController {
   findByName(@Param('name') name: string) {
     return this.usersService.findByName(name);
   }
+
+//   @Get('/active')
+//   findActive(@ActiveUser() user: ActiveUserData) {
+//     // return this.usersService.findOne(user.sub);
+// 	console.log("aaa")
+// 	return "hello"
+//   }
 }
