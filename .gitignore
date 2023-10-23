@@ -35,3 +35,10 @@ lerna-debug.log*
 !.vscode/extensions.json
 prisma/migrations
 .env
+.vscode
+
+#uploadFileIgnore
+public/upload/*
+
+test.http
+docker-compose.yml

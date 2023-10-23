@@ -1,35 +1,35 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  ParseIntPipe,
+} from '@nestjs/common';
 import { AchievementService } from './achievement.service';
-import { CreateAchievementDto } from './dto/create-achievement.dto';
-import { UpdateAchievementDto } from './dto/update-achievement.dto';
-
+import { AssignAchievementDto } from './dto/assign-achievement.dto';
+import { ActiveUser } from 'src/iam/authentication/decorators/active-user.decorator';
+import { ActiveUserData } from 'src/iam/interfaces/active-user.interface';
 
 @Controller('achievement')
 export class AchievementController {
-  constructor(private readonly achievementService: AchievementService ) {}
+  constructor(private readonly achievementService: AchievementService) {}
 
   @Post()
-  create(@Body() createAchievementDto: CreateAchievementDto) {
-    return this.achievementService.create(createAchievementDto);
+  assign(
+    @ActiveUser() user: ActiveUserData,
+    @Body() assignAchievementDto: AssignAchievementDto,
+  ) {
+    return this.achievementService.assign(user, assignAchievementDto);
   }
 
-  @Get()
-  findAll() {
-    return this.achievementService.findAll();
+  @Get('user')
+  findAllUser(@ActiveUser() user: ActiveUserData) {
+    return this.achievementService.findAllUser(user);
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.achievementService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateAchievementDto: UpdateAchievementDto) {
-    return this.achievementService.update(+id, updateAchievementDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.achievementService.remove(+id);
+  findOne(@Param('id', ParseIntPipe) id: number) {
+    return this.achievementService.findOne(id);
   }
 }
