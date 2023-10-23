@@ -20,7 +20,7 @@ export class WebSocketService {
 		console.log(this.onlineUsers);
 	}
 
-	userDisconnected(token: string, socketID: string, callback: () => void = null) {
+	userDisconnected(token: string, socketID: string, callback: (userID:string) => void = null) {
 
 		console.log("disconnect")
 		let userID = "none";
@@ -37,7 +37,7 @@ export class WebSocketService {
 		if (this.onlineUsers[userID].length > 1)
 			this.onlineUsers[userID] = this.onlineUsers[userID].filter((id: string) => socketID != id)
 		else {
-			callback && callback();
+			callback && callback(userID);
 			delete this.onlineUsers[userID];
 		}
 		console.log(this.onlineUsers);
