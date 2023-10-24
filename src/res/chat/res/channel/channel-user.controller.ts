@@ -35,18 +35,18 @@ export class ChannelUserController {
 
   @Patch("ban")
   ban(@ActiveUser() user: ActiveUserData, @Body() targetChannelUserDto: UpdateChannelUserDto) {
-    return this.channelUserService.event(user.sub, targetChannelUserDto, "BANNED");
+    return this.channelUserService.channelAction(user.sub, targetChannelUserDto, "BANNED");
   }
 
 
   @Patch("mute")
   mute(@ActiveUser() user: ActiveUserData, @Body() targetChannelUserDto: UpdateChannelUserDto) {
-    return this.channelUserService.event(user.sub, targetChannelUserDto, "MUTED");
+    return this.channelUserService.channelAction(user.sub, targetChannelUserDto, "MUTED");
   }
 
   @Patch("free")
   free(@ActiveUser() user: ActiveUserData, @Body() targetChannelUserDto: UpdateChannelUserDto) {
-    return this.channelUserService.event(user.sub, targetChannelUserDto, "FREE");
+    return this.channelUserService.channelAction(user.sub, targetChannelUserDto, "FREE");
   }
 
   @Delete("kick")

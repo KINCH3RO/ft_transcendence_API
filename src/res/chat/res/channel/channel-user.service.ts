@@ -40,13 +40,13 @@ export class ChannelUserService {
       where: {
         userID_channelID: {
           channelID: updateChannelUserDto.channelID,
-          userID: updateChannelUserDto.userID
+          userID: updateChannelUserDto.userID,
         },
       },
       data: {
         role: updateChannelUserDto.role,
         status: updateChannelUserDto.status,
-        duration: updateChannelUserDto.duration
+        duration: updateChannelUserDto.duration,
       },
     });
   }
@@ -57,32 +57,30 @@ export class ChannelUserService {
     });
   }
 
-  async event(
+  async channelAction(
     userID: string,
     targetChannelUserDto: UpdateChannelUserDto,
-    status: $Enums.channelStatus
+    status: $Enums.channelStatus,
   ) {
     let actorChannelUserDto: CreateChannelUserDto = {
       channelID: targetChannelUserDto.channelID,
       userID: userID,
     };
 
-    let duration = targetChannelUserDto.duration;
-    duration = duration != undefined ? duration : BigInt(0);
-
-    const promises = [];
-    promises.push(this.findOne(actorChannelUserDto));
-    promises.push(this.findOne(targetChannelUserDto));
-
+    const duration = targetChannelUserDto.duration ?? BigInt(0);
+    const promises = [
+      this.findOne(actorChannelUserDto),
+      this.findOne(targetChannelUserDto),
+    ];
     const [actor, target] = await Promise.all(promises);
 
     if (target.role != 'OWNER' && actor.role == 'OWNER') target.status = status;
-    else if (actor.role == 'ADMINISTRATOR' && target.role == 'MEMBER')
-    {
+    else if (actor.role == 'ADMINISTRATOR' && target.role == 'MEMBER') {
       target.status = status;
-      target.duration = duration ? BigInt(Date.now()) + duration : duration;
-    }
-    else throw new HttpException('nice try', 500);
+      target.duration = duration
+        ? BigInt(Math.round(Date.now() / 1000)) + duration
+        : duration;
+    } else throw new HttpException('nice try', 500);
 
     return this.update(target);
   }
@@ -93,11 +91,10 @@ export class ChannelUserService {
       userID: userID,
     };
 
-    const promises = [];
-
-    promises.push(this.findOne(actorChannelUserDto));
-    promises.push(this.findOne(targetChannelUserDto));
-
+    const promises = [
+      this.findOne(actorChannelUserDto),
+      this.findOne(targetChannelUserDto),
+    ];
     const [actor, target] = await Promise.all(promises);
 
     if (
@@ -112,12 +109,14 @@ export class ChannelUserService {
     const promises = [];
     const findChannelUserDto: CreateChannelUserDto = {
       channelID: joinChannelDto.channelID,
-      userID: userId
-    }
+      userID: userId,
+    };
 
-    promises.push(this.prisma.channel.findUnique({
+    promises.push(
+      this.prisma.channel.findUnique({
         where: { id: joinChannelDto.channelID },
-      }));
+      }),
+    );
     promises.push(this.findOne(findChannelUserDto));
 
     const [targetChannel, targetChannelUser] = await Promise.all(promises);
@@ -139,8 +138,22 @@ export class ChannelUserService {
       return 'where is the link?';
     }
 
-    if (targetChannelUser.duration != 0 && targetChannel.duration > Date.now() ) {
-      throw new HttpException(`You are ${targetChannelUser.status}, Try again after ${targetChannel.duration - Date.now()}.`, HttpStatus.FORBIDDEN);
+    if (
+      Object.keys(targetChannelUser).length !== 0 &&
+      targetChannelUser.duration != 0 &&
+      targetChannelUser.duration > Date.now()
+    ) {
+      throw new HttpException(
+        `You are ${targetChannelUser.status}, Try again after ${
+          targetChannelUser.duration - Date.now()
+        }.`,
+        HttpStatus.FORBIDDEN,
+      );
+    }
+
+    if (Object.keys(targetChannelUser).length !== 0 && targetChannelUser.status == "BANNED") {
+      targetChannelUser.status = "FREE"
+      return targetChannelUser
     }
 
     const createChannelUserDto: CreateChannelUserDto = {

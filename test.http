@@ -9,29 +9,30 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIwNzE3YTU5N
 GET http://localhost:3001/users/list/m HTTP/1.1
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4ZWRiMDJjZS0yOGZhLTQ5NzItYWFlZS1hY2Y3NThhNjBmY2QiLCJ1c2VybmFtZSI6ImFub3RoZXJ1c2VyMTIzIiwiaWF0IjoxNjk3OTk5MjEzfQ.nP8__7GNTGK1YVjgQrqY7Rsvv4dqcRQY0HA7bejZRr0
 
+###
 POST http://localhost:3001/authentication/signUp HTTP/1.1
 Content-Type: application/json
 
-# {
-# 	"username" : "rash0x6964",
-# 	"password" : "xxxxxx1010",
-# 	"email" : "rash0x6964@gmail.com",
-#   "fullname": "Rachid Ben-Mouloud"
-# }
-
 {
-	"username" : "test_1",
+	"username" : "ttt3",
 	"password" : "xxxxxx1010",
-	"email" : "test_1@gmail.com",
-  "fullname": "unknown"
+	"email" : "ttt3@gmail.com",
+  "fullname": "Rachid Ben-Mouloud"
 }
+
+# {
+# 	"username" : "test_1",
+# 	"password" : "xxxxxx1010",
+# 	"email" : "test_1@gmail.com",
+#   "fullname": "unknown"
+# }
 
 ###
 POST http://localhost:3001/authentication/signIn HTTP/1.1
 Content-Type: application/json
 
 {
-	"username" : "test_1",
+	"username" : "rash0x6964",
 	"password" : "xxxxxx1010"
 }
 
