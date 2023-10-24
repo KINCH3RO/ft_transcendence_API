@@ -1,26 +1,28 @@
 import { Injectable } from '@nestjs/common';
-import { CreateDirectMessageDto } from './dto/create-direct-message.dto';
-import { UpdateDirectMessageDto } from './dto/update-direct-message.dto';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class DirectMessageService {
-  create(createDirectMessageDto: CreateDirectMessageDto) {
-    return 'This action adds a new directMessage';
+
+  constructor (private prisma: PrismaService) {}
+
+  create(senderId: string, receiverId: string) {
+    return this.prisma.directMessage.create({
+      data: {
+        receiverID: receiverId,
+        senderID: senderId,
+        message: {}
+      }
+    })
   }
 
-  findAll() {
-    return `This action returns all directMessage`;
+  findYourDM(senderId: string) {
+    return this.prisma.directMessage.findMany({ where: { senderID: senderId }});
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} directMessage`;
+  remove(DmId: number) {
+    return this.prisma.directMessage.delete({ where: { id: DmId } });
   }
 
-  update(id: number, updateDirectMessageDto: UpdateDirectMessageDto) {
-    return `This action updates a #${id} directMessage`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} directMessage`;
-  }
+  // findDMByReciverName
 }

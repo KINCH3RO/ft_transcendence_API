@@ -23,37 +23,40 @@ import { BodyData } from './body-data.interface';
 @UseFilters(new BaseWsExceptionFilter())
 @UseGuards(TokenGuard)
 @UsePipes(new TokenPipe(new JwtService()))
-@WebSocketGateway({ cors: true, transports: ['websocket'] })
-export class MainGate implements OnGatewayConnection, OnGatewayDisconnect {
+@WebSocketGateway({ cors: true , transports: ['websocket'] })
+
+export class FriendGate {
 	constructor(private readonly webSocketService: WebSocketService) { }
 
 	@WebSocketServer()
 	io: Server;
 
-	handleConnection(client: any, ...args: any[]) {
-		console.log('=> A socket has connected with ID: ', client.id);
-	}
 
-	handleDisconnect(client: any) {
-		console.log('=> A socket has disconnected with ID: ', client.id);
-		if (!client.handshake.query.userId)
-			return false;
-		this.webSocketService.userDisconnected(client.handshake.query.userId, client.id, (userID) => {
-			client.broadcast.emit("disconnected", userID)
-		})
+	@SubscribeMessage("friendAction")
+	handleFriendAction(socket: Socket, data: BodyData) {
+		// emit to self
+		socket.emit("friendAction")
+		//emit to sender
+		socket.to(data.data.senderID).emit("friendAction")
+		//emit to receiver
+		socket.to(data.data.receiverID).emit("friendAction")
 
-	}
 
-	@SubscribeMessage('connected')
-	handleConnect(socket: Socket, data: BodyData) {
 
-		socket.join(data.sender.id);
-
-		this.webSocketService.userConnected(data.sender.id, socket.id, () => {
-			socket.broadcast.emit("connected", data.sender.id);
-		})
 
 	}
+
+	@SubscribeMessage("friendReqAction")
+	handleFriendReqAction(socket: Socket, data: BodyData) {
+		socket.emit("friendReqAction")
+		socket.to(data.data.senderID).emit("friendReqAction")
+		socket.to(data.data.receiverID).emit("friendReqAction")
+
+
+	}
+
+
+
 
 
 }

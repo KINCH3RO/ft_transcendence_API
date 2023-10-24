@@ -49,5 +49,6 @@ import { HashingModule } from 'src/hashing/hashing.module';
     }),
     HashingModule,
   ],
+  exports: [HashingService],
 })
 export class IamModule {}

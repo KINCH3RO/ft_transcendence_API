@@ -1,15 +1,17 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 import { ChannelService } from './channel.service';
 import { CreateChannelDto } from './dto/create-channel.dto';
 import { UpdateChannelDto } from './dto/update-channel.dto';
+import { ActiveUser } from 'src/iam/authentication/decorators/active-user.decorator';
+import { ActiveUserData } from 'src/iam/interfaces/active-user.interface';
 
 @Controller('channel')
 export class ChannelController {
   constructor(private readonly channelService: ChannelService) {}
 
   @Post()
-  create(@Body() createChannelDto: CreateChannelDto) {
-    return this.channelService.create(createChannelDto);
+  create(@ActiveUser() user:ActiveUserData, @Body() createChannelDto: CreateChannelDto) {
+    return this.channelService.create(createChannelDto, user.sub);
   }
 
   @Get()
@@ -17,18 +19,23 @@ export class ChannelController {
     return this.channelService.findAll();
   }
 
+  @Get("filter")
+  findChannelByName(@Query('name') name: string) {
+    return this.channelService.findChannelByName(name);
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.channelService.findOne(+id);
+    return this.channelService.findOne(id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateChannelDto: UpdateChannelDto) {
-    return this.channelService.update(+id, updateChannelDto);
+  @Patch()
+  update(@Body() updateChannelDto: UpdateChannelDto) {
+    return this.channelService.update(updateChannelDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.channelService.remove(+id);
+  @Delete()
+  remove(@ActiveUser() user: ActiveUserData, @Body() removeChannelDto: UpdateChannelDto) {
+    return this.channelService.remove(user.sub, removeChannelDto);
   }
 }

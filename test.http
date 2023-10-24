@@ -1,9 +1,4 @@
-GET http://localhost:3001/users HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0MGQzNDc1ZC02YjE2LTRmYmEtOTE3My1hZTBhNmQzOWNlZWIiLCJ1c2VybmFtZSI6ImxpbmFzYmsiLCJpYXQiOjE2OTgwODEyNjF9.jRzLbN04fR7v01mKLHKXbm-ENxf5QdzdAekUGk009mI
 
-###
-GET http://localhost:3001/users/40d3475d-6b16-4fba-9173-ae0a6d39ceeb HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0MGQzNDc1ZC02YjE2LTRmYmEtOTE3My1hZTBhNmQzOWNlZWIiLCJ1c2VybmFtZSI6ImxpbmFzYmsiLCJpYXQiOjE2OTgwODEyNjF9.jRzLbN04fR7v01mKLHKXbm-ENxf5QdzdAekUGk009mI
 
 ###
 PATCH http://localhost:3001/users/
@@ -20,15 +15,18 @@ Content-Type: application/json
 GET http://localhost:3001/users/current HTTP/1.1
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0MGQzNDc1ZC02YjE2LTRmYmEtOTE3My1hZTBhNmQzOWNlZWIiLCJ1c2VybmFtZSI6ImxpbmFzYmsiLCJpYXQiOjE2OTgwODEyNjF9.jRzLbN04fR7v01mKLHKXbm-ENxf5QdzdAekUGk009mI
 
-###
-GET http://localhost:3001/users/list/m HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0MGQzNDc1ZC02YjE2LTRmYmEtOTE3My1hZTBhNmQzOWNlZWIiLCJ1c2VybmFtZSI6ImxpbmFzYmsiLCJpYXQiOjE2OTgwODEyNjF9.jRzLbN04fR7v01mKLHKXbm-ENxf5QdzdAekUGk009mI
+
+
+GET http://localhost:3001/users HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhNDY4Njk0Yi0xZGVhLTRhNWEtOTM2MS1lYmI1ODhlYjQzZDEiLCJ1c2VybmFtZSI6ImhhcmFjaGlkIiwiaWF0IjoxNjk3OTg3NDgzfQ.Gc918-tk2FbL-P6XV-qxaR7FByspLTFgHCfhf1WERc8
 
 ###
+
 POST http://localhost:3001/authentication/signUp HTTP/1.1
 Content-Type: application/json
 
 {
+
 "fullname" : "hkwskaskadjsbfkjb",
 "email": "ghali.useruse12r1@gmail.com",
 "password": "qwerty123",
@@ -58,51 +56,29 @@ PATCH  http://localhost:3001/match/28 HTTP/1.1
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0MGQzNDc1ZC02YjE2LTRmYmEtOTE3My1hZTBhNmQzOWNlZWIiLCJ1c2VybmFtZSI6ImxpbmFzYmsiLCJpYXQiOjE2OTgwODEyNjF9.jRzLbN04fR7v01mKLHKXbm-ENxf5QdzdAekUGk009mI
 Content-Type: application/json
 
-{
-	"winnerID": "238ba2f7-e511-4840-a024-979ee8218a7e",
-	"loserID": "a40a9ba4-da23-476a-b7d3-7d48807b2b4e",
-	"winnerScore": 16,
-	"loserScore": 3,
-	"gameMode": "CLASSIC",
-	"ranked": true
+	"username" : "ghalixs",
+	"username" : "KINCH3RO",
+
+
+	"password" : "passwordpassword",
+	"email" : "rasshse@gmail.com",
+    "fullname": "Rachid BEN"
 }
 
 ###
-POST http://localhost:3001/match HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0MGQzNDc1ZC02YjE2LTRmYmEtOTE3My1hZTBhNmQzOWNlZWIiLCJ1c2VybmFtZSI6ImxpbmFzYmsiLCJpYXQiOjE2OTgwODEyNjF9.jRzLbN04fR7v01mKLHKXbm-ENxf5QdzdAekUGk009mI
+POST http://localhost:3001/authentication/signIn HTTP/1.1
 Content-Type: application/json
 
 {
-	"winnerID": "238ba2f7-e511-4840-a024-979ee8218a7e",
-	"loserID": "a40a9ba4-da23-476a-b7d3-7d48807b2b4e",
-	"winnerScore": 5,
-	"loserScore": 3,
-	"gameMode": "CLASSIC",
-	"ranked": true
+	"username" : "KINCH3RO",
+	"password" : "passwordpassword"
 }
 
 ###
-DELETE http://localhost:3001/match/26 HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0MGQzNDc1ZC02YjE2LTRmYmEtOTE3My1hZTBhNmQzOWNlZWIiLCJ1c2VybmFtZSI6ImxpbmFzYmsiLCJpYXQiOjE2OTgwODEyNjF9.jRzLbN04fR7v01mKLHKXbm-ENxf5QdzdAekUGk009mI
+GET http://localhost:3001/friendStatus/list HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhNDY4Njk0Yi0xZGVhLTRhNWEtOTM2MS1lYmI1ODhlYjQzZDEiLCJ1c2VybmFtZSI6ImhhcmFjaGlkIiwiaWF0IjoxNjk3OTg3NDgzfQ.Gc918-tk2FbL-P6XV-qxaR7FByspLTFgHCfhf1WERc8
+
 
 ###
-
-GET http://localhost:3001/users HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0MGQzNDc1ZC02YjE2LTRmYmEtOTE3My1hZTBhNmQzOWNlZWIiLCJ1c2VybmFtZSI6ImxpbmFzYmsiLCJpYXQiOjE2OTgwODEyNjF9.jRzLbN04fR7v01mKLHKXbm-ENxf5QdzdAekUGk009mI
-
-###
-GET http://localhost:3001/achievement/user/10 HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0MGQzNDc1ZC02YjE2LTRmYmEtOTE3My1hZTBhNmQzOWNlZWIiLCJ1c2VybmFtZSI6ImxpbmFzYmsiLCJpYXQiOjE2OTgwODEyNjF9.jRzLbN04fR7v01mKLHKXbm-ENxf5QdzdAekUGk009mI
-
-###
-GET http://localhost:3001/achievement/3 HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0MGQzNDc1ZC02YjE2LTRmYmEtOTE3My1hZTBhNmQzOWNlZWIiLCJ1c2VybmFtZSI6ImxpbmFzYmsiLCJpYXQiOjE2OTgwODEyNjF9.jRzLbN04fR7v01mKLHKXbm-ENxf5QdzdAekUGk009mI
-
-###
-POST http://localhost:3001/achievement HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0MGQzNDc1ZC02YjE2LTRmYmEtOTE3My1hZTBhNmQzOWNlZWIiLCJ1c2VybmFtZSI6ImxpbmFzYmsiLCJpYXQiOjE2OTgwODEyNjF9.jRzLbN04fR7v01mKLHKXbm-ENxf5QdzdAekUGk009mI
-Content-Type: application/json
-
-{
-	"id": 10
-}
+GET https://api.github.com/user/emails HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhNDY4Njk0Yi0xZGVhLTRhNWEtOTM2MS1lYmI1ODhlYjQzZDEiLCJ1c2VybmFtZSI6ImhhcmFjaGlkIiwiaWF0IjoxNjk3OTg3NDgzfQ.Gc918-tk2FbL-P6XV-qxaR7FByspLTFgHCfhf1WERc8
