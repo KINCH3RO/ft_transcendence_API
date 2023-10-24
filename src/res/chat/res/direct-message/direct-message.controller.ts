@@ -1,34 +1,24 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { DirectMessageService } from './direct-message.service';
-import { CreateDirectMessageDto } from './dto/create-direct-message.dto';
-import { UpdateDirectMessageDto } from './dto/update-direct-message.dto';
+import { ActiveUser } from 'src/iam/authentication/decorators/active-user.decorator';
+import { ActiveUserData } from 'src/iam/interfaces/active-user.interface';
 
 @Controller('direct-message')
 export class DirectMessageController {
   constructor(private readonly directMessageService: DirectMessageService) {}
 
-  @Post()
-  create(@Body() createDirectMessageDto: CreateDirectMessageDto) {
-    return this.directMessageService.create(createDirectMessageDto);
+  @Post(':receiverId')
+  create(@ActiveUser() user: ActiveUserData, @Param('receiverId') rec: string) {
+    return this.directMessageService.create(user.sub, rec);
   }
 
   @Get()
-  findAll() {
-    return this.directMessageService.findAll();
+  findAll(@ActiveUser() user: ActiveUserData) {
+    return this.directMessageService.findYourDM(user.sub);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.directMessageService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateDirectMessageDto: UpdateDirectMessageDto) {
-    return this.directMessageService.update(+id, updateDirectMessageDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
+  @Delete(':DmId')
+  remove(@Param('DmId') id: string) {
     return this.directMessageService.remove(+id);
   }
 }

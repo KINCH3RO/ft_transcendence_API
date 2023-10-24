@@ -119,6 +119,7 @@ model channelUser {
     channelID String
     role      channelRole
     status    channelStatus
+    duration  BigInt?
 
     @@id([userID, channelID])
 }
