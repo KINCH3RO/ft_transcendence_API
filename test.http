@@ -11,9 +11,9 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0MGQzNDc1Z
 Content-Type: application/json
 
 {
-	"userName": "linasbk",
-	"email": "linasbk@me.com",
-	"fullName": "lina sabik"
+	"userName": "dfsdsfs",
+	"email": "asdasasdadads@me.com",
+	"fullName": "asdasdasd"
 }
 
 ###
