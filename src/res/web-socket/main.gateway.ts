@@ -23,7 +23,7 @@ import { BodyData } from './body-data.interface';
 @UseFilters(new BaseWsExceptionFilter())
 @UseGuards(TokenGuard)
 @UsePipes(new TokenPipe(new JwtService()))
-@WebSocketGateway({ cors: true , transports: ['websocket'] })
+@WebSocketGateway({ cors: true, transports: ['websocket'] })
 export class MainGate implements OnGatewayConnection, OnGatewayDisconnect {
 	constructor(private readonly webSocketService: WebSocketService) { }
 
@@ -36,6 +36,8 @@ export class MainGate implements OnGatewayConnection, OnGatewayDisconnect {
 
 	handleDisconnect(client: any) {
 		console.log('=> A socket has disconnected with ID: ', client.id);
+		if (!client.handshake.query.userId)
+			return false;
 		this.webSocketService.userDisconnected(client.handshake.query.userId, client.id, (userID) => {
 			client.broadcast.emit("disconnected", userID)
 		})
