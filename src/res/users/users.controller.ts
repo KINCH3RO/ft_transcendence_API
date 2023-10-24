@@ -37,7 +37,6 @@ export class UsersController {
     @ActiveUser() user: ActiveUserData,
     @Body() updateUserDto: UpdateUserDto,
   ) {
-    console.log(updateUserDto);
     return this.usersService.update(user.sub, updateUserDto);
   }
 
