@@ -1,5 +1,4 @@
 import { Module } from '@nestjs/common';
-import { HashingService } from './hashing/hashing.service';
 import { AuthenticationController } from './authentication/authentication.controller';
 import { AuthenticationService } from './authentication/authentication.service';
 import { PrismaModule } from 'src/prisma/prisma.module';
@@ -18,11 +17,10 @@ import { GithubStrategy } from './authentication/social/github/github.strategy';
 import { FortytwoAuthenticationController } from './authentication/social/fortyfTwo/fortytwo-authentication.controller';
 import { FortyTwoStrategy } from './authentication/social/fortyfTwo/fortytwo.strategy';
 import { FortytwoOAuthGuard } from './authentication/social/fortyfTwo/fortytwo-oauth.guard';
-
+import { HashingModule } from 'src/hashing/hashing.module';
 
 @Module({
   providers: [
-    HashingService,
     AuthenticationService,
     {
       provide: APP_GUARD,
@@ -49,6 +47,7 @@ import { FortytwoOAuthGuard } from './authentication/social/fortyfTwo/fortytwo-o
     JwtModule.register({
       secret: jwtConstants.secret,
     }),
+    HashingModule,
   ],
   exports: [HashingService],
 })

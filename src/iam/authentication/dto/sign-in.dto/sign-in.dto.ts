@@ -6,6 +6,6 @@ export class SignInDto {
   @MaxLength(20)
   username: string;
 
-  @MinLength(10)
+  @MinLength(8)
   password: string;
 }
