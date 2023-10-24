@@ -58,7 +58,7 @@ export class FriendStatusController {
 	}
 
 	@Delete()
-	async remove(@Query('receiverID') receiverID: string, @Query('receiverID') senderID: string) {
+	async remove(@Query('receiverID') receiverID: string, @Query('senderID') senderID: string) {
 		return this.friendStatusService.remove(receiverID, senderID);
 	}
 
