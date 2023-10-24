@@ -96,8 +96,8 @@ model friendStatus {
     senderID    String
     receiver    user         @relation(name: "receiver", fields: [receiverID], references: [id])
     receiverID  String
-    blockStatus actionStatus
-    muteStatus  actionStatus
+    blockStatus actionStatus @default(NONE)
+    muteStatus  actionStatus @default(NONE)
 
     @@id([senderID, receiverID])
 }
