@@ -23,7 +23,7 @@ import { BodyData } from './body-data.interface';
 @UseFilters(new BaseWsExceptionFilter())
 @UseGuards(TokenGuard)
 @UsePipes(new TokenPipe(new JwtService()))
-@WebSocketGateway({ cors: true })
+@WebSocketGateway({ cors: true , transports: ['websocket'] })
 export class MainGate implements OnGatewayConnection, OnGatewayDisconnect {
 	constructor(private readonly webSocketService: WebSocketService) { }
 

@@ -7,7 +7,8 @@ import {
 import { WebSocketService } from './web-socket.service';
 import { Socket, Server } from 'socket.io';
 
-@WebSocketGateway({ cors: true })
+@WebSocketGateway({ cors: true , transports: ['websocket'] })
+
 export class ChatGate  {
   @WebSocketServer()
   server: Server;

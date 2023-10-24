@@ -35,7 +35,8 @@ export class FriendRequestController {
 	}
 
 	@Delete()
-	async remove(@Query('receiverID') receiverID: string, @Query('receiverID') senderID: string) {
+	async remove(@Query('senderID') receiverID: string, @Query('receiverID') senderID: string) {
+
 		return this.friendRequestService.remove(receiverID, senderID);
 	}
 
