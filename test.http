@@ -1,3 +1,6 @@
+
+
+
 GET http://localhost:3001/users HTTP/1.1
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0MGQzNDc1ZC02YjE2LTRmYmEtOTE3My1hZTBhNmQzOWNlZWIiLCJ1c2VybmFtZSI6ImxpbmFzYmsiLCJpYXQiOjE2OTgwODEyNjF9.jRzLbN04fR7v01mKLHKXbm-ENxf5QdzdAekUGk009mI
 
@@ -24,7 +27,7 @@ Content-Type: application/json
 "username": "sdfsf"
 }
 
-### 
+###
 GET http://localhost:3001/match HTTP/1.1
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0MGQzNDc1ZC02YjE2LTRmYmEtOTE3My1hZTBhNmQzOWNlZWIiLCJ1c2VybmFtZSI6ImxpbmFzYmsiLCJpYXQiOjE2OTgwODEyNjF9.jRzLbN04fR7v01mKLHKXbm-ENxf5QdzdAekUGk009mI
 
@@ -38,12 +41,8 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0MGQzNDc1Z
 Content-Type: application/json
 
 {
-	"winnerID": "238ba2f7-e511-4840-a024-979ee8218a7e",
-	"loserID": "a40a9ba4-da23-476a-b7d3-7d48807b2b4e",
-	"winnerScore": 16,
-	"loserScore": 3,
-	"gameMode": "CLASSIC",
-	"ranked": true
+	"username" : "rash0x6964",
+	"password" : "xxxxxx1010"
 }
 
 ###

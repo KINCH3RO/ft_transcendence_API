@@ -50,5 +50,6 @@ import { FortytwoOAuthGuard } from './authentication/social/fortyfTwo/fortytwo-o
       secret: jwtConstants.secret,
     }),
   ],
+  exports: [HashingService],
 })
 export class IamModule {}

@@ -40,5 +40,11 @@ prisma/migrations
 #uploadFileIgnore
 public/upload/*
 
+# http tests
 test.http
-docker-compose.yml
+room.http
+channelUser.http
+directMsg.http
+
+# tmps
+my_space
