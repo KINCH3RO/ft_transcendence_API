@@ -139,7 +139,7 @@ export class ChannelUserService {
     }
 
     if (
-      Object.keys(targetChannelUser).length !== 0 &&
+      targetChannelUser &&
       targetChannelUser.duration != 0 &&
       targetChannelUser.duration > Date.now()
     ) {
@@ -151,7 +151,7 @@ export class ChannelUserService {
       );
     }
 
-    if (Object.keys(targetChannelUser).length !== 0 && targetChannelUser.status == "BANNED") {
+    if (targetChannelUser && targetChannelUser.status == "BANNED") {
       targetChannelUser.status = "FREE"
       return targetChannelUser
     }

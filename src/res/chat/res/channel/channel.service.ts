@@ -57,7 +57,7 @@ export class ChannelService {
       where: { userID_channelID: { channelID: removeChannelDto.id, userID: userId } },
     })
 
-    if (!actor && actor.role != 'OWNER')
+    if (actor && actor.role != 'OWNER')
       throw new HttpException('Nice try', HttpStatus.FORBIDDEN);
 
     const deleteMessages = this.prisma.message.deleteMany({
