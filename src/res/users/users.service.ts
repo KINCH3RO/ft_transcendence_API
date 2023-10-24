@@ -1,14 +1,18 @@
-import { Injectable } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
+import { ForbiddenException, Injectable } from '@nestjs/common';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { provider } from '@prisma/client';
 import { ProviderUserData } from 'src/iam/interfaces/provider-data.interface';
 import { SignUpDto } from 'src/iam/authentication/dto/sign-up.dto/sign-up.dto';
+import { UpdatePasswordDto } from './dto/update-password.dto';
+import { HashingService } from 'src/hashing/hashing.service';
 
 @Injectable()
 export class UsersService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private hashingService: HashingService,
+  ) {}
 
   create(signUpDto: SignUpDto) {
     return this.prisma.user.create({
@@ -37,7 +41,7 @@ export class UsersService {
   }
 
   update(id: string, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+    return this.prisma.user.update({ where: { id }, data: updateUserDto });
   }
 
   remove(id: string) {
@@ -54,6 +58,22 @@ export class UsersService {
           },
         },
       },
+    });
+  }
+
+  async updatePassword(id: string, updatePasswordDto: UpdatePasswordDto) {
+    const user = await this.findOne(id);
+    const isEqual = await this.hashingService.compare(
+      updatePasswordDto.password,
+      user.password,
+    );
+    if (!isEqual) throw new ForbiddenException({ message: 'wrong password' });
+    const password = await this.hashingService.hash(
+      updatePasswordDto.newPassword,
+    );
+    return this.prisma.user.update({
+      where: { id },
+      data: { password },
     });
   }
 
@@ -83,7 +103,7 @@ export class UsersService {
       where: {
         userName: {
           startsWith: name,
-		  mode: 'insensitive'
+          mode: 'insensitive',
         },
       },
       take: 20,

@@ -6,6 +6,17 @@ GET http://localhost:3001/users/40d3475d-6b16-4fba-9173-ae0a6d39ceeb HTTP/1.1
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0MGQzNDc1ZC02YjE2LTRmYmEtOTE3My1hZTBhNmQzOWNlZWIiLCJ1c2VybmFtZSI6ImxpbmFzYmsiLCJpYXQiOjE2OTgwODEyNjF9.jRzLbN04fR7v01mKLHKXbm-ENxf5QdzdAekUGk009mI
 
 ###
+PATCH http://localhost:3001/users/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0MGQzNDc1ZC02YjE2LTRmYmEtOTE3My1hZTBhNmQzOWNlZWIiLCJ1c2VybmFtZSI6ImxpbmFzYmsiLCJpYXQiOjE2OTgwODEyNjF9.jRzLbN04fR7v01mKLHKXbm-ENxf5QdzdAekUGk009mI
+Content-Type: application/json
+
+{
+	"userName": "linasbk",
+	"email": "linasbk@me.com",
+	"fullName": "lina sabik"
+}
+
+###
 GET http://localhost:3001/users/current HTTP/1.1
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0MGQzNDc1ZC02YjE2LTRmYmEtOTE3My1hZTBhNmQzOWNlZWIiLCJ1c2VybmFtZSI6ImxpbmFzYmsiLCJpYXQiOjE2OTgwODEyNjF9.jRzLbN04fR7v01mKLHKXbm-ENxf5QdzdAekUGk009mI
 
@@ -19,9 +30,19 @@ Content-Type: application/json
 
 {
 "fullname" : "hkwskaskadjsbfkjb",
-"mail": "ghali.gsfsgfgss@gmail.com",
-"password": "sadasdasdasdasdasdda",
-"username": "sdfsf"
+"email": "ghali.useruse12r1@gmail.com",
+"password": "qwerty123",
+"username": "useruser12"
+}
+
+###
+PATCH  http://localhost:3001/users/password HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NzdmODc0Zi0wNWE4LTRiZjgtOGM2OC05Y2EzMGI3MDNkY2QiLCJ1c2VybmFtZSI6InVzZXJ1c2VyMTIiLCJpYXQiOjE2OTgxNTIxMDd9.8UUwrJkUn9GN8Jed10YfgA29Fw_Kbgjy4RSTMpTHxY4
+Content-Type: application/json
+
+{
+	"password": "qwerty1234",
+	"newPassword": "qwerty123"
 }
 
 ### 
