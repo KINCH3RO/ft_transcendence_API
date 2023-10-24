@@ -2,33 +2,42 @@
 
 
 GET http://localhost:3001/users HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIwNzE3YTU5Ny0wZGRlLTRhZGItOTViZi1jMmU0YjkyNjM0NjYiLCJ1c2VybmFtZSI6InJhc2gweDY5NjQiLCJpYXQiOjE2OTc5OTE0ODB9.sVSAEDc850Izy-T1BTUBAB22pioVjSd0u7UYrxgGSy0
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0MGQzNDc1ZC02YjE2LTRmYmEtOTE3My1hZTBhNmQzOWNlZWIiLCJ1c2VybmFtZSI6ImxpbmFzYmsiLCJpYXQiOjE2OTgwODEyNjF9.jRzLbN04fR7v01mKLHKXbm-ENxf5QdzdAekUGk009mI
 
+###
+GET http://localhost:3001/users/40d3475d-6b16-4fba-9173-ae0a6d39ceeb HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0MGQzNDc1ZC02YjE2LTRmYmEtOTE3My1hZTBhNmQzOWNlZWIiLCJ1c2VybmFtZSI6ImxpbmFzYmsiLCJpYXQiOjE2OTgwODEyNjF9.jRzLbN04fR7v01mKLHKXbm-ENxf5QdzdAekUGk009mI
+
+###
+GET http://localhost:3001/users/current HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0MGQzNDc1ZC02YjE2LTRmYmEtOTE3My1hZTBhNmQzOWNlZWIiLCJ1c2VybmFtZSI6ImxpbmFzYmsiLCJpYXQiOjE2OTgwODEyNjF9.jRzLbN04fR7v01mKLHKXbm-ENxf5QdzdAekUGk009mI
 
 ###
 GET http://localhost:3001/users/list/m HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4ZWRiMDJjZS0yOGZhLTQ5NzItYWFlZS1hY2Y3NThhNjBmY2QiLCJ1c2VybmFtZSI6ImFub3RoZXJ1c2VyMTIzIiwiaWF0IjoxNjk3OTk5MjEzfQ.nP8__7GNTGK1YVjgQrqY7Rsvv4dqcRQY0HA7bejZRr0
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0MGQzNDc1ZC02YjE2LTRmYmEtOTE3My1hZTBhNmQzOWNlZWIiLCJ1c2VybmFtZSI6ImxpbmFzYmsiLCJpYXQiOjE2OTgwODEyNjF9.jRzLbN04fR7v01mKLHKXbm-ENxf5QdzdAekUGk009mI
 
 ###
 POST http://localhost:3001/authentication/signUp HTTP/1.1
 Content-Type: application/json
 
 {
-	"username" : "ttt3",
-	"password" : "xxxxxx1010",
-	"email" : "ttt3@gmail.com",
-  "fullname": "Rachid Ben-Mouloud"
+"fullname" : "hkwskaskadjsbfkjb",
+"mail": "ghali.gsfsgfgss@gmail.com",
+"password": "sadasdasdasdasdasdda",
+"username": "sdfsf"
 }
 
-# {
-# 	"username" : "test_1",
-# 	"password" : "xxxxxx1010",
-# 	"email" : "test_1@gmail.com",
-#   "fullname": "unknown"
-# }
+###
+GET http://localhost:3001/match HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0MGQzNDc1ZC02YjE2LTRmYmEtOTE3My1hZTBhNmQzOWNlZWIiLCJ1c2VybmFtZSI6ImxpbmFzYmsiLCJpYXQiOjE2OTgwODEyNjF9.jRzLbN04fR7v01mKLHKXbm-ENxf5QdzdAekUGk009mI
 
 ###
-POST http://localhost:3001/authentication/signIn HTTP/1.1
+GET http://localhost:3001/match/26 HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0MGQzNDc1ZC02YjE2LTRmYmEtOTE3My1hZTBhNmQzOWNlZWIiLCJ1c2VybmFtZSI6ImxpbmFzYmsiLCJpYXQiOjE2OTgwODEyNjF9.jRzLbN04fR7v01mKLHKXbm-ENxf5QdzdAekUGk009mI
+
+###
+PATCH  http://localhost:3001/match/28 HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0MGQzNDc1ZC02YjE2LTRmYmEtOTE3My1hZTBhNmQzOWNlZWIiLCJ1c2VybmFtZSI6ImxpbmFzYmsiLCJpYXQiOjE2OTgwODEyNjF9.jRzLbN04fR7v01mKLHKXbm-ENxf5QdzdAekUGk009mI
 Content-Type: application/json
 
 {
@@ -37,5 +46,41 @@ Content-Type: application/json
 }
 
 ###
-GET http://localhost:3001/ HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIwNzE3YTU5Ny0wZGRlLTRhZGItOTViZi1jMmU0YjkyNjM0NjYiLCJ1c2VybmFtZSI6InJhc2gweDY5NjQiLCJpYXQiOjE2OTc5OTE0ODB9.sVSAEDc850Izy-T1BTUBAB22pioVjSd0u7UYrxgGSy0
+POST http://localhost:3001/match HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0MGQzNDc1ZC02YjE2LTRmYmEtOTE3My1hZTBhNmQzOWNlZWIiLCJ1c2VybmFtZSI6ImxpbmFzYmsiLCJpYXQiOjE2OTgwODEyNjF9.jRzLbN04fR7v01mKLHKXbm-ENxf5QdzdAekUGk009mI
+Content-Type: application/json
+
+{
+	"winnerID": "238ba2f7-e511-4840-a024-979ee8218a7e",
+	"loserID": "a40a9ba4-da23-476a-b7d3-7d48807b2b4e",
+	"winnerScore": 5,
+	"loserScore": 3,
+	"gameMode": "CLASSIC",
+	"ranked": true
+}
+
+###
+DELETE http://localhost:3001/match/26 HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0MGQzNDc1ZC02YjE2LTRmYmEtOTE3My1hZTBhNmQzOWNlZWIiLCJ1c2VybmFtZSI6ImxpbmFzYmsiLCJpYXQiOjE2OTgwODEyNjF9.jRzLbN04fR7v01mKLHKXbm-ENxf5QdzdAekUGk009mI
+
+###
+
+GET http://localhost:3001/users HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0MGQzNDc1ZC02YjE2LTRmYmEtOTE3My1hZTBhNmQzOWNlZWIiLCJ1c2VybmFtZSI6ImxpbmFzYmsiLCJpYXQiOjE2OTgwODEyNjF9.jRzLbN04fR7v01mKLHKXbm-ENxf5QdzdAekUGk009mI
+
+###
+GET http://localhost:3001/achievement/user/10 HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0MGQzNDc1ZC02YjE2LTRmYmEtOTE3My1hZTBhNmQzOWNlZWIiLCJ1c2VybmFtZSI6ImxpbmFzYmsiLCJpYXQiOjE2OTgwODEyNjF9.jRzLbN04fR7v01mKLHKXbm-ENxf5QdzdAekUGk009mI
+
+###
+GET http://localhost:3001/achievement/3 HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0MGQzNDc1ZC02YjE2LTRmYmEtOTE3My1hZTBhNmQzOWNlZWIiLCJ1c2VybmFtZSI6ImxpbmFzYmsiLCJpYXQiOjE2OTgwODEyNjF9.jRzLbN04fR7v01mKLHKXbm-ENxf5QdzdAekUGk009mI
+
+###
+POST http://localhost:3001/achievement HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0MGQzNDc1ZC02YjE2LTRmYmEtOTE3My1hZTBhNmQzOWNlZWIiLCJ1c2VybmFtZSI6ImxpbmFzYmsiLCJpYXQiOjE2OTgwODEyNjF9.jRzLbN04fR7v01mKLHKXbm-ENxf5QdzdAekUGk009mI
+Content-Type: application/json
+
+{
+	"id": 10
+}

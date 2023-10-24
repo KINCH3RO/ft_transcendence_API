@@ -12,7 +12,7 @@ export class AuthenticationService {
     private userService: UsersService,
     private tokenService: TokenService,
   ) {}
-  
+
   async signUp(signUpDto: SignUpDto) {
     signUpDto.password = await this.hashingService.hash(signUpDto.password);
     const user = await this.userService.create(signUpDto);
@@ -21,11 +21,13 @@ export class AuthenticationService {
 
   async signIn(signInDto: SignInDto) {
     const user = await this.userService.findByUsername(signInDto.username);
+    if (!user) throw new UnauthorizedException({ message: 'wrong username' });
     const isEqual = await this.hashingService.compare(
       signInDto.password,
       user.password,
     );
-    if (!user || !isEqual) throw new UnauthorizedException();
+    if (!user || !isEqual)
+      throw new UnauthorizedException({ message: 'wrong password' });
     return this.tokenService.getJwtToken(user);
   }
 }
