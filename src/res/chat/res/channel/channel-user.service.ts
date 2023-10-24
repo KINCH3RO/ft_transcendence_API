@@ -4,7 +4,8 @@ import { UpdateChannelUserDto } from './dto/update-channelUser.dto';
 import { CreateChannelUserDto } from './dto/create-channelUser.dto';
 import { $Enums } from '@prisma/client';
 import { JoinChannelDto } from './dto/join-channel.dto';
-import { HashingService } from 'src/iam/hashing/hashing.service';
+import { HashingService } from 'src/hashing/hashing.service';
+
 
 @Injectable()
 export class ChannelUserService {
