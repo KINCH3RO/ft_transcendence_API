@@ -18,8 +18,11 @@ export class ProfileController {
   constructor(private readonly profileService: ProfileService) {}
 
   @Post()
-  create(@Body() createProfileDto: CreateProfileDto) {
-    return this.profileService.create(createProfileDto);
+  create(
+    @ActiveUser() user: ActiveUserData,
+    @Body() createProfileDto: CreateProfileDto,
+  ) {
+    return this.profileService.create(user, createProfileDto);
   }
 
   @Get()

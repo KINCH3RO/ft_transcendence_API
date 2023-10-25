@@ -1,9 +1,6 @@
-import { IsNumber, IsUUID } from 'class-validator';
+import { IsNumber } from 'class-validator';
 
 export class CreateProfileDto {
-  @IsUUID()
-  id: string;
-
   @IsNumber()
   rating: number;
 

@@ -15,6 +15,17 @@ Content-Type: application/json
 GET http://localhost:3001/profile HTTP/1.1
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI5ZGMzZjBjYi0zYTdlLTQzZmYtOWRmNC1mMjdhMTZiNjBhYTEiLCJ1c2VybmFtZSI6Im1vaGFoYWhhIiwiaWF0IjoxNjk4MjY0NTcyfQ.OYN--dofEYgqit_ySpEpKTmusj-Y66fPznGBEhPBOlM
 
+###
+POST http://localhost:3001/profile HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI5ZGMzZjBjYi0zYTdlLTQzZmYtOWRmNC1mMjdhMTZiNjBhYTEiLCJ1c2VybmFtZSI6Im1vaGFoYWhhIiwiaWF0IjoxNjk4MjY0NTcyfQ.OYN--dofEYgqit_ySpEpKTmusj-Y66fPznGBEhPBOlM
+Content-Type: application/json
+
+{
+	"rating": 500,
+	"level": 2,
+	"xp": 3000,
+	"coins": 1234
+}
 
 ###
 GET http://localhost:3001/users/current HTTP/1.1

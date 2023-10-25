@@ -9,15 +9,32 @@ export class ProfileService {
   constructor(private readonly prismaService: PrismaService) {}
   private readonly logger = new Logger(ProfileService.name);
 
-  create(createProfileDto: CreateProfileDto) {
-    return 'This action adds a new profile';
+  async create(user: ActiveUserData, createProfileDto: CreateProfileDto) {
+    this.logger.log(`create Profile for user id: ${user.sub}`);
+
+    const result = await this.prismaService.profile.create({
+      data: createProfileDto,
+    });
+
+    await this.prismaService.user.update({
+      where: { id: user.sub },
+      data: {
+        profile: {
+          connect: {
+            id: result.id,
+          },
+        },
+      },
+    });
+
+    return result;
   }
 
   async findSelf(user: ActiveUserData) {
     this.logger.log(`findSelf on user id: ${user.sub}`);
 
-    const result = await this.prismaService.profile.findUnique({
-      where: { id: user.sub },
+    const result = await this.prismaService.profile.findFirst({
+      where: { user: { id: user.sub } },
     });
 
     this.logger.verbose(`profile for user id ${user.sub}: ${result}`);
