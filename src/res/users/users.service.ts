@@ -33,9 +33,22 @@ export class UsersService {
   }
 
   findOne(id: string) {
-    return this.prisma.user.findUnique({ where: { id } });
+    return this.prisma.user.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        email: true,
+        fullName: true,
+        userName: true,
+        avatarUrl: true,
+        bannerUrl: true,
+      },
+    });
   }
 
+  getOne(id: string) {
+    return this.prisma.user.findUnique({ where: { id } });
+  }
   async findByUsername(username: string) {
     return this.prisma.user.findUnique({ where: { userName: username } });
   }
@@ -62,7 +75,7 @@ export class UsersService {
   }
 
   async updatePassword(id: string, updatePasswordDto: UpdatePasswordDto) {
-    const user = await this.findOne(id);
+    const user = await this.getOne(id);
     const isEqual = await this.hashingService.compare(
       updatePasswordDto.password,
       user.password,
@@ -98,12 +111,15 @@ export class UsersService {
     });
   }
 
-  findByName(name: string) {
+  findByName(name: string, id: string) {
     return this.prisma.user.findMany({
       where: {
         userName: {
           startsWith: name,
           mode: 'insensitive',
+        },
+        NOT: {
+          id,
         },
       },
       take: 20,

@@ -54,7 +54,7 @@ export class UsersController {
   }
 
   @Get('/list/:name')
-  findByName(@Param('name') name: string) {
-    return this.usersService.findByName(name);
+  findByName(@ActiveUser() user : ActiveUserData,@Param('name') name: string) {
+    return this.usersService.findByName(name,user.sub);
   }
 }
