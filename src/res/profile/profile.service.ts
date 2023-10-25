@@ -42,8 +42,16 @@ export class ProfileService {
     return result;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} profile`;
+  async findOne(id: string) {
+    this.logger.log(`findOne Profile for user id: ${id}`);
+
+    const result = await this.prismaService.profile.findFirst({
+      where: {
+        id,
+      },
+    });
+
+    return result;
   }
 
   update(id: number, updateProfileDto: UpdateProfileDto) {
