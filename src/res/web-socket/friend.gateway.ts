@@ -35,17 +35,13 @@ export class FriendGate {
 	@SubscribeMessage("friendAction")
 	handleFriendAction(socket: Socket, data: BodyData) {
 		// emit to self
-		this.io.to([data.data.senderID, data.data.receiverID]).emit("friendAction")
-
-
-
-
+		this.io.to([data.data.senderID, data.data.receiverID]).emit("friendAction", data)
 
 	}
 
 	@SubscribeMessage("friendReqAction")
 	handleFriendReqAction(socket: Socket, data: BodyData) {
-		this.io.to([data.data.senderID, data.data.receiverID]).emit("friendReqAction")
+		this.io.to([data.data.senderID, data.data.receiverID]).emit("friendReqAction", data)
 	}
 
 
