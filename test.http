@@ -12,8 +12,13 @@ Content-Type: application/json
 }
 
 ###
+GET http://localhost:3001/profile HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI5ZGMzZjBjYi0zYTdlLTQzZmYtOWRmNC1mMjdhMTZiNjBhYTEiLCJ1c2VybmFtZSI6Im1vaGFoYWhhIiwiaWF0IjoxNjk4MjY0NTcyfQ.OYN--dofEYgqit_ySpEpKTmusj-Y66fPznGBEhPBOlM
+
+
+###
 GET http://localhost:3001/users/current HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkMDYxOTRhNS00MGYyLTQyMDgtOTU2ZS05ZjVjMjE4MmU2MmYiLCJ1c2VybmFtZSI6Im1vaGFoYWhhIiwiaWF0IjoxNjk4MjQxODQ3fQ.g84mNS7BKRqxuyU1Mfd33ESuYtAQJt4uQPoAIa8sc2E
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI5ZGMzZjBjYi0zYTdlLTQzZmYtOWRmNC1mMjdhMTZiNjBhYTEiLCJ1c2VybmFtZSI6Im1vaGFoYWhhIiwiaWF0IjoxNjk4MjY0NTcyfQ.OYN--dofEYgqit_ySpEpKTmusj-Y66fPznGBEhPBOlM
 
 
 ###

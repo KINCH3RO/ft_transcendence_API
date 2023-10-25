@@ -1,7 +1,17 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { ProfileService } from './profile.service';
 import { CreateProfileDto } from './dto/create-profile.dto';
 import { UpdateProfileDto } from './dto/update-profile.dto';
+import { ActiveUser } from 'src/iam/authentication/decorators/active-user.decorator';
+import { ActiveUserData } from 'src/iam/interfaces/active-user.interface';
 
 @Controller('profile')
 export class ProfileController {
@@ -13,8 +23,8 @@ export class ProfileController {
   }
 
   @Get()
-  findAll() {
-    return this.profileService.findAll();
+  findSelf(@ActiveUser() user: ActiveUserData) {
+    return this.profileService.findSelf(user);
   }
 
   @Get(':id')
