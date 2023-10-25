@@ -51,14 +51,13 @@ GET http://localhost:3001/match/26 HTTP/1.1
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0MGQzNDc1ZC02YjE2LTRmYmEtOTE3My1hZTBhNmQzOWNlZWIiLCJ1c2VybmFtZSI6ImxpbmFzYmsiLCJpYXQiOjE2OTgwODEyNjF9.jRzLbN04fR7v01mKLHKXbm-ENxf5QdzdAekUGk009mI
 
 ###
-PATCH  http://localhost:3001/match/28 HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0MGQzNDc1ZC02YjE2LTRmYmEtOTE3My1hZTBhNmQzOWNlZWIiLCJ1c2VybmFtZSI6ImxpbmFzYmsiLCJpYXQiOjE2OTgwODEyNjF9.jRzLbN04fR7v01mKLHKXbm-ENxf5QdzdAekUGk009mI
+PATCH  http://localhost:3001/users HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1ZGE3NTI1ZS1hYzhjLTRmODUtYmNhOC03OGMzYzI5OGExNmMiLCJ1c2VybmFtZSI6Im10YWdlbW91IiwiaWF0IjoxNjk4MjM4MzU4fQ.y3V5iz1sWpt0Ve_swIDusx4uZWD9sWzADuweNOUkXiE
 Content-Type: application/json
+
 {
-	"username" : "ghalixs",
-	"password" : "passwordpassword",
-	"email" : "rasshse@gmail.com",
-    "fullname": "Rachid BEN"
+	"avatarUrl" : "/upload/avatars/avatar1.jpeg",
+	"bannerUrl" : "/upload/banners/banner1.jpeg"
 }
 
 ###

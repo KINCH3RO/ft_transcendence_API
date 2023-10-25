@@ -35,5 +35,5 @@ export class GoogleAuthenticationController {
     response.redirect(process.env.FRONTEND_HOST);
   }
 
-  // link account =>
+  // link account => listen to pop up and get data of new user resend req to merge
 }
