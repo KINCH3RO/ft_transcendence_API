@@ -92,12 +92,12 @@ export class FriendRequestService {
 		if (createFriendRequestDb.senderID == createFriendRequestDb.receiverID)
 			throw new HttpException("", HttpStatus.FORBIDDEN);
 		if (friendStatus)
-			throw new HttpException("", HttpStatus.FORBIDDEN);
+			throw new HttpException("you are already friends :D", HttpStatus.CONFLICT);
 		const friendReq: FriendRequest = await this.findOne(createFriendRequestDb);
 		if (friendReq != null && friendReq.senderID != userID)
 			return this.acceptRequest(createFriendRequestDb);
 		else if (friendReq)
-			throw new HttpException("", HttpStatus.FORBIDDEN);
+			throw new HttpException("Friend request already sent", HttpStatus.CONFLICT);
 		return this.create(createFriendRequestDb);
 	}
 }

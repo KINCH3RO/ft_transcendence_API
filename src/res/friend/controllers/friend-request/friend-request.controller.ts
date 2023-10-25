@@ -11,7 +11,7 @@ import { ActiveUserData } from 'src/iam/interfaces/active-user.interface';
 export class FriendRequestController {
 	constructor(private friendRequestService: FriendRequestService) { }
 	@Post()
-	async create(@ActiveUser() activeUser: ActiveUserData, @Body() createFriendRequestDto: CreateFriendRequestDto) {
+	async sendRequest(@ActiveUser() activeUser: ActiveUserData, @Body() createFriendRequestDto: CreateFriendRequestDto) {
 
 		return this.friendRequestService.sendRequest(activeUser.sub,
 			{
