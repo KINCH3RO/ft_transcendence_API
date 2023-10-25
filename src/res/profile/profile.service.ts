@@ -50,7 +50,13 @@ export class ProfileService {
     return `This action updates a #${id} profile`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} profile`;
+  async remove(user: ActiveUserData) {
+    this.logger.log(`delete Profile for user id: ${user.sub}`);
+
+    const result = await this.prismaService.profile.deleteMany({
+      where: { user: { id: user.sub } },
+    });
+
+    return result;
   }
 }

@@ -40,8 +40,8 @@ export class ProfileController {
     return this.profileService.update(+id, updateProfileDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.profileService.remove(+id);
+  @Delete()
+  remove(@ActiveUser() user: ActiveUserData) {
+    return this.profileService.remove(user);
   }
 }

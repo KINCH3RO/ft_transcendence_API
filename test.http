@@ -16,6 +16,10 @@ GET http://localhost:3001/profile HTTP/1.1
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI5ZGMzZjBjYi0zYTdlLTQzZmYtOWRmNC1mMjdhMTZiNjBhYTEiLCJ1c2VybmFtZSI6Im1vaGFoYWhhIiwiaWF0IjoxNjk4MjY0NTcyfQ.OYN--dofEYgqit_ySpEpKTmusj-Y66fPznGBEhPBOlM
 
 ###
+DELETE http://localhost:3001/profile HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI5ZGMzZjBjYi0zYTdlLTQzZmYtOWRmNC1mMjdhMTZiNjBhYTEiLCJ1c2VybmFtZSI6Im1vaGFoYWhhIiwiaWF0IjoxNjk4MjY0NTcyfQ.OYN--dofEYgqit_ySpEpKTmusj-Y66fPznGBEhPBOlM
+
+###
 POST http://localhost:3001/profile HTTP/1.1
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI5ZGMzZjBjYi0zYTdlLTQzZmYtOWRmNC1mMjdhMTZiNjBhYTEiLCJ1c2VybmFtZSI6Im1vaGFoYWhhIiwiaWF0IjoxNjk4MjY0NTcyfQ.OYN--dofEYgqit_ySpEpKTmusj-Y66fPznGBEhPBOlM
 Content-Type: application/json
