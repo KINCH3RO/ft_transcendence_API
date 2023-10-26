@@ -5,20 +5,20 @@ import { ActiveUserData } from 'src/iam/interfaces/active-user.interface';
 
 @Controller('direct-message')
 export class DirectMessageController {
-  constructor(private readonly directMessageService: DirectMessageService) {}
+	constructor(private readonly directMessageService: DirectMessageService) { }
 
-  @Post(':receiverId')
-  create(@ActiveUser() user: ActiveUserData, @Param('receiverId') rec: string) {
-    return this.directMessageService.create(user.sub, rec);
-  }
+	@Post(':receiverId')
+	create(@ActiveUser() user: ActiveUserData, @Param('receiverId') rec: string) {
+		return this.directMessageService.create(user.sub, rec);
+	}
 
-  @Get()
-  findAll(@ActiveUser() user: ActiveUserData) {
-    return this.directMessageService.findYourDM(user.sub);
-  }
+	@Get()
+	findAll(@ActiveUser() user: ActiveUserData) {
+		return this.directMessageService.findYourDM(user.sub);
+	}
 
-  @Delete(':DmId')
-  remove(@Param('DmId') id: string) {
-    return this.directMessageService.remove(+id);
-  }
+	@Delete(':DmId')
+	remove(@Param('DmId') id: string) {
+		return this.directMessageService.remove(id);
+	}
 }

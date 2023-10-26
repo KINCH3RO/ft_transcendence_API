@@ -10,7 +10,7 @@ generator client {
 model user {
     id                 String              @id @default(uuid())
     userName           String              @unique
-    email              String?              @unique
+    email              String?             @unique
     fullName           String?
     password           String?
     verifiedAt         DateTime?
@@ -37,12 +37,12 @@ model user {
 }
 
 model associatedAccount {
-    id       String   @id @default(uuid())
-    user     user     @relation(name: "associatedAccountToUser", fields: [userID], references: [id])
-    userID   String
-    provider provider
-    email    String?
-	providerID String
+    id         String   @id @default(uuid())
+    user       user     @relation(name: "associatedAccountToUser", fields: [userID], references: [id])
+    userID     String
+    provider   provider
+    email      String?
+    providerID String
 }
 
 model profile {
@@ -125,7 +125,7 @@ model channelUser {
 }
 
 model directMessage {
-    id         Int       @unique @default(autoincrement())
+    id         String    @unique @default(cuid())
     sender     user      @relation(name: "senderDM", fields: [senderID], references: [id])
     senderID   String    @unique
     receiver   user      @relation(name: "receiverDM", fields: [receiverID], references: [id])
@@ -136,11 +136,11 @@ model directMessage {
 }
 
 model message {
-    id              Int            @id @default(autoincrement())
+    id              String         @id @default(cuid())
     sender          user           @relation(name: "messageToUser", fields: [senderID], references: [id])
     senderID        String
     directmessage   directMessage? @relation(name: "directmessageTomessage", fields: [directmessageID], references: [id])
-    directmessageID Int?
+    directmessageID String?
     channel         channel?       @relation(name: "channelTomessage", fields: [channelID], references: [id])
     channelID       String?
     content         String
@@ -150,9 +150,9 @@ model message {
 }
 
 model attachment {
-    id        Int      @id @default(autoincrement())
-    message   message  @relation(fields: [messageID], references: [id])
-    messageID Int      @unique
+    id        String   @id @default(cuid())
+    message   message  @relation(fields: [messageID], references: [id], onDelete: Cascade)
+    messageID String   @unique
     name      String
     url       String
     size      Int

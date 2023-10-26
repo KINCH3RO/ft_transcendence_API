@@ -1,6 +1,4 @@
 
-
-
 GET http://localhost:3001/users HTTP/1.1
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0MGQzNDc1ZC02YjE2LTRmYmEtOTE3My1hZTBhNmQzOWNlZWIiLCJ1c2VybmFtZSI6ImxpbmFzYmsiLCJpYXQiOjE2OTgwODEyNjF9.jRzLbN04fR7v01mKLHKXbm-ENxf5QdzdAekUGk009mI
 
@@ -25,6 +23,16 @@ Content-Type: application/json
 "mail": "ghali.gsfsgfgss@gmail.com",
 "password": "sadasdasdasdasdasdda",
 "username": "sdfsf"
+}
+
+###
+PATCH  http://localhost:3001/users/password HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NzdmODc0Zi0wNWE4LTRiZjgtOGM2OC05Y2EzMGI3MDNkY2QiLCJ1c2VybmFtZSI6InVzZXJ1c2VyMTIiLCJpYXQiOjE2OTgxNTIxMDd9.8UUwrJkUn9GN8Jed10YfgA29Fw_Kbgjy4RSTMpTHxY4
+Content-Type: application/json
+
+{
+	"password": "qwerty1234",
+	"newPassword": "qwerty123"
 }
 
 ###
