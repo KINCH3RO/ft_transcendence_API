@@ -3,7 +3,7 @@ import { DirectMessageService } from './direct-message.service';
 import { ActiveUser } from 'src/iam/authentication/decorators/active-user.decorator';
 import { ActiveUserData } from 'src/iam/interfaces/active-user.interface';
 
-@Controller('direct-message')
+@Controller('directMessage')
 export class DirectMessageController {
 	constructor(private readonly directMessageService: DirectMessageService) { }
 
@@ -16,6 +16,11 @@ export class DirectMessageController {
 	findAll(@ActiveUser() user: ActiveUserData) {
 		return this.directMessageService.findYourDM(user.sub);
 	}
+
+	@Get('list')
+  listDM(@ActiveUser() user: ActiveUserData) {
+    return this.directMessageService.listCurrentDM(user.sub)
+  }
 
 	@Delete(':DmId')
 	remove(@Param('DmId') id: string) {
