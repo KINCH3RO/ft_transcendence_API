@@ -6,6 +6,8 @@ export class Message implements message {
 	directmessageID: number;
 	channelID: string;
 	content: string;
+	createdAt: Date;
+	updatedAt: Date;
 }
 
 export class ChannelUser implements channelUser {
