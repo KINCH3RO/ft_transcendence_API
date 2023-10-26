@@ -6,6 +6,7 @@ import {
   HttpCode,
   HttpStatus,
   Res,
+  Query,
 } from '@nestjs/common';
 import { GoogleOAuthGuard } from './google-oauth.guard';
 import { Public } from '../../decorators/public.decorator';
@@ -33,4 +34,6 @@ export class GoogleAuthenticationController {
     response.cookie('USER', access_token);
     response.redirect(process.env.FRONTEND_HOST);
   }
+
+  // link account => listen to pop up and get data of new user resend req to merge
 }

@@ -1,5 +1,5 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { HashingService } from '../hashing/hashing.service';
+import { HashingService } from '../../hashing/hashing.service';
 import { SignUpDto } from './dto/sign-up.dto/sign-up.dto';
 import { SignInDto } from './dto/sign-in.dto/sign-in.dto';
 import { UsersService } from 'src/res/users/users.service';
