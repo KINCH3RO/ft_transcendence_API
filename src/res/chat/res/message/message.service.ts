@@ -12,7 +12,7 @@ export class MessageService {
 	async create(userID: string, createMessageDto: CreateMessageDto) {
 		let message: Message = await this.prismaSerivce.message.create({
 			include:
-				{ attachment: true },
+				{ attachment: true, directmessage: true },
 			data:
 			{
 				content: createMessageDto.content,
