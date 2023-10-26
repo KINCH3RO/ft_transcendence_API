@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, HttpException, HttpStatus } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, HttpException, HttpStatus, Query } from '@nestjs/common';
 import { MessageService } from './message.service';
 import { CreateMessageDto } from './dto/create-message.dto';
 import { UpdateMessageDto } from './dto/update-message.dto';
@@ -21,14 +21,25 @@ export class MessageController {
 		return this.messageService.create(activeUser.sub, createMessageDto);
 	}
 
+
 	@Get()
-	findAll() {
-		return this.messageService.findAll();
+	findMessage(@ActiveUser() activeUser: ActiveUserData, @Query("dmID") dmID?: string, @Query("channelID") channelID?: string) {
+
+		if (!dmID && !channelID)
+			throw new HttpException("", HttpStatus.BAD_REQUEST);
+		if (dmID && channelID)
+			throw new HttpException("", HttpStatus.BAD_REQUEST);
+		if (dmID)
+			return this.messageService.findDmMessages(activeUser.sub, dmID);
+		else
+			return this.messageService.findChannelMessages(activeUser.sub, channelID);
+
+
 	}
 
 	@Get(':id')
 	findOne(@Param('id') id: string) {
-		return this.messageService.findOne(+id);
+		return this.messageService.findOne(id);
 	}
 
 	@Patch(':id')
