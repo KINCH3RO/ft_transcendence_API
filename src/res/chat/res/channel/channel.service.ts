@@ -84,4 +84,10 @@ export class ChannelService {
       },
     });
   }
+
+  async listCurrentUserChannel(currentUserId: string) {
+    return this.prisma.channel.findMany({
+      where: { channels: { some: { userID: currentUserId } } }
+    })
+  }
 }
