@@ -7,10 +7,10 @@ export class CreateMessageDto {
 	@IsBoolean()
 	dmMessage: boolean
 	@IsOptional()
-	@IsNumber()
+	@IsString()
 	directmessageID?: string;
 	@IsOptional()
-	@IsNumber()
+	@IsString()
 	channelID?: string;
 	@IsString()
 	content: string;

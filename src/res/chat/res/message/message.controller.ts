@@ -11,6 +11,9 @@ export class MessageController {
 
 	@Post()
 	sendMessage(@ActiveUser() activeUser: ActiveUserData, @Body() createMessageDto: CreateMessageDto) {
+
+
+
 		if (createMessageDto.dmMessage && !createMessageDto.directmessageID)
 			throw new HttpException("DM identifier is Empty", HttpStatus.FORBIDDEN);
 		if (!createMessageDto.dmMessage && !createMessageDto.channelID)
