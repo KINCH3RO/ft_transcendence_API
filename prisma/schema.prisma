@@ -20,7 +20,7 @@ model user {
     createdAt          DateTime            @default(now())
     updatedAt          DateTime            @updatedAt
     associatedAccounts associatedAccount[] @relation(name: "associatedAccountToUser")
-    profile            profile             @relation(name: "profileToUser", fields: [profileID], references: [id])
+    profile            profile             @relation(name: "profileToUser", fields: [profileID], references: [id], onDelete: Cascade)
     profileID          String              @unique
     wonmatches         matches[]           @relation(name: "winner")
     lostmatches        matches[]           @relation(name: "loser")

@@ -1,50 +1,9 @@
-
-
-###
-PATCH http://localhost:3001/users/
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0MGQzNDc1ZC02YjE2LTRmYmEtOTE3My1hZTBhNmQzOWNlZWIiLCJ1c2VybmFtZSI6ImxpbmFzYmsiLCJpYXQiOjE2OTgwODEyNjF9.jRzLbN04fR7v01mKLHKXbm-ENxf5QdzdAekUGk009mI
-Content-Type: application/json
-
-{
-	"userName": "dfsdsfs",
-	"email": "asdasasdadads@me.com",
-	"fullName": "asdasdasd"
-}
-
-###
-GET http://localhost:3001/profile/ec2af487-08ff-4b8c-8a86-41d3a9009d4b HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI5ZGMzZjBjYi0zYTdlLTQzZmYtOWRmNC1mMjdhMTZiNjBhYTEiLCJ1c2VybmFtZSI6Im1vaGFoYWhhIiwiaWF0IjoxNjk4MjY0NTcyfQ.OYN--dofEYgqit_ySpEpKTmusj-Y66fPznGBEhPBOlM
-
-###
-GET http://localhost:3001/profile HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0M2ZkYzY1Zi01OTQ4LTRmMmUtODM0ZC1kOTEwZmE2YjA1NDMiLCJ1c2VybmFtZSI6Im1vaGFoYWhhIiwiaWF0IjoxNjk4MzU0NjMxfQ.lO2QqrfB_sema03vNrhuMj9DP1o02AbziBytoZXJrVw
-
-###
-DELETE http://localhost:3001/profile HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0M2ZkYzY1Zi01OTQ4LTRmMmUtODM0ZC1kOTEwZmE2YjA1NDMiLCJ1c2VybmFtZSI6Im1vaGFoYWhhIiwiaWF0IjoxNjk4MzU0NjMxfQ.lO2QqrfB_sema03vNrhuMj9DP1o02AbziBytoZXJrVw
-
-###
-POST http://localhost:3001/profile HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI5YWZkOTliZC0wYjJmLTRmMmMtOWU2My00NWJhOGYwZWIxYzQiLCJ1c2VybmFtZSI6Im1vaGFoYWhhIiwiaWF0IjoxNjk4MjY3Mjg5fQ.kWmy2x5xFrvFngp3ZxvxkM710Qj1r3y_QCH5Eigdg8I
-Content-Type: application/json
-
-{
-	"rating": 500,
-	"level": 2,
-	"xp": 3000,
-	"coins": 12345
-}
-
-###
 GET http://localhost:3001/users/current HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI5YWZkOTliZC0wYjJmLTRmMmMtOWU2My00NWJhOGYwZWIxYzQiLCJ1c2VybmFtZSI6Im1vaGFoYWhhIiwiaWF0IjoxNjk4MjY3Mjg5fQ.kWmy2x5xFrvFngp3ZxvxkM710Qj1r3y_QCH5Eigdg8I
-
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0MTEwMjA3Mi01Y2FiLTQ5MGQtOWM4Zi1hNGY4YzgyMTExMmEiLCJ1c2VybmFtZSI6Im1vaGFoYWhhIiwiaWF0IjoxNjk4NDMzODAzfQ.9AMwpjbJ9r4KLarEruvefhQ4rmrTqiT4cVnTG2l3HH4
 
 ###
 GET http://localhost:3001/users HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhNDY4Njk0Yi0xZGVhLTRhNWEtOTM2MS1lYmI1ODhlYjQzZDEiLCJ1c2VybmFtZSI6ImhhcmFjaGlkIiwiaWF0IjoxNjk3OTg3NDgzfQ.Gc918-tk2FbL-P6XV-qxaR7FByspLTFgHCfhf1WERc8
-
-
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0MTEwMjA3Mi01Y2FiLTQ5MGQtOWM4Zi1hNGY4YzgyMTExMmEiLCJ1c2VybmFtZSI6Im1vaGFoYWhhIiwiaWF0IjoxNjk4NDMzODAzfQ.9AMwpjbJ9r4KLarEruvefhQ4rmrTqiT4cVnTG2l3HH4
 ###
 POST http://localhost:3001/authentication/signUp HTTP/1.1
 Content-Type: application/json
@@ -58,7 +17,6 @@ Content-Type: application/json
 
 ###
 PATCH  http://localhost:3001/users/password HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NzdmODc0Zi0wNWE4LTRiZjgtOGM2OC05Y2EzMGI3MDNkY2QiLCJ1c2VybmFtZSI6InVzZXJ1c2VyMTIiLCJpYXQiOjE2OTgxNTIxMDd9.8UUwrJkUn9GN8Jed10YfgA29Fw_Kbgjy4RSTMpTHxY4
 Content-Type: application/json
 
 {
