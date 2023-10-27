@@ -1,4 +1,6 @@
-
+###
+POST http://localhost:3001/merge
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0MGQzNDc1ZC02YjE2LTRmYmEtOTE3My1hZTBhNmQzOWNlZWIiLCJ1c2VybmFtZSI6ImxpbmFzYmsiLCJpYXQiOjE2OTgwODEyNjF9.jRzLbN04fR7v01mKLHKXbm-ENxf5QdzdAekUGk009mI
 
 ###
 PATCH http://localhost:3001/users/
@@ -15,6 +17,9 @@ Content-Type: application/json
 GET http://localhost:3001/users/current HTTP/1.1
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkMDYxOTRhNS00MGYyLTQyMDgtOTU2ZS05ZjVjMjE4MmU2MmYiLCJ1c2VybmFtZSI6Im1vaGFoYWhhIiwiaWF0IjoxNjk4MjQxODQ3fQ.g84mNS7BKRqxuyU1Mfd33ESuYtAQJt4uQPoAIa8sc2E
 
+### 
+GET http://localhost:3001/users/accounts HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1ZGE3NTI1ZS1hYzhjLTRmODUtYmNhOC03OGMzYzI5OGExNmMiLCJ1c2VybmFtZSI6Im10YWdlbW91IiwiaWF0IjoxNjk4MjM4MzU4fQ.y3V5iz1sWpt0Ve_swIDusx4uZWD9sWzADuweNOUkXiE
 
 ###
 GET http://localhost:3001/users HTTP/1.1

@@ -1,7 +1,6 @@
 import {
   Controller,
   Get,
-  Post,
   Body,
   Patch,
   Param,
@@ -27,6 +26,11 @@ export class UsersController {
     return this.usersService.findOne(user.sub);
   }
 
+  @Get('accounts')
+  findAcounts(@ActiveUser() user: ActiveUserData) {
+    return this.usersService.getAccounts(user.sub);
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.usersService.findOne(id);
@@ -45,7 +49,7 @@ export class UsersController {
     @ActiveUser() user: ActiveUserData,
     @Body() updatePasswordDto: UpdatePasswordDto,
   ) {
-	return this.usersService.updatePassword(user.sub, updatePasswordDto)
+    return this.usersService.updatePassword(user.sub, updatePasswordDto);
   }
 
   @Delete(':id')
@@ -54,7 +58,7 @@ export class UsersController {
   }
 
   @Get('/list/:name')
-  findByName(@ActiveUser() user : ActiveUserData,@Param('name') name: string) {
-    return this.usersService.findByName(name,user.sub);
+  findByName(@ActiveUser() user: ActiveUserData, @Param('name') name: string) {
+    return this.usersService.findByName(name, user.sub);
   }
 }
