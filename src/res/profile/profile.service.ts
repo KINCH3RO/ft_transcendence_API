@@ -20,7 +20,7 @@ export class ProfileService {
     return result;
   }
 
-  async findOne(id: string) {
+  async findOneByUserId(id: string) {
     this.logger.log(`findOne Profile for user id: ${id}`);
 
     const result = await this.prismaService.profile.findFirst({
