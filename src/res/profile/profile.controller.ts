@@ -13,9 +13,9 @@ export class ProfileController {
     return this.profileService.findSelf(user);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.profileService.findOne(id);
+  @Get(':userId')
+  findOneByUserId(@Param('userId') id: string) {
+    return this.profileService.findOneByUserId(id);
   }
 
   @Patch()

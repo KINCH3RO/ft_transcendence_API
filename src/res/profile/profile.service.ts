@@ -25,7 +25,7 @@ export class ProfileService {
 
     const result = await this.prismaService.profile.findFirst({
       where: {
-        id,
+        user: { id },
       },
     });
 
