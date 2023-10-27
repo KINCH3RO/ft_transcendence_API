@@ -1,0 +1,13 @@
+GET http://localhost:3001/profile HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0MTEwMjA3Mi01Y2FiLTQ5MGQtOWM4Zi1hNGY4YzgyMTExMmEiLCJ1c2VybmFtZSI6Im1vaGFoYWhhIiwiaWF0IjoxNjk4NDMzODAzfQ.9AMwpjbJ9r4KLarEruvefhQ4rmrTqiT4cVnTG2l3HH4
+###
+PATCH http://localhost:3001/profile HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0MTEwMjA3Mi01Y2FiLTQ5MGQtOWM4Zi1hNGY4YzgyMTExMmEiLCJ1c2VybmFtZSI6Im1vaGFoYWhhIiwiaWF0IjoxNjk4NDMzODAzfQ.9AMwpjbJ9r4KLarEruvefhQ4rmrTqiT4cVnTG2l3HH4
+Content-Type: application/json
+
+{
+	"rating": 500,
+	"level": 2,
+	"xp": 3000,
+	"coins": 12345
+}
