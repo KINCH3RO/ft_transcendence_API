@@ -89,7 +89,7 @@ export class DirectMessageService {
       );
       baseData['message'] = data.message[0];
 
-			console.log('>> data: ', baseData);
+			// console.log('>> data: ', baseData);
       return baseData;
     });
   }

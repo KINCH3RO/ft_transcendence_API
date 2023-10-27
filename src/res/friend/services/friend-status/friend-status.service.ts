@@ -108,6 +108,7 @@ export class FriendStatusService {
 				baseData["friend"] = data.sender;
 			baseData["isSender"] = (userID == data.senderID)
 			baseData["friend"].onlineStatus = this.webSocketService.isOnline(baseData["friend"].id)
+			// baseData["profile"]
 			return baseData;
 		});
 
