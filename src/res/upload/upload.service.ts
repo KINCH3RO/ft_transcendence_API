@@ -1,7 +1,7 @@
-import { Injectable, OnApplicationBootstrap } from '@nestjs/common';
+ import { Injectable, OnApplicationBootstrap } from '@nestjs/common';
 import { $Enums } from '@prisma/client';
 import { randomUUID } from 'crypto';
-import { createWriteStream, existsSync, mkdir } from 'fs';
+import { createWriteStream, existsSync, mkdir, writeFileSync } from 'fs';
 import { UploadedFile } from './uploaded-file/uploaded-file.interface';
 
 @Injectable()
@@ -25,9 +25,9 @@ export class UploadService implements OnApplicationBootstrap {
 	}
 
 	private writeFile(fileName: string, file: Express.Multer.File): UploadedFile {
-		let writeStream = createWriteStream(process.cwd() + fileName);
-		writeStream.write(file.buffer);
-		writeStream.close();
+		writeFileSync(process.cwd() + fileName, file.buffer);
+
+
 		return {
 			mimeType: file.mimetype,
 			name: file.originalname,

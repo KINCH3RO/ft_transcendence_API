@@ -19,6 +19,11 @@ export class ChannelController {
     return this.channelService.findAll();
   }
 
+  @Get('list')
+  listChannel(@ActiveUser() user: ActiveUserData) {
+    return this.channelService.listCurrentUserChannel(user.sub)
+  }
+
   @Get("filter")
   findChannelByName(@Query('name') name: string) {
     return this.channelService.findChannelByName(name);

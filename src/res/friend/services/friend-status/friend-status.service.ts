@@ -7,7 +7,7 @@ import { FriendRequestService } from '../friend-request/friend-request.service';
 import { FriendRequest } from '../../entities/friendRequest.entity';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { $Enums, friendStatus } from '@prisma/client';
-import { WsException } from '@nestjs/websockets';
+
 import { WebSocketService } from 'src/res/web-socket/web-socket.service';
 
 @Injectable()
@@ -70,7 +70,7 @@ export class FriendStatusService {
 						avatarUrl: true,
 						userName: true,
 						id: true,
-						onlineStatus:true
+						onlineStatus: true
 					}
 				},
 				receiver: {
@@ -79,7 +79,7 @@ export class FriendStatusService {
 						avatarUrl: true,
 						userName: true,
 						id: true,
-						onlineStatus:true
+						onlineStatus: true
 
 					}
 				}
@@ -95,7 +95,7 @@ export class FriendStatusService {
 		})
 
 		return friends.map((data: FriendStatus) => {
-			let baseData : FriendStatus = {
+			let baseData: FriendStatus = {
 				blockStatus: data.blockStatus,
 				muteStatus: data.muteStatus,
 				receiverID: data.receiverID,
@@ -117,10 +117,10 @@ export class FriendStatusService {
 	async blockUser(userID: string, updateFriendStatusDto: UpdateFriendStatusDto) {
 		let friendStatus: FriendStatus = await this.findOne(updateFriendStatusDto.senderID, updateFriendStatusDto.receiverID);
 		if (!friendStatus)
-			throw new WsException("Forbidden");
+			throw new HttpException("Forbidden", HttpStatus.FORBIDDEN);
 		const blockValue: $Enums.actionStatus = friendStatus.senderID == userID ? "SENDER" : "RECEIVER";
 		if (friendStatus.blockStatus == blockValue || friendStatus.blockStatus == "BOTH")
-			return new WsException("User already blocked");
+			return new HttpException("User already blocked", HttpStatus.FORBIDDEN);
 		if (friendStatus.blockStatus == "NONE")
 			friendStatus.blockStatus = blockValue;
 		else if (friendStatus.blockStatus != blockValue)
@@ -136,7 +136,7 @@ export class FriendStatusService {
 		const blockValue: $Enums.actionStatus = friendStatus.senderID == userID ? "RECEIVER" : "SENDER";
 
 		if (friendStatus.blockStatus == "NONE" || friendStatus.blockStatus == blockValue)
-			return new WsException("User is not Blocked");
+			return new HttpException("User is not Blocked", HttpStatus.FORBIDDEN);
 		if (friendStatus.blockStatus == "BOTH")
 			friendStatus.blockStatus = blockValue;
 		else if (friendStatus.blockStatus != blockValue)
@@ -148,10 +148,10 @@ export class FriendStatusService {
 	async muteUser(userID: string, updateFriendStatusDto: UpdateFriendStatusDto) {
 		let friendStatus: FriendStatus = await this.findOne(updateFriendStatusDto.senderID, updateFriendStatusDto.receiverID);
 		if (!friendStatus)
-			throw new WsException("Forbidden");
+			throw new HttpException("Forbidden", HttpStatus.FORBIDDEN);
 		const muteValue: $Enums.actionStatus = friendStatus.senderID == userID ? "SENDER" : "RECEIVER";
 		if (friendStatus.muteStatus == muteValue || friendStatus.muteStatus == "BOTH")
-			return new WsException("User already muted");
+			return new HttpException("User already muted", HttpStatus.FORBIDDEN);
 		if (friendStatus.muteStatus == "NONE")
 			friendStatus.muteStatus = muteValue;
 		else if (friendStatus.muteStatus != muteValue)
@@ -165,7 +165,7 @@ export class FriendStatusService {
 			throw new HttpException("Forbbiden", HttpStatus.FORBIDDEN);
 		const muteValue: $Enums.actionStatus = friendStatus.senderID == userID ? "RECEIVER" : "SENDER";
 		if (friendStatus.muteStatus == "NONE" || friendStatus.muteStatus == muteValue)
-			return new WsException("User is not mutee=d");
+			return new HttpException("User is not muted", HttpStatus.FORBIDDEN);
 		if (friendStatus.muteStatus == "BOTH")
 			friendStatus.muteStatus = muteValue;
 		else if (friendStatus.muteStatus != muteValue)

@@ -1,11 +1,13 @@
 import { $Enums, channel, channelUser, message } from "@prisma/client";
 
 export class Message implements message {
-	id: number;
+	id: string;
 	senderID: string;
-	directmessageID: number;
+	directmessageID: string;
 	channelID: string;
 	content: string;
+	createdAt: Date;
+	updatedAt: Date;
 }
 
 export class ChannelUser implements channelUser {
