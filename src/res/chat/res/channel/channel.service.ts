@@ -106,6 +106,8 @@ export class ChannelService {
             senderID: true,
             content: true,
             attachment: true,
+            createdAt: true,
+            updatedAt: true
           }
         }
       }
