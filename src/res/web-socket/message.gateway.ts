@@ -27,8 +27,12 @@ export class MessageGate {
 
 	@SubscribeMessage("privateMessage")
 	handlePrivateMessage(socket: Socket, data: BodyData) {
-		let receiver = data.data.directmessage.senderID == data.sender ? data.data.directmessage.receiverID : data.data.directmessage.senderID;
-		console.log();
+		// console.log(data);
+
+		data.data.mine = (data.data.directmessage.senderID == data.sender.id);
+		let receiver = data.data.directmessage.senderID == data.sender.id ? data.data.directmessage.receiverID : data.data.directmessage.senderID;
+		// console.log(receiver);
+		this.io.to([receiver, data.sender.id]).emit("privateMessage", data.data);
 	}
 
 

@@ -12,7 +12,18 @@ export class MessageService {
 	async create(userID: string, createMessageDto: CreateMessageDto) {
 		let message: Message = await this.prismaSerivce.message.create({
 			include:
-				{ attachment: true, directmessage: true },
+			{
+				directmessage: true,
+				attachment: true,
+				sender: {
+					select:
+					{
+						avatarUrl: true,
+						bannerUrl: true,
+						userName: true,
+					}
+				},
+			},
 			data:
 			{
 				content: createMessageDto.content,
@@ -67,6 +78,7 @@ export class MessageService {
 		const messages: Message[] = await this.prismaSerivce.message.findMany({
 			include:
 			{
+				attachment: true,
 				sender: {
 					select:
 					{
@@ -75,7 +87,6 @@ export class MessageService {
 						userName: true,
 					}
 				},
-				attachment: true
 			},
 			where:
 			{
