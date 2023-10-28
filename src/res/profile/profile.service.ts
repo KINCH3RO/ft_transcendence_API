@@ -1,26 +1,47 @@
-import { Injectable } from '@nestjs/common';
-import { CreateProfileDto } from './dto/create-profile.dto';
+import { Injectable, Logger } from '@nestjs/common';
 import { UpdateProfileDto } from './dto/update-profile.dto';
+import { PrismaService } from 'src/prisma/prisma.service';
+import { ActiveUserData } from 'src/iam/interfaces/active-user.interface';
 
 @Injectable()
 export class ProfileService {
-  create(createProfileDto: CreateProfileDto) {
-    return 'This action adds a new profile';
+  constructor(private readonly prismaService: PrismaService) {}
+  private readonly logger = new Logger(ProfileService.name);
+
+  async findSelf(user: ActiveUserData) {
+    this.logger.log(`findSelf on user id: ${user.sub}`);
+
+    const result = await this.prismaService.profile.findFirst({
+      where: { user: { id: user.sub } },
+    });
+
+    this.logger.verbose(`profile for user id ${user.sub}: ${result}`);
+
+    return result;
   }
 
-  findAll() {
-    return `This action returns all profile`;
+  async findOneByUserId(id: string) {
+    this.logger.log(`findOne Profile for user id: ${id}`);
+
+    const result = await this.prismaService.profile.findFirst({
+      where: {
+        user: { id },
+      },
+    });
+
+    return result;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} profile`;
-  }
+  update(user: ActiveUserData, updateProfileDto: UpdateProfileDto) {
+    this.logger.log(`update Profile for user id: ${user.sub}`);
 
-  update(id: number, updateProfileDto: UpdateProfileDto) {
-    return `This action updates a #${id} profile`;
-  }
+    const result = this.prismaService.profile.updateMany({
+      data: updateProfileDto,
+      where: {
+        user: { id: user.sub },
+      },
+    });
 
-  remove(id: number) {
-    return `This action removes a #${id} profile`;
+    return result;
   }
 }

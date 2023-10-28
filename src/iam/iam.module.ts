@@ -18,6 +18,7 @@ import { FortytwoAuthenticationController } from './authentication/social/fortyf
 import { FortyTwoStrategy } from './authentication/social/fortyfTwo/fortytwo.strategy';
 import { FortytwoOAuthGuard } from './authentication/social/fortyfTwo/fortytwo-oauth.guard';
 import { HashingModule } from 'src/hashing/hashing.module';
+import { MergeController } from './authentication/social/merge.controller';
 
 @Module({
   providers: [
@@ -40,6 +41,7 @@ import { HashingModule } from 'src/hashing/hashing.module';
     GoogleAuthenticationController,
     GithubAuthenticationController,
     FortytwoAuthenticationController,
+	MergeController,
   ],
   imports: [
     PrismaModule,
