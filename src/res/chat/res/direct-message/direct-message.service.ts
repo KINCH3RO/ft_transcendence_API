@@ -32,8 +32,6 @@ export class DirectMessageService {
     return this.prisma.directMessage.delete({ where: { id: DmId } });
   }
 
-  // findDMByReciverName
-
   async listCurrentDM(userID: string) {
     const dms: directMessage[] = await this.prisma.directMessage.findMany({
       include: {
@@ -44,6 +42,11 @@ export class DirectMessageService {
             id: true,
             onlineStatus: true,
             fullName: true,
+            profile: {
+              select: {
+                rating: true
+              }
+            }
           },
         },
         receiver: {
@@ -53,6 +56,11 @@ export class DirectMessageService {
             id: true,
             onlineStatus: true,
             fullName: true,
+            profile: {
+              select: {
+                rating: true
+              }
+            }
           },
         },
         message: {
