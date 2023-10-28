@@ -34,29 +34,6 @@ export class FriendStatusController {
 	}
 
 
-	@Patch("blockUser")
-	async blockUser(@ActiveUser() activeUser: ActiveUserData, @Body() updateFriendStatusDto: UpdateFriendStatusDto) {
-		this.friendStatusService.blockUser(activeUser.sub, updateFriendStatusDto);
-	}
-
-	@Patch("muteUser")
-	async updateUser(@ActiveUser() activeUser: ActiveUserData, @Body() updateFriendStatusDto: UpdateFriendStatusDto) {
-		this.friendStatusService.muteUser(activeUser.sub, updateFriendStatusDto);
-	}
-
-
-
-	@Patch("unblockUser")
-	async unBlockUser(@ActiveUser() activeUser: ActiveUserData, @Body() updateFriendStatusDto: UpdateFriendStatusDto) {
-		this.friendStatusService.unblockUser(activeUser.sub, updateFriendStatusDto);
-	}
-
-
-	@Patch("unmuteUser")
-	async unmuteUser(@ActiveUser() activeUser: ActiveUserData, @Body() updateFriendStatusDto: UpdateFriendStatusDto) {
-		this.friendStatusService.unmuteUser(activeUser.sub, updateFriendStatusDto);
-	}
-
 	@Delete()
 	async remove(@Query('receiverID') receiverID: string, @Query('senderID') senderID: string) {
 		return this.friendStatusService.remove(receiverID, senderID);
