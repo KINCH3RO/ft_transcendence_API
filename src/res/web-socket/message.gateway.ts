@@ -39,6 +39,19 @@ export class MessageGate {
 
 	}
 
+	@SubscribeMessage("channelMessage")
+	handleChatMessage(socket: Socket, data: BodyData) {
+
+		data.data.mine = (data.data.senderID == data.sender.id);
+
+		this.io.to(data.sender.id).emit("channelMessage", data.data);
+		data.data.mine = false
+		// console.log(receiver);
+		socket.to(data.data.channelID).emit("channelMessage", data.data);
+
+
+	}
+
 
 
 
