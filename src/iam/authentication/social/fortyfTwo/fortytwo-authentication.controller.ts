@@ -27,10 +27,10 @@ export class FortytwoAuthenticationController {
   @HttpCode(HttpStatus.OK)
   @UseGuards(FortytwoOAuthGuard)
   async handleRedirect(@Req() request, @Res({ passthrough: true }) response) {
-    const { access_token } = await this.providerAuthenticationService.signIn(
-      request.user,
-    );
-    response.cookie('USER', access_token);
-    response.redirect(process.env.FRONTEND_HOST);
+    const { access_token, provider_info } =
+      await this.providerAuthenticationService.signIn(request.user);
+    if (access_token) response.cookie('INFO', access_token);
+    else response.cookie('PROVIDER', provider_info);
+    response.redirect(`${process.env.FRONTEND_HOST}/authCallback`);
   }
 }
