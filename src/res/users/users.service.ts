@@ -3,7 +3,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { provider } from '@prisma/client';
 import { ProviderUserData } from 'src/iam/interfaces/provider-data.interface';
-import { SignUpDto } from 'src/iam/authentication/dto/sign-up.dto/sign-up.dto';
+import { SignUpDto } from 'src/iam/authentication/dto/sign-up.dto';
 import { UpdatePasswordDto } from './dto/update-password.dto';
 import { HashingService } from 'src/hashing/hashing.service';
 
@@ -46,9 +46,14 @@ export class UsersService {
     });
   }
 
+  getAccounts(id: string) {
+    return this.prisma.associatedAccount.findMany({ where: { userID: id } });
+  }
+
   getOne(id: string) {
     return this.prisma.user.findUnique({ where: { id } });
   }
+
   async findByUsername(username: string) {
     return this.prisma.user.findUnique({ where: { userName: username } });
   }
@@ -58,7 +63,7 @@ export class UsersService {
   }
 
   remove(id: string) {
-    return this.prisma.user.delete({ where: { id } });
+    this.prisma.user.delete({ where: { id } });
   }
 
   findByProviderId(providerID: string, providerType: provider) {
@@ -90,10 +95,9 @@ export class UsersService {
     });
   }
 
-  createByProvider(providerUserData: ProviderUserData, providerType: provider) {
+  createByProvider(providerUserData: ProviderUserData) {
     return this.prisma.user.create({
       data: {
-        email: providerUserData.email,
         fullName: providerUserData.fullName,
         userName: providerUserData.username,
         avatarUrl: providerUserData.photo,
@@ -123,6 +127,17 @@ export class UsersService {
         },
       },
       take: 20,
+    });
+  }
+
+  async addProvider(id: string, providerUserData: ProviderUserData) {
+    return this.prisma.associatedAccount.create({
+      data: {
+        userID: id,
+        providerID: providerUserData.id,
+        provider: providerUserData.providerType,
+        email: providerUserData.email,
+      },
     });
   }
 }

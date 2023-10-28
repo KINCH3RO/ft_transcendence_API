@@ -20,7 +20,7 @@ model user {
     createdAt          DateTime            @default(now())
     updatedAt          DateTime            @updatedAt
     associatedAccounts associatedAccount[] @relation(name: "associatedAccountToUser")
-    profile            profile             @relation(name: "profileToUser", fields: [profileID], references: [id])
+    profile            profile             @relation(name: "profileToUser", fields: [profileID], references: [id], onDelete: Cascade)
     profileID          String              @unique
     wonmatches         matches[]           @relation(name: "winner")
     lostmatches        matches[]           @relation(name: "loser")
@@ -92,12 +92,10 @@ model friendRequests {
 }
 
 model friendStatus {
-    sender      user         @relation(name: "sender", fields: [senderID], references: [id])
-    senderID    String
-    receiver    user         @relation(name: "receiver", fields: [receiverID], references: [id])
-    receiverID  String
-    blockStatus actionStatus @default(NONE)
-    muteStatus  actionStatus @default(NONE)
+    sender     user   @relation(name: "sender", fields: [senderID], references: [id])
+    senderID   String
+    receiver   user   @relation(name: "receiver", fields: [receiverID], references: [id])
+    receiverID String
 
     @@id([senderID, receiverID])
 }
@@ -125,12 +123,15 @@ model channelUser {
 }
 
 model directMessage {
-    id         String    @unique @default(cuid())
-    sender     user      @relation(name: "senderDM", fields: [senderID], references: [id])
-    senderID   String    @unique
-    receiver   user      @relation(name: "receiverDM", fields: [receiverID], references: [id])
+    id         String @unique @default(cuid())
+    sender     user   @relation(name: "senderDM", fields: [senderID], references: [id])
+    senderID   String @unique
+    receiver   user   @relation(name: "receiverDM", fields: [receiverID], references: [id])
     receiverID String
-    message    message[] @relation(name: "directmessageTomessage")
+
+    blockStatus actionStatus @default(NONE)
+    muteStatus  actionStatus @default(NONE)
+    message     message[]    @relation(name: "directmessageTomessage")
 
     @@unique([senderID, receiverID])
 }
