@@ -109,7 +109,8 @@ export class ChannelService {
             createdAt: true,
             updatedAt: true
           }
-        }
+        },
+        channels: true
       }
     });
   }
