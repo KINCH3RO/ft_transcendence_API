@@ -24,8 +24,7 @@ export class MessageController {
 
 
 	@Get()
-	findMessages(@ActiveUser() activeUser: ActiveUserData, @Query() dto: findMessageDto) {
-
+	async findMessages(@ActiveUser() activeUser: ActiveUserData, @Query() dto: findMessageDto) {
 
 		if (!dto.dmID && !dto.channelID)
 			throw new HttpException("channelID and dmID is empty", HttpStatus.BAD_REQUEST);
