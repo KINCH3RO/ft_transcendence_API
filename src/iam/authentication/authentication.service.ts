@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { ForbiddenException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { HashingService } from '../../hashing/hashing.service';
 import { SignUpDto } from './dto/sign-up.dto';
 import { SignInDto } from './dto/sign-in.dto';
@@ -21,13 +21,13 @@ export class AuthenticationService {
 
   async signIn(signInDto: SignInDto) {
     const user = await this.userService.findByUsername(signInDto.username);
-    if (!user) throw new UnauthorizedException({ message: 'wrong username' });
+    if (!user) throw new ForbiddenException({ message: 'wrong username' });
     const isEqual = await this.hashingService.compare(
       signInDto.password,
       user.password,
     );
     if (!user || !isEqual)
-      throw new UnauthorizedException({ message: 'wrong password' });
+      throw new ForbiddenException({ message: 'wrong password' });
     return this.tokenService.getJwtToken(user);
   }
 }

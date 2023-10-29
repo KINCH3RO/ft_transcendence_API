@@ -32,8 +32,8 @@ export class UsersService {
     return this.prisma.user.findMany();
   }
 
-  findOne(id: string) {
-    return this.prisma.user.findUnique({
+  async findOne(id: string) {
+    const user = await this.prisma.user.findUnique({
       where: { id },
       select: {
         id: true,
@@ -42,8 +42,10 @@ export class UsersService {
         userName: true,
         avatarUrl: true,
         bannerUrl: true,
+        password: true,
       },
     });
+    return { ...user, password: user.password ? true : false };
   }
 
   getAccounts(id: string) {
@@ -81,14 +83,19 @@ export class UsersService {
 
   async updatePassword(id: string, updatePasswordDto: UpdatePasswordDto) {
     const user = await this.getOne(id);
+    const password = await this.hashingService.hash(
+      updatePasswordDto.newPassword,
+    );
+    if (!user.password)
+      return this.prisma.user.update({
+        where: { id },
+        data: { password },
+      });
     const isEqual = await this.hashingService.compare(
       updatePasswordDto.password,
       user.password,
     );
     if (!isEqual) throw new ForbiddenException({ message: 'wrong password' });
-    const password = await this.hashingService.hash(
-      updatePasswordDto.newPassword,
-    );
     return this.prisma.user.update({
       where: { id },
       data: { password },
