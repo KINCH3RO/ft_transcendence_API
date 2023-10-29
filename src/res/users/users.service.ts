@@ -101,7 +101,6 @@ export class UsersService {
         fullName: providerUserData.fullName,
         userName: providerUserData.username,
         avatarUrl: providerUserData.photo,
-		email: providerUserData.email,
         profile: {
           create: {},
         },
