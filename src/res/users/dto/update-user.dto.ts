@@ -3,7 +3,7 @@ import { IsOptional, MaxLength, MinLength, IsEmail } from 'class-validator';
 export class UpdateUserDto {
   @IsOptional()
   @MinLength(3)
-  @MaxLength(20)
+  @MaxLength(60)
   userName: string;
 
   @IsOptional()
@@ -12,7 +12,7 @@ export class UpdateUserDto {
 
   @IsOptional()
   @MinLength(3)
-  @MaxLength(20)
+  @MaxLength(60)
   fullName: string;
 
   @IsOptional()
