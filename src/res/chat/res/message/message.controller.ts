@@ -26,10 +26,11 @@ export class MessageController {
 	@Get()
 	findMessages(@ActiveUser() activeUser: ActiveUserData, @Query() dto: findMessageDto) {
 
+
 		if (!dto.dmID && !dto.channelID)
-			throw new HttpException("", HttpStatus.BAD_REQUEST);
-		if (dto.channelID && dto.channelID)
-			throw new HttpException("", HttpStatus.BAD_REQUEST);
+			throw new HttpException("channelID and dmID is empty", HttpStatus.BAD_REQUEST);
+		if (dto.dmID && dto.channelID)
+			throw new HttpException("channelID and dmID both supplied", HttpStatus.BAD_REQUEST);
 		if (dto.dmID)
 			return this.messageService.findDmMessages(activeUser.sub, dto);
 		else
