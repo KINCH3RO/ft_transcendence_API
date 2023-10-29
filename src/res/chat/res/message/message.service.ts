@@ -3,6 +3,7 @@ import { CreateMessageDto } from './dto/create-message.dto';
 import { UpdateMessageDto } from './dto/update-message.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { Message } from './entities/message.entity';
+import { findMessageDto } from './dto/find-message.dto';
 
 @Injectable()
 export class MessageService {
@@ -44,7 +45,7 @@ export class MessageService {
 
 	}
 
-	async findChannelMessages(userID: string, channelID: string) {
+	async findChannelMessages(userID: string, dto: findMessageDto) {
 		const messages: Message[] = await this.prismaSerivce.message.findMany({
 			include:
 			{
@@ -60,12 +61,14 @@ export class MessageService {
 			},
 			where:
 			{
-				channelID: channelID
+				channelID: dto.channelID
 			},
 			orderBy:
 			{
-				createdAt: 'asc'
-			}
+				createdAt: 'desc'
+			},
+			skip: dto.offset,
+			take: dto.limit
 		})
 
 		messages.map((data: Message) => {
@@ -75,7 +78,7 @@ export class MessageService {
 
 	}
 
-	async findDmMessages(userID: string, dmID: string) {
+	async findDmMessages(userID: string, dto: findMessageDto) {
 		const messages: Message[] = await this.prismaSerivce.message.findMany({
 			include:
 			{
@@ -91,12 +94,14 @@ export class MessageService {
 			},
 			where:
 			{
-				directmessageID: dmID
+				directmessageID: dto.dmID
 			},
 			orderBy:
 			{
-				createdAt: 'asc'
-			}
+				createdAt: 'desc'
+			},
+			skip: dto.offset,
+			take: dto.limit
 		})
 
 		messages.map((data: Message) => {

@@ -4,8 +4,9 @@ import { Logger, ValidationPipe } from '@nestjs/common';
 async function bootstrap() {
 	const app = await NestFactory.create(AppModule);
 	app.useGlobalPipes(new ValidationPipe({
-		transform:true,
-		whitelist:true
+		transformOptions: { enableImplicitConversion: true },
+		transform: true,
+		whitelist: true
 	}));
 	app.enableCors();
 	await app.listen(3001);

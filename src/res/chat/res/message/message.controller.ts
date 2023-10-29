@@ -4,6 +4,7 @@ import { CreateMessageDto } from './dto/create-message.dto';
 import { UpdateMessageDto } from './dto/update-message.dto';
 import { ActiveUser } from 'src/iam/authentication/decorators/active-user.decorator';
 import { ActiveUserData } from 'src/iam/interfaces/active-user.interface';
+import { findMessageDto } from './dto/find-message.dto';
 
 @Controller('message')
 export class MessageController {
@@ -23,16 +24,16 @@ export class MessageController {
 
 
 	@Get()
-	findMessage(@ActiveUser() activeUser: ActiveUserData, @Query("dmID") dmID?: string, @Query("channelID") channelID?: string) {
+	findMessages(@ActiveUser() activeUser: ActiveUserData, @Query() dto: findMessageDto) {
 
-		if (!dmID && !channelID)
+		if (!dto.dmID && !dto.channelID)
 			throw new HttpException("", HttpStatus.BAD_REQUEST);
-		if (dmID && channelID)
+		if (dto.channelID && dto.channelID)
 			throw new HttpException("", HttpStatus.BAD_REQUEST);
-		if (dmID)
-			return this.messageService.findDmMessages(activeUser.sub, dmID);
+		if (dto.dmID)
+			return this.messageService.findDmMessages(activeUser.sub, dto);
 		else
-			return this.messageService.findChannelMessages(activeUser.sub, channelID);
+			return this.messageService.findChannelMessages(activeUser.sub, dto);
 
 
 	}
