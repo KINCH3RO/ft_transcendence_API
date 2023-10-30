@@ -19,10 +19,19 @@ export class ProfileController {
   }
 
   @Get('data')
-  findSelfData(@ActiveUser() user: ActiveUserData) {}
+  findSelfData(@ActiveUser() user: ActiveUserData) {
+    return this.profileService.findSelfData(user);
+  }
 
   @Get('data/:userId')
-  findDataByUserId(@Param('userId') id: string) {}
+  findDataByUserId(@Param('userId') id: string) {
+    return this.profileService.findDataByUserId(id);
+  }
+
+  @Get('data/name/:name')
+  findDataByUsername(@Param('name') name: string) {
+    return this.profileService.findDataByUsername(name);
+  }
 
   @Patch()
   update(

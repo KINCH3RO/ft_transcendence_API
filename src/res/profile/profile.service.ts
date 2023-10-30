@@ -32,6 +32,48 @@ export class ProfileService {
     return result;
   }
 
+  async findSelfData(user: ActiveUserData) {
+    const result = await this.prismaService.user.findUnique({
+      where: { id: user.sub },
+      select: {
+        avatarUrl: true,
+        bannerUrl: true,
+        userName: true,
+        profile: true,
+      },
+    });
+
+    return result;
+  }
+
+  async findDataByUserId(id: string) {
+    const result = await this.prismaService.user.findUnique({
+      where: { id },
+      select: {
+        avatarUrl: true,
+        bannerUrl: true,
+        userName: true,
+        profile: true,
+      },
+    });
+
+    return result;
+  }
+
+  async findDataByUsername(name: string) {
+    const result = await this.prismaService.user.findUnique({
+      where: { userName: name },
+      select: {
+        avatarUrl: true,
+        bannerUrl: true,
+        userName: true,
+        profile: true,
+      },
+    });
+
+    return result;
+  }
+
   update(user: ActiveUserData, updateProfileDto: UpdateProfileDto) {
     this.logger.log(`update Profile for user id: ${user.sub}`);
 
