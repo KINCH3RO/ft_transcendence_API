@@ -13,7 +13,19 @@ export class DirectMessageService {
 		private webSocketService: WebSocketService,
 	) { }
 
-	create(senderId: string, receiverId: string) {
+	async create(senderId: string, receiverId: string) {
+		let dm: directMessage = await this.prisma.directMessage.findFirst({
+			where:
+			{
+				OR: [
+					{ receiverID: senderId, senderID: receiverId },
+					{ receiverID: receiverId, senderID: senderId },
+				]
+			}
+		})
+
+		if (dm)
+			return dm;
 		return this.prisma.directMessage.create({
 			data: {
 				receiverID: receiverId,
@@ -45,6 +57,12 @@ export class DirectMessageService {
 						id: true,
 						onlineStatus: true,
 						fullName: true,
+						profile: {
+							select: {
+								id: true,
+								rating: true
+							}
+						}
 					},
 				},
 				receiver: {
@@ -54,6 +72,12 @@ export class DirectMessageService {
 						id: true,
 						onlineStatus: true,
 						fullName: true,
+						profile: {
+							select: {
+								id: true,
+								rating: true
+							}
+						}
 					},
 				},
 				message: {
@@ -77,7 +101,6 @@ export class DirectMessageService {
 
 		return dms.map((data: DirectMessage) => {
 			let baseData: DirectMessage = {
-
 				id: data.id,
 				receiverID: data.receiverID,
 				senderID: data.senderID,
@@ -93,7 +116,7 @@ export class DirectMessageService {
 			);
 			baseData['message'] = data.message[0];
 
-			console.log('>> data: ', baseData);
+			// console.log('>> data: ', baseData);
 			return baseData;
 		});
 	}

@@ -18,7 +18,9 @@ export class ChannelService {
         imageUrl: createChannelDto.imageUrl,
         name: createChannelDto.name,
         visibility: createChannelDto.visibility,
-        password: await this.hashingService.hash(createChannelDto.password),
+        password: createChannelDto.password
+          ? await this.hashingService.hash(createChannelDto.password)
+          : null,
         channels: {
           create: {
             userID: id,
@@ -26,6 +28,7 @@ export class ChannelService {
             status: 'FREE',
           },
         },
+        message: {},
       },
     });
   }
@@ -35,7 +38,24 @@ export class ChannelService {
   }
 
   findOne(id: string) {
-    return this.prisma.channel.findUnique({ where: { id } });
+    return this.prisma.channel.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        visibility: true,
+        name: true,
+        imageUrl: true,
+        channels: {
+          select: {
+            user: {
+              select: {
+                onlineStatus: true,
+              }
+            }
+          }
+        }
+      },
+    });
   }
 
   async update(updateChannelDto: UpdateChannelDto) {
@@ -107,10 +127,11 @@ export class ChannelService {
             content: true,
             attachment: true,
             createdAt: true,
-            updatedAt: true
-          }
-        }
-      }
+            updatedAt: true,
+          },
+        },
+        channels: true,
+      },
     });
   }
 }

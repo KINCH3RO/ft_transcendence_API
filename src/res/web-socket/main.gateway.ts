@@ -49,6 +49,11 @@ export class MainGate implements OnGatewayConnection, OnGatewayDisconnect {
 
 		socket.join(data.sender.id);
 
+		for (let i = 0; i < data.data.length; i++)
+			socket.join(data.data);
+
+
+
 		this.webSocketService.userConnected(data.sender.id, socket.id, () => {
 			socket.broadcast.emit("connected", data.sender.id);
 		})

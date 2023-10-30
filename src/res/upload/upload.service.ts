@@ -1,4 +1,4 @@
- import { Injectable, OnApplicationBootstrap } from '@nestjs/common';
+import { Injectable, OnApplicationBootstrap } from '@nestjs/common';
 import { $Enums } from '@prisma/client';
 import { randomUUID } from 'crypto';
 import { createWriteStream, existsSync, mkdir, writeFileSync } from 'fs';
@@ -33,7 +33,7 @@ export class UploadService implements OnApplicationBootstrap {
 			name: file.originalname,
 			size: file.size,
 			type: this.detectType(file.originalname),
-			url: fileName.replace('public/', ''),
+			url: process.env.URL_PREFIX + fileName.replace('public/', ''),
 		};
 	}
 

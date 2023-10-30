@@ -11,6 +11,7 @@ export class ChannelController {
 
   @Post()
   create(@ActiveUser() user:ActiveUserData, @Body() createChannelDto: CreateChannelDto) {
+    console.log('body: ', createChannelDto);
     return this.channelService.create(createChannelDto, user.sub);
   }
 
