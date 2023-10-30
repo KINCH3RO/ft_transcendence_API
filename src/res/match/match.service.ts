@@ -78,6 +78,28 @@ export class MatchService {
     return result;
   }
 
+  async getLatest(user: ActiveUserData, take: number) {
+    const result = await this.prismaService.matches.findMany({
+      where: {
+        OR: [
+          {
+            winnerID: {
+              equals: user.sub,
+            },
+          },
+          {
+            loserID: {
+              equals: user.sub,
+            },
+          },
+        ],
+      },
+      take,
+    });
+
+    return result;
+  }
+
   async update(id: number, updateMatchDto: UpdateMatchDto) {
     let result = null;
 
