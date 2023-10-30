@@ -15,8 +15,8 @@ model user {
     password           String?
     verifiedAt         DateTime?
     onlineStatus       Boolean             @default(false)
-    avatarUrl          String              @default("/upload/avatars/avatar1.jpeg")
-    bannerUrl          String              @default("/upload/banners/banner1.jpeg")
+    avatarUrl          String              @default("http://localhost:3001/upload/banners/avatar1.jpeg")
+    bannerUrl          String              @default("http://localhost:3001/upload/banners/banner1.jpeg")
     createdAt          DateTime            @default(now())
     updatedAt          DateTime            @updatedAt
     associatedAccounts associatedAccount[] @relation(name: "associatedAccountToUser")
