@@ -62,4 +62,9 @@ export class ChannelUserController {
 	listActiveUserChannels(@ActiveUser() ActiveUser: ActiveUserData) {
 		return this.channelUserService.listActiveUserChannels(ActiveUser);
 	}
+	@Get(':room_id')
+	findMember(@Param('room_id') channel_id: string) {
+		return this.channelUserService.findMembers(channel_id);
+	}
+
 }

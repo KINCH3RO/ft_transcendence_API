@@ -1,5 +1,5 @@
 import { $Enums } from "@prisma/client";
-import { IsNotEmpty, IsUrl, MinLength } from "class-validator";
+import { IsNotEmpty, IsOptional, IsUrl, MinLength } from "class-validator";
 
 export class CreateChannelDto {
 	@IsUrl()
@@ -10,6 +10,7 @@ export class CreateChannelDto {
 	name: string;
 
 	@MinLength(8)
+	@IsOptional()
 	password?: string;
 
 	@IsNotEmpty()

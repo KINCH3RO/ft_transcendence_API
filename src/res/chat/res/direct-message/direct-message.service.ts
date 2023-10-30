@@ -57,6 +57,12 @@ export class DirectMessageService {
 						id: true,
 						onlineStatus: true,
 						fullName: true,
+						profile: {
+							select: {
+								id: true,
+								rating: true
+							}
+						}
 					},
 				},
 				receiver: {
@@ -66,6 +72,12 @@ export class DirectMessageService {
 						id: true,
 						onlineStatus: true,
 						fullName: true,
+						profile: {
+							select: {
+								id: true,
+								rating: true
+							}
+						}
 					},
 				},
 				message: {
