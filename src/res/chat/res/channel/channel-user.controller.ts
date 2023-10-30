@@ -8,54 +8,63 @@ import { JoinChannelDto } from './dto/join-channel.dto';
 
 @Controller('channelUser')
 export class ChannelUserController {
-  constructor(private readonly channelUserService: ChannelUserService) {}
-
-  @Get()
-  findOne(@Body() createChannelUserDto: CreateChannelUserDto) {
-    return this.channelUserService.findOne(createChannelUserDto);
-  }
-
-  @Post()
-  create(@Body() createChannelUserDto: CreateChannelUserDto) {
-    return this.channelUserService.create(createChannelUserDto);
-  }
-
-  @Post('joinChannel')
-  joinChannel(
-    @ActiveUser() user: ActiveUserData,
-    @Body() joinChannelDto: JoinChannelDto,
-  ) {
-    return this.channelUserService.joinChannel(user.sub, joinChannelDto)
-  }
-
-  @Patch()
-  update(@Body() updateChannelUserDto: UpdateChannelUserDto) {
-    return this.channelUserService.update(updateChannelUserDto);
-  }
-
-  @Patch("ban")
-  ban(@ActiveUser() user: ActiveUserData, @Body() targetChannelUserDto: UpdateChannelUserDto) {
-    return this.channelUserService.channelAction(user.sub, targetChannelUserDto, "BANNED");
-  }
+	constructor(private readonly channelUserService: ChannelUserService) { }
 
 
-  @Patch("mute")
-  mute(@ActiveUser() user: ActiveUserData, @Body() targetChannelUserDto: UpdateChannelUserDto) {
-    return this.channelUserService.channelAction(user.sub, targetChannelUserDto, "MUTED");
-  }
 
-  @Patch("free")
-  free(@ActiveUser() user: ActiveUserData, @Body() targetChannelUserDto: UpdateChannelUserDto) {
-    return this.channelUserService.channelAction(user.sub, targetChannelUserDto, "FREE");
-  }
+	@Get()
+	findOne(@Body() createChannelUserDto: CreateChannelUserDto) {
+		return this.channelUserService.findOne(createChannelUserDto);
+	}
 
-  @Delete("kick")
-  kick(@ActiveUser() user: ActiveUserData, @Body() targetChannelUserDto: UpdateChannelUserDto) {
-    return this.channelUserService.kick(user.sub, targetChannelUserDto);
-  }
+	@Post()
+	create(@Body() createChannelUserDto: CreateChannelUserDto) {
+		return this.channelUserService.create(createChannelUserDto);
+	}
 
-  @Get(':room_id')
-  findMember(@Param('room_id') channel_id: string) {
-    return this.channelUserService.findMembers(channel_id);
-  }
+
+
+	@Post('joinChannel')
+	joinChannel(
+		@ActiveUser() user: ActiveUserData,
+		@Body() joinChannelDto: JoinChannelDto,
+	) {
+		return this.channelUserService.joinChannel(user.sub, joinChannelDto)
+	}
+
+	@Patch()
+	update(@Body() updateChannelUserDto: UpdateChannelUserDto) {
+		return this.channelUserService.update(updateChannelUserDto);
+	}
+
+	@Patch("ban")
+	ban(@ActiveUser() user: ActiveUserData, @Body() targetChannelUserDto: UpdateChannelUserDto) {
+		return this.channelUserService.channelAction(user.sub, targetChannelUserDto, "BANNED");
+	}
+
+
+	@Patch("mute")
+	mute(@ActiveUser() user: ActiveUserData, @Body() targetChannelUserDto: UpdateChannelUserDto) {
+		return this.channelUserService.channelAction(user.sub, targetChannelUserDto, "MUTED");
+	}
+
+	@Patch("free")
+	free(@ActiveUser() user: ActiveUserData, @Body() targetChannelUserDto: UpdateChannelUserDto) {
+		return this.channelUserService.channelAction(user.sub, targetChannelUserDto, "FREE");
+	}
+
+	@Delete("kick")
+	kick(@ActiveUser() user: ActiveUserData, @Body() targetChannelUserDto: UpdateChannelUserDto) {
+		return this.channelUserService.kick(user.sub, targetChannelUserDto);
+	}
+
+	@Get("myChannels")
+	listActiveUserChannels(@ActiveUser() ActiveUser: ActiveUserData) {
+		return this.channelUserService.listActiveUserChannels(ActiveUser);
+	}
+	@Get(':room_id')
+	findMember(@Param('room_id') channel_id: string) {
+		return this.channelUserService.findMembers(channel_id);
+	}
+
 }

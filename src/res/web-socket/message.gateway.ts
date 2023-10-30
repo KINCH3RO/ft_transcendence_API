@@ -28,11 +28,28 @@ export class MessageGate {
 	@SubscribeMessage("privateMessage")
 	handlePrivateMessage(socket: Socket, data: BodyData) {
 		// console.log(data);
+		data.data.mine = (data.data.senderID == data.sender.id);
 
-		data.data.mine = (data.data.directmessage.senderID == data.sender.id);
+		this.io.to(data.sender.id).emit("privateMessage", data.data);
 		let receiver = data.data.directmessage.senderID == data.sender.id ? data.data.directmessage.receiverID : data.data.directmessage.senderID;
+		data.data.mine = (data.data.senderID == receiver);
 		// console.log(receiver);
-		this.io.to([receiver, data.sender.id]).emit("privateMessage", data.data);
+		this.io.to(receiver).emit("privateMessage", data.data);
+
+
+	}
+
+	@SubscribeMessage("channelMessage")
+	handleChatMessage(socket: Socket, data: BodyData) {
+
+		data.data.mine = (data.data.senderID == data.sender.id);
+
+		this.io.to(data.sender.id).emit("channelMessage", data.data);
+		data.data.mine = false
+		// console.log(receiver);
+		socket.to(data.data.channelID).emit("channelMessage", data.data);
+
+
 	}
 
 

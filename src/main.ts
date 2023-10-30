@@ -5,8 +5,9 @@ import { PrismaClientExceptionFilter } from './prisma/prisma-client-exception/pr
 async function bootstrap() {
 	const app = await NestFactory.create(AppModule);
 	app.useGlobalPipes(new ValidationPipe({
-		transform:true,
-		whitelist:true
+		transformOptions: { enableImplicitConversion: true },
+		transform: true,
+		whitelist: true
 	}));
 	app.enableCors();
 	const { httpAdapter } = app.get(HttpAdapterHost);
