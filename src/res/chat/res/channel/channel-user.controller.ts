@@ -53,4 +53,9 @@ export class ChannelUserController {
   kick(@ActiveUser() user: ActiveUserData, @Body() targetChannelUserDto: UpdateChannelUserDto) {
     return this.channelUserService.kick(user.sub, targetChannelUserDto);
   }
+
+  @Get(':room_id')
+  findMember(@Param('room_id') channel_id: string) {
+    return this.channelUserService.findMembers(channel_id);
+  }
 }

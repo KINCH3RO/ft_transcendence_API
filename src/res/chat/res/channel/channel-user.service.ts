@@ -5,6 +5,7 @@ import { CreateChannelUserDto } from './dto/create-channelUser.dto';
 import { $Enums } from '@prisma/client';
 import { JoinChannelDto } from './dto/join-channel.dto';
 import { HashingService } from 'src/hashing/hashing.service';
+import { ChannelUser } from './entities/channel.entity';
 
 
 @Injectable()
@@ -164,4 +165,34 @@ export class ChannelUserService {
 
     return this.create(createChannelUserDto);
   }
+
+  findMembers(channel_id: string): Promise<ChannelUser[]> {
+    return this.prisma.channelUser.findMany({
+      where: {
+        channelID: channel_id,
+        OR: [
+          {status: 'FREE'},
+          {status: 'MUTED'}
+        ]
+      },
+      include: {
+        channel: {
+          select: {
+            imageUrl: true,
+            name: true,
+            visibility: true
+          }
+        },
+        user: {
+          select: {
+            id: true,
+            avatarUrl: true,
+            userName: true,
+            onlineStatus: true
+          }
+        }
+      }
+    });
+  }
+
 }

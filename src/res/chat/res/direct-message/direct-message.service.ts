@@ -45,6 +45,12 @@ export class DirectMessageService {
 						id: true,
 						onlineStatus: true,
 						fullName: true,
+						profile: {
+							select: {
+								id: true,
+								rating: true
+							}
+						}
 					},
 				},
 				receiver: {
@@ -54,6 +60,12 @@ export class DirectMessageService {
 						id: true,
 						onlineStatus: true,
 						fullName: true,
+						profile: {
+							select: {
+								id: true,
+								rating: true
+							}
+						}
 					},
 				},
 				message: {
@@ -93,7 +105,7 @@ export class DirectMessageService {
 			);
 			baseData['message'] = data.message[0];
 
-			console.log('>> data: ', baseData);
+			// console.log('>> data: ', baseData);
 			return baseData;
 		});
 	}
