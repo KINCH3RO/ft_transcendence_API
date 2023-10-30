@@ -34,6 +34,10 @@ export class AchievementService {
     return result;
   }
 
+  async findAllAchievements() {
+    return await this.prismaService.achievements.findMany({});
+  }
+
   async findAllUser(user: ActiveUserData) {
     this.logger.log(`findAll Achievements for user ${user.username}`);
 

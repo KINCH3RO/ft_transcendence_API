@@ -23,6 +23,11 @@ export class AchievementController {
     return this.achievementService.assign(user, assignAchievementDto);
   }
 
+  @Get('all')
+  findAllEarnableAchievements() {
+    return this.achievementService.findAllAchievements();
+  }
+
   @Get('user')
   findAllUser(@ActiveUser() user: ActiveUserData) {
     return this.achievementService.findAllUser(user);
