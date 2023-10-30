@@ -28,9 +28,22 @@ export class MatchController {
     return this.matchService.findAll(user);
   }
 
+  @Get('stats')
+  getStats(@ActiveUser() user: ActiveUserData) {
+    return this.matchService.getStats(user);
+  }
+
   @Get(':id')
   findOne(@Param('id', ParseIntPipe) id: number) {
     return this.matchService.findOne(id);
+  }
+
+  @Get('latest/:take')
+  getLatestMatches(
+    @Param('take', ParseIntPipe) take: number,
+    @ActiveUser() user: ActiveUserData,
+  ) {
+    return this.matchService.getLatest(user, take);
   }
 
   @Patch(':id')
