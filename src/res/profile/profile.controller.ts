@@ -18,6 +18,12 @@ export class ProfileController {
     return this.profileService.findOneByUserId(id);
   }
 
+  @Get('data')
+  findSelfData(@ActiveUser() user: ActiveUserData) {}
+
+  @Get('data/:userId')
+  findDataByUserId(@Param('userId') id: string) {}
+
   @Patch()
   update(
     @ActiveUser() user: ActiveUserData,
