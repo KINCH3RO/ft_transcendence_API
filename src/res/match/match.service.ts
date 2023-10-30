@@ -44,6 +44,27 @@ export class MatchService {
     return result;
   }
 
+  async getStats(user: ActiveUserData) {
+    const matches = await this.findAll(user);
+    let highest = 0;
+    let currentSum = 0;
+    let wins = 0;
+
+    matches.map((match) => {
+      if (match.winnerID === user.sub) {
+        wins++;
+        currentSum++;
+      } else currentSum = 0;
+      if (currentSum > highest) highest = currentSum;
+    });
+
+    return {
+      winstreak: highest,
+      winrate: (wins / matches.length) * 100,
+      total: matches.length,
+    };
+  }
+
   async findOne(id: number) {
     this.logger.log(`findOne for match with id: ${id}`);
 
