@@ -6,10 +6,11 @@ import { JwtModule } from '@nestjs/jwt';
 import { TokenGuard } from './token.guard';
 import { FriendGate } from './friend.gateway';
 import { MessageGate } from './message.gateway';
+import { LobbyGate } from './lobby.gateway';
 
 @Module({
 	exports: [WebSocketService],
 	imports: [JwtModule],
-	providers: [FriendGate, ChatGate, MessageGate, MainGate, WebSocketService],
+	providers: [FriendGate, ChatGate, MessageGate, MainGate, WebSocketService, LobbyGate],
 })
 export class WebSocketModule { }

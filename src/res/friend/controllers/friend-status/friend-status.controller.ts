@@ -28,6 +28,13 @@ export class FriendStatusController {
 	async findFriends(@ActiveUser() userData: ActiveUserData) {
 		return this.friendStatusService.getFriendsList(userData.sub);
 	}
+
+
+	@Get("listOnline")
+	async findOnlineFriends(@ActiveUser() userData: ActiveUserData) {
+		return this.friendStatusService.getFriendsList(userData.sub, true);
+	}
+
 	@Get(':id')
 	async findOne(@Query("senderID") senderID: string, @Query("receiverID") receiverID: string) {
 		return this.friendStatusService.findOne(senderID, receiverID);
