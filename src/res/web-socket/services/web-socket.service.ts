@@ -6,7 +6,7 @@ import { UUID } from 'crypto';
 export class WebSocketService {
 	constructor(private jwtService: JwtService) { }
 
-	onlineUsers: { [userId: string]: string[]} = {};
+	onlineUsers: { [userId: string]: string[] } = {};
 
 	userConnected(userID: string, socketID: string, callback: () => void = null) {
 
@@ -20,7 +20,7 @@ export class WebSocketService {
 		console.log(this.onlineUsers);
 	}
 
-	userDisconnected(token: string, socketID: string, callback: (userID:string) => void = null) {
+	userDisconnected(token: string, socketID: string, callback: (userID: string) => void = null) {
 
 		console.log("disconnect")
 		let userID = "none";
@@ -43,8 +43,8 @@ export class WebSocketService {
 		console.log(this.onlineUsers);
 	}
 
-	onlineUser() {
-
+	getSockets(userID: string) {
+		return this.onlineUsers[userID];
 
 	}
 	isOnline(userID: string): boolean {

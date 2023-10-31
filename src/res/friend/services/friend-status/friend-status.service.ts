@@ -8,7 +8,7 @@ import { FriendRequest } from '../../entities/friendRequest.entity';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { $Enums, friendStatus } from '@prisma/client';
 
-import { WebSocketService } from 'src/res/web-socket/web-socket.service';
+import { WebSocketService } from 'src/res/web-socket/services/web-socket.service';
 
 @Injectable()
 export class FriendStatusService {
