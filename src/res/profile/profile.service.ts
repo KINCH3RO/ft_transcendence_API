@@ -43,7 +43,7 @@ export class ProfileService {
       },
     });
 
-    return result;
+    return { ...result, username: result.userName };
   }
 
   async findDataByUserId(id: string) {
@@ -57,7 +57,7 @@ export class ProfileService {
       },
     });
 
-    return result;
+    return { ...result, username: result.userName };
   }
 
   async findDataByUsername(name: string) {
@@ -72,7 +72,7 @@ export class ProfileService {
       },
     });
 
-    return result;
+    return { ...result, username: result.userName };
   }
 
   update(user: ActiveUserData, updateProfileDto: UpdateProfileDto) {
