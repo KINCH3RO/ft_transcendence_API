@@ -1,5 +1,5 @@
-GET http://localhost:3001/profile HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0MTEwMjA3Mi01Y2FiLTQ5MGQtOWM4Zi1hNGY4YzgyMTExMmEiLCJ1c2VybmFtZSI6Im1vaGFoYWhhIiwiaWF0IjoxNjk4NDMzODAzfQ.9AMwpjbJ9r4KLarEruvefhQ4rmrTqiT4cVnTG2l3HH4
+GET http://localhost:3001/profile/data HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIzNmZmMjNlMi03ZjA1LTRhODgtYTQzNi0xZTkwY2I4OTU4NmQiLCJ1c2VybmFtZSI6IkFtaW5pIiwiaWF0IjoxNjk4Nzc1MjM3fQ.T4DDu6KwMVkoXG6YJjw6xVLNXaY0AiWDIkD2Ombk478
 ###
 PATCH http://localhost:3001/profile HTTP/1.1
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0MTEwMjA3Mi01Y2FiLTQ5MGQtOWM4Zi1hNGY4YzgyMTExMmEiLCJ1c2VybmFtZSI6Im1vaGFoYWhhIiwiaWF0IjoxNjk4NDMzODAzfQ.9AMwpjbJ9r4KLarEruvefhQ4rmrTqiT4cVnTG2l3HH4
@@ -10,4 +10,13 @@ Content-Type: application/json
 	"level": 2,
 	"xp": 3000,
 	"coins": 12345
+}
+
+###
+POST http://localhost:3001/authentication/signIn
+Content-Type: application/json
+
+{
+	"username": "Amini",
+	"password": "imgamma42here"
 }
