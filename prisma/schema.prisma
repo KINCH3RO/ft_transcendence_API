@@ -48,10 +48,10 @@ model associatedAccount {
 model profile {
     id     String @id @default(uuid())
     user   user?  @relation(name: "profileToUser")
-    rating Int    @default(0)
-    level  Int    @default(0)
+    rating Int    @default(5000)
+    level  Int    @default(1)
     xp     Int    @default(0)
-    coins  Int    @default(0)
+    coins  Int    @default(200)
 }
 
 model matches {
