@@ -36,6 +36,7 @@ export class ProfileService {
     const result = await this.prismaService.user.findUnique({
       where: { id: user.sub },
       select: {
+        id: true,
         avatarUrl: true,
         bannerUrl: true,
         userName: true,
@@ -43,13 +44,14 @@ export class ProfileService {
       },
     });
 
-    return result;
+    return { ...result, username: result.userName };
   }
 
   async findDataByUserId(id: string) {
     const result = await this.prismaService.user.findUnique({
       where: { id },
       select: {
+        id: true,
         avatarUrl: true,
         bannerUrl: true,
         userName: true,
@@ -57,13 +59,14 @@ export class ProfileService {
       },
     });
 
-    return result;
+    return { ...result, username: result.userName };
   }
 
   async findDataByUsername(name: string) {
     const result = await this.prismaService.user.findUnique({
       where: { userName: name },
       select: {
+        id: true,
         avatarUrl: true,
         bannerUrl: true,
         userName: true,
@@ -71,7 +74,7 @@ export class ProfileService {
       },
     });
 
-    return result;
+    return { ...result, username: result.userName };
   }
 
   update(user: ActiveUserData, updateProfileDto: UpdateProfileDto) {

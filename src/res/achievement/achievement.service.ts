@@ -55,6 +55,20 @@ export class AchievementService {
     return result;
   }
 
+  async findAllUserById(id: string) {
+    const result = await this.prismaService.achievements.findMany({
+      where: {
+        users: {
+          some: {
+            id,
+          },
+        },
+      },
+    });
+
+    return result;
+  }
+
   async findOne(id: number) {
     this.logger.log(`findOne Achievement with id: ${id}`);
 
