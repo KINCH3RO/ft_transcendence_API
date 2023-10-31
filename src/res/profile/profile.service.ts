@@ -36,6 +36,7 @@ export class ProfileService {
     const result = await this.prismaService.user.findUnique({
       where: { id: user.sub },
       select: {
+        id: true,
         avatarUrl: true,
         bannerUrl: true,
         userName: true,
@@ -50,6 +51,7 @@ export class ProfileService {
     const result = await this.prismaService.user.findUnique({
       where: { id },
       select: {
+        id: true,
         avatarUrl: true,
         bannerUrl: true,
         userName: true,
