@@ -44,7 +44,14 @@ export class ProfileService {
       },
     });
 
-    return { ...result, username: result.userName };
+    this.logger.verbose(`findSelfData returned: `, result);
+
+    const xpRequirements = {
+      current: this.calculateRequiredXp(result.profile.level),
+      previous: this.calculateRequiredXp(result.profile.level - 1),
+    };
+
+    return { ...result, username: result.userName, xpRequirements };
   }
 
   async findDataByUserId(id: string) {
@@ -59,7 +66,12 @@ export class ProfileService {
       },
     });
 
-    return { ...result, username: result.userName };
+    const xpRequirements = {
+      current: this.calculateRequiredXp(result.profile.level),
+      previous: this.calculateRequiredXp(result.profile.level - 1),
+    };
+
+    return { ...result, username: result.userName, xpRequirements };
   }
 
   async findDataByUsername(name: string) {
@@ -74,7 +86,12 @@ export class ProfileService {
       },
     });
 
-    return { ...result, username: result.userName };
+    const xpRequirements = {
+      current: this.calculateRequiredXp(result.profile.level),
+      previous: this.calculateRequiredXp(result.profile.level - 1),
+    };
+
+    return { ...result, username: result.userName, xpRequirements };
   }
 
   update(user: ActiveUserData, updateProfileDto: UpdateProfileDto) {
@@ -88,5 +105,11 @@ export class ProfileService {
     });
 
     return result;
+  }
+
+  calculateRequiredXp(level: number) {
+    const formula = (level + 1) * 100;
+
+    return formula;
   }
 }

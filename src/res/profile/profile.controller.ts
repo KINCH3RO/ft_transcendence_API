@@ -13,14 +13,14 @@ export class ProfileController {
     return this.profileService.findSelf(user);
   }
 
-  @Get(':userId')
-  findOneByUserId(@Param('userId') id: string) {
-    return this.profileService.findOneByUserId(id);
-  }
-
   @Get('data')
   findSelfData(@ActiveUser() user: ActiveUserData) {
     return this.profileService.findSelfData(user);
+  }
+
+  @Get(':userId')
+  findOneByUserId(@Param('userId') id: string) {
+    return this.profileService.findOneByUserId(id);
   }
 
   @Get('data/:userId')
