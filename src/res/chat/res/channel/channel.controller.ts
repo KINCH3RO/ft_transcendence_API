@@ -7,41 +7,40 @@ import { ActiveUserData } from 'src/iam/interfaces/active-user.interface';
 
 @Controller('channel')
 export class ChannelController {
-  constructor(private readonly channelService: ChannelService) {}
+	constructor(private readonly channelService: ChannelService) { }
 
-  @Post()
-  create(@ActiveUser() user:ActiveUserData, @Body() createChannelDto: CreateChannelDto) {
-    console.log('body: ', createChannelDto);
-    return this.channelService.create(createChannelDto, user.sub);
-  }
+	@Post()
+	create(@ActiveUser() user: ActiveUserData, @Body() createChannelDto: CreateChannelDto) {
+		return this.channelService.create(createChannelDto, user.sub);
+	}
 
-  @Get()
-  findAll() {
-    return this.channelService.findAll();
-  }
+	@Get()
+	findAll() {
+		return this.channelService.findAll();
+	}
 
-  @Get('list')
-  listChannel(@ActiveUser() user: ActiveUserData) {
-    return this.channelService.listCurrentUserChannel(user.sub)
-  }
+	@Get('list')
+	listChannel(@ActiveUser() user: ActiveUserData) {
+		return this.channelService.listCurrentUserChannel(user.sub)
+	}
 
-  @Get("filter")
-  findChannelByName(@Query('name') name: string) {
-    return this.channelService.findChannelByName(name);
-  }
+	@Get("filter")
+	findChannelByName(@Query('name') name: string) {
+		return this.channelService.findChannelByName(name);
+	}
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.channelService.findOne(id);
-  }
+	@Get(':id')
+	findOne(@Param('id') id: string) {
+		return this.channelService.findOne(id);
+	}
 
-  @Patch()
-  update(@Body() updateChannelDto: UpdateChannelDto) {
-    return this.channelService.update(updateChannelDto);
-  }
+	@Patch()
+	update(@Body() updateChannelDto: UpdateChannelDto) {
+		return this.channelService.update(updateChannelDto);
+	}
 
-  @Delete()
-  remove(@ActiveUser() user: ActiveUserData, @Body() removeChannelDto: UpdateChannelDto) {
-    return this.channelService.remove(user.sub, removeChannelDto);
-  }
+	@Delete()
+	remove(@ActiveUser() user: ActiveUserData, @Body() removeChannelDto: UpdateChannelDto) {
+		return this.channelService.remove(user.sub, removeChannelDto);
+	}
 }
