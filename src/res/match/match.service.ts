@@ -44,6 +44,27 @@ export class MatchService {
     return result;
   }
 
+  async findAllById(id: string) {
+    const result = await this.prismaService.matches.findMany({
+      where: {
+        OR: [
+          {
+            winnerID: {
+              equals: id,
+            },
+          },
+          {
+            loserID: {
+              equals: id,
+            },
+          },
+        ],
+      },
+    });
+
+    return result;
+  }
+
   async getStats(user: ActiveUserData) {
     const matches = await this.findAll(user);
     let highest = 0;
@@ -52,6 +73,27 @@ export class MatchService {
 
     matches.map((match) => {
       if (match.winnerID === user.sub) {
+        wins++;
+        currentSum++;
+      } else currentSum = 0;
+      if (currentSum > highest) highest = currentSum;
+    });
+
+    return {
+      winstreak: highest,
+      winrate: (wins / matches.length) * 100,
+      total: matches.length,
+    };
+  }
+
+  async getStatsById(id: string) {
+    const matches = await this.findAllById(id);
+    let highest = 0;
+    let currentSum = 0;
+    let wins = 0;
+
+    matches.map((match) => {
+      if (match.winnerID === id) {
         wins++;
         currentSum++;
       } else currentSum = 0;

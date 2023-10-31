@@ -28,9 +28,19 @@ export class MatchController {
     return this.matchService.findAll(user);
   }
 
+  @Get(':id')
+  findAllById(@Param('id') id: string) {
+    return this.matchService.findAllById(id);
+  }
+
   @Get('stats')
   getStats(@ActiveUser() user: ActiveUserData) {
     return this.matchService.getStats(user);
+  }
+
+  @Get('stats/:id')
+  getStatsById(@Param('id') id: string) {
+    return this.matchService.getStatsById(id);
   }
 
   @Get(':id')
