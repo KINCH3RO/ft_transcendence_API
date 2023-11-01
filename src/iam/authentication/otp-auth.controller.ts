@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  ForbiddenException,
   HttpCode,
   HttpStatus,
   Post,
@@ -33,6 +34,6 @@ export class OtpAuthController {
   @Public()
   @Post('/verify')
   async verify(@Body() otpVerifyDto: OtpVerifyDto) {
-    return 'heelo world';
+    return this.otpService.verify(otpVerifyDto);
   }
 }

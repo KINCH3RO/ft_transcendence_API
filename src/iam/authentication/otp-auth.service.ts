@@ -1,11 +1,17 @@
-import { Injectable } from '@nestjs/common';
+import { ForbiddenException, Injectable } from '@nestjs/common';
 import { authenticator } from 'otplib';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { ActiveUserData } from '../interfaces/active-user.interface';
+import { TokenService } from '../jwt/token.service';
+import { OtpVerifyDto } from './dto/otp-verify.dto';
+import { User } from 'src/res/users/entities/user.entity';
 
 @Injectable()
 export class OtpAuthService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private tokenService: TokenService,
+  ) {}
 
   async generateSecret(username: string) {
     const secret = authenticator.generateSecret();
@@ -41,5 +47,20 @@ export class OtpAuthService {
       where: { id },
       data: { twoFactorAuthEnabled: false, twoFactorAuthSecret: null },
     });
+  }
+
+  async verify(otpVerifyDto: OtpVerifyDto) {
+    const payload = await this.tokenService.verifyToken(otpVerifyDto.token);
+    if (!payload) throw new ForbiddenException();
+    const user: User = await this.prisma.user.findUnique({
+      where: { id: payload.sub },
+    });
+    if (!user) throw new ForbiddenException();
+    const isValid = this.verifyCode(
+      otpVerifyDto.code,
+      user.twoFactorAuthSecret,
+    );
+    if (!isValid) throw new ForbiddenException();
+    return this.tokenService.getJwtToken(user, true);
   }
 }

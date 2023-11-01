@@ -32,8 +32,9 @@ export class AuthenticationService {
     );
     if (!user || !isEqual)
       throw new ForbiddenException({ message: 'wrong password' });
-    if (!user.twoFactorAuthEnabled)
-      return this.tokenService.getJwtToken(user, true);
-	
+    return {
+      ...(await this.tokenService.getJwtToken(user, true)),
+      tempToken: user.twoFactorAuthEnabled,
+    };
   }
 }
