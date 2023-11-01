@@ -51,16 +51,18 @@ export class OtpAuthService {
 
   async verify(otpVerifyDto: OtpVerifyDto) {
     const payload = await this.tokenService.verifyToken(otpVerifyDto.token);
-    if (!payload) throw new ForbiddenException();
+    if (!payload)
+      throw new ForbiddenException({ message: 'something went wrong' });
     const user: User = await this.prisma.user.findUnique({
       where: { id: payload.sub },
     });
-    if (!user) throw new ForbiddenException();
+    if (!user)
+      throw new ForbiddenException({ message: 'something went wrong' });
     const isValid = this.verifyCode(
       otpVerifyDto.code,
       user.twoFactorAuthSecret,
     );
-    if (!isValid) throw new ForbiddenException();
+    if (!isValid) throw new ForbiddenException({ message: 'wrong code' });
     return this.tokenService.getJwtToken(user, true);
   }
 }
