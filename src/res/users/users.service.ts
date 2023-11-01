@@ -43,6 +43,7 @@ export class UsersService {
         avatarUrl: true,
         bannerUrl: true,
         password: true,
+        twoFactorAuthEnabled: true,
       },
     });
     return { ...user, password: user.password ? true : false };

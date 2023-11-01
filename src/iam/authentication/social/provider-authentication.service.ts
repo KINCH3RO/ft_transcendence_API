@@ -19,19 +19,25 @@ export class ProviderAuthenticationService {
       return {
         access_token: null,
         ...(await this.tokenService.getProviderToken(providerUserData)),
+        twoFactorAuth: false,
       };
-    else
+    else {
       return {
-        ...(await this.tokenService.getJwtToken(user)),
+        ...(await this.tokenService.getJwtToken(
+          user,
+          !user.twoFactorAuthEnabled,
+        )),
         provider_info: null,
+        twoFactorAuth: user.twoFactorAuthEnabled,
       };
+    }
   }
 
   async create(providerToken: string) {
     const providerData = await this.tokenService.verifyToken(providerToken);
     if (!providerData) throw new ForbiddenException();
     const user = await this.userService.createByProvider(providerData);
-    return this.tokenService.getJwtToken(user);
+    return this.tokenService.getJwtToken(user, true);
   }
 
   async merge(userId: string, providerToken: string) {
