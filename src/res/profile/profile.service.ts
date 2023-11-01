@@ -47,8 +47,8 @@ export class ProfileService {
     this.logger.verbose(`findSelfData returned: `, result);
 
     const xpRequirements = {
-      current: this.calculateRequiredXp(result.profile.level),
-      previous: this.calculateRequiredXp(result.profile.level - 1),
+      current: this.calculateRequiredXp(result.profile.level + 1),
+      previous: this.calculateRequiredXp(result.profile.level),
     };
 
     return { ...result, username: result.userName, xpRequirements };
@@ -67,8 +67,8 @@ export class ProfileService {
     });
 
     const xpRequirements = {
-      current: this.calculateRequiredXp(result.profile.level),
-      previous: this.calculateRequiredXp(result.profile.level - 1),
+      current: this.calculateRequiredXp(result.profile.level + 1),
+      previous: this.calculateRequiredXp(result.profile.level),
     };
 
     return { ...result, username: result.userName, xpRequirements };
@@ -87,8 +87,8 @@ export class ProfileService {
     });
 
     const xpRequirements = {
-      current: this.calculateRequiredXp(result.profile.level),
-      previous: this.calculateRequiredXp(result.profile.level - 1),
+      current: this.calculateRequiredXp(result.profile.level + 1),
+      previous: this.calculateRequiredXp(result.profile.level),
     };
 
     return { ...result, username: result.userName, xpRequirements };
@@ -108,9 +108,7 @@ export class ProfileService {
   }
 
   calculateRequiredXp(level: number) {
-    if (level < 1) return 0;
-
-    const formula = (level + 1) * 100;
+    const formula = 10 * (((level - 1) * level) / 2);
 
     return formula;
   }
