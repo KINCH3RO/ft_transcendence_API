@@ -108,6 +108,8 @@ export class ProfileService {
   }
 
   calculateRequiredXp(level: number) {
+    if (level < 1) return 0;
+
     const formula = (level + 1) * 100;
 
     return formula;
