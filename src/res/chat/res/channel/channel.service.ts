@@ -16,7 +16,7 @@ export class ChannelService {
   ) {}
 
   async create(createChannelDto: CreateChannelDto, id: string) {
-    let data = await this.prisma.channel.create({
+    return this.prisma.channel.create({
       select: {
         id: true,
         name: true,
@@ -35,21 +35,7 @@ export class ChannelService {
             updatedAt: true,
           },
         },
-        channels: {
-          where: {
-            OR: [{ status: 'FREE' }, { status: 'MUTED' }],
-          },
-          include: {
-            user: {
-              select: {
-                id: true,
-                avatarUrl: true,
-                userName: true,
-                onlineStatus: true,
-              },
-            },
-          },
-        },
+        channels: true,
       },
       data: {
         imageUrl: createChannelDto.imageUrl,
@@ -68,9 +54,6 @@ export class ChannelService {
         message: {},
       },
     });
-
-    console.log('data: ', data);
-    return data;
   }
 
   findAll() {
@@ -82,32 +65,14 @@ export class ChannelService {
       where: { id },
       select: {
         id: true,
+        visibility: true,
         name: true,
         imageUrl: true,
-        visibility: true,
-        message: {
-          take: 1,
-          orderBy: {
-            createdAt: 'desc',
-          },
-          select: {
-            senderID: true,
-            content: true,
-            attachment: true,
-            createdAt: true,
-            updatedAt: true,
-          },
-        },
         channels: {
-          where: {
-            OR: [{ status: 'FREE' }, { status: 'MUTED' }],
-          },
-          include: {
+          select: {
             user: {
               select: {
                 id: true,
-                avatarUrl: true,
-                userName: true,
                 onlineStatus: true,
               },
             },
@@ -121,7 +86,6 @@ export class ChannelService {
     });
 
     return channel;
-    // console.log(channel);
   }
 
   async update(updateChannelDto: UpdateChannelDto) {
@@ -176,7 +140,7 @@ export class ChannelService {
   }
 
   async listCurrentUserChannel(currentUserId: string) {
-    let channelss: ChannelList[] = await this.prisma.channel.findMany({
+    return this.prisma.channel.findMany({
       where: { channels: { some: { userID: currentUserId } } },
       select: {
         id: true,
@@ -196,37 +160,8 @@ export class ChannelService {
             updatedAt: true,
           },
         },
-        channels: {
-          where: {
-            OR: [{ status: 'FREE' }, { status: 'MUTED' }],
-          },
-          include: {
-            user: {
-              select: {
-                id: true,
-                avatarUrl: true,
-                userName: true,
-                onlineStatus: true,
-              },
-            },
-          },
-        },
+        channels: true,
       },
     });
-
-    return channelss.map((item) => {
-      item['reqByOwner'] =
-        item.channels.find((subitem) => subitem.role == 'OWNER').user.id ==
-        currentUserId;
-
-      item.channels.map((item) => {
-        item.user.onlineStatus = this.webSocketService.isOnline(item.user.id);
-      });
-
-      return item;
-    });
-
-    // console.log(channelss)
-    // return channelss;
   }
 }
