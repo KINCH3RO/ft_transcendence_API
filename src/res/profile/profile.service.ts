@@ -111,7 +111,12 @@ export class ProfileService {
 
     const promises = result.map(async (profile) => {
       const stats = await this.matchService.getStatsById(profile.id);
-      return { ...profile, winrate: stats.winrate, games: stats.total };
+      return {
+        ...profile,
+        username: profile.userName,
+        winrate: stats.winrate,
+        games: stats.total,
+      };
     });
 
     const profilesWithStats = await Promise.all(promises);
