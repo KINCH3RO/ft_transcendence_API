@@ -1,9 +1,18 @@
-import { Controller, Body, Post, HttpStatus, HttpCode } from '@nestjs/common';
+import {
+  Controller,
+  Body,
+  Post,
+  HttpStatus,
+  HttpCode,
+  Delete,
+  Param,
+} from '@nestjs/common';
 import { ActiveUser } from '../decorators/active-user.decorator';
 import { ProviderAuthenticationService } from './provider-authentication.service';
 import { ActiveUserData } from 'src/iam/interfaces/active-user.interface';
 import { Public } from '../decorators/public.decorator';
 import { ProviderTokenDto } from '../dto/provider-token.dto';
+import { provider } from '@prisma/client';
 
 @Controller('/provider')
 export class MergeController {
@@ -21,9 +30,18 @@ export class MergeController {
     );
   }
 
-  @Post('/create')
   @Public()
+  @Post('/create')
   create(@Body() providerTokenDto: ProviderTokenDto) {
     return this.authService.create(providerTokenDto.providerInfoToken);
+  }
+
+  @Delete('/unlink/:provider')
+  unlink(
+    @ActiveUser() user: ActiveUserData,
+    @Param('provider') provider: provider,
+  ) {
+    console.log(provider);
+    return this.authService.unlink(user.sub, provider);
   }
 }
