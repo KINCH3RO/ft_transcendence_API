@@ -3,6 +3,7 @@ import { ProfileService } from './profile.service';
 import { UpdateProfileDto } from './dto/update-profile.dto';
 import { ActiveUser } from 'src/iam/authentication/decorators/active-user.decorator';
 import { ActiveUserData } from 'src/iam/interfaces/active-user.interface';
+import { MatchService } from '../match/match.service';
 
 @Controller('profile')
 export class ProfileController {
@@ -11,6 +12,11 @@ export class ProfileController {
   @Get()
   findSelf(@ActiveUser() user: ActiveUserData) {
     return this.profileService.findSelf(user);
+  }
+
+  @Get('leaderboard')
+  getLeaderboardData(matchService: MatchService) {
+    return this.profileService.getLeaderboardData(matchService);
   }
 
   @Get('data')

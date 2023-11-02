@@ -2,6 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { UpdateProfileDto } from './dto/update-profile.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { ActiveUserData } from 'src/iam/interfaces/active-user.interface';
+import { MatchService } from '../match/match.service';
 
 @Injectable()
 export class ProfileService {
@@ -92,6 +93,25 @@ export class ProfileService {
     };
 
     return { ...result, username: result.userName, xpRequirements };
+  }
+
+  async getLeaderboardData(matchService: MatchService) {
+    const result = await this.prismaService.user.findMany({
+      select: {
+        id: true,
+        avatarUrl: true,
+        bannerUrl: true,
+        userName: true,
+        profile: true,
+      },
+    });
+
+    const profilesWithStats = result.map((profile) => {
+      const stats = matchService.getStatsById(profile.id);
+      return { ...profile, stats };
+    });
+
+    return profilesWithStats;
   }
 
   update(user: ActiveUserData, updateProfileDto: UpdateProfileDto) {
