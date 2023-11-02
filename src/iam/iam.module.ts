@@ -19,6 +19,8 @@ import { FortyTwoStrategy } from './authentication/social/fortyfTwo/fortytwo.str
 import { FortytwoOAuthGuard } from './authentication/social/fortyfTwo/fortytwo-oauth.guard';
 import { HashingModule } from 'src/hashing/hashing.module';
 import { MergeController } from './authentication/social/merge.controller';
+import { OtpAuthService } from './authentication/otp-auth.service';
+import { OtpAuthController } from './authentication/otp-auth.controller';
 
 @Module({
   providers: [
@@ -35,13 +37,15 @@ import { MergeController } from './authentication/social/merge.controller';
     GoogleOAuthGuard,
     FortyTwoStrategy,
     FortytwoOAuthGuard,
+    OtpAuthService,
   ],
   controllers: [
     AuthenticationController,
     GoogleAuthenticationController,
     GithubAuthenticationController,
     FortytwoAuthenticationController,
-	MergeController,
+    MergeController,
+    OtpAuthController,
   ],
   imports: [
     PrismaModule,
