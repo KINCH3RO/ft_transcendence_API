@@ -113,7 +113,7 @@ model channel {
 model channelUser {
     user      user          @relation(name: "channelUserToUser", fields: [userID], references: [id])
     userID    String
-    channel   channel       @relation(name: "channelTochannelUser", fields: [channelID], references: [id])
+    channel   channel       @relation(name: "channelTochannelUser", fields: [channelID], references: [id] , onDelete:  Cascade)
     channelID String
     role      channelRole
     status    channelStatus
@@ -140,9 +140,9 @@ model message {
     id              String         @id @default(cuid())
     sender          user           @relation(name: "messageToUser", fields: [senderID], references: [id])
     senderID        String
-    directmessage   directMessage? @relation(name: "directmessageTomessage", fields: [directmessageID], references: [id])
+    directmessage   directMessage? @relation(name: "directmessageTomessage", fields: [directmessageID], references: [id], onDelete: Cascade)
     directmessageID String?
-    channel         channel?       @relation(name: "channelTomessage", fields: [channelID], references: [id])
+    channel         channel?       @relation(name: "channelTomessage", fields: [channelID], references: [id], onDelete: Cascade)
     channelID       String?
     content         String
     attachment      attachment?

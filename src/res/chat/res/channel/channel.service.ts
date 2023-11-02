@@ -4,16 +4,53 @@ import { UpdateChannelDto } from './dto/update-channel.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { channelUser } from '@prisma/client';
 import { HashingService } from 'src/hashing/hashing.service';
+import { WebSocketService } from 'src/res/web-socket/web-socket.service';
+import { ChannelList } from './entities/channellist.entity';
 
 @Injectable()
 export class ChannelService {
   constructor(
     private prisma: PrismaService,
     private hashingService: HashingService,
+    private webSocketService: WebSocketService,
   ) {}
 
   async create(createChannelDto: CreateChannelDto, id: string) {
-    return this.prisma.channel.create({
+    let data = await this.prisma.channel.create({
+      select: {
+        id: true,
+        name: true,
+        imageUrl: true,
+        visibility: true,
+        message: {
+          take: 1,
+          orderBy: {
+            createdAt: 'desc',
+          },
+          select: {
+            senderID: true,
+            content: true,
+            attachment: true,
+            createdAt: true,
+            updatedAt: true,
+          },
+        },
+        channels: {
+          where: {
+            OR: [{ status: 'FREE' }, { status: 'MUTED' }],
+          },
+          include: {
+            user: {
+              select: {
+                id: true,
+                avatarUrl: true,
+                userName: true,
+                onlineStatus: true,
+              },
+            },
+          },
+        },
+      },
       data: {
         imageUrl: createChannelDto.imageUrl,
         name: createChannelDto.name,
@@ -31,31 +68,60 @@ export class ChannelService {
         message: {},
       },
     });
+
+    console.log('data: ', data);
+    return data;
   }
 
   findAll() {
     return this.prisma.channel.findMany();
   }
 
-  findOne(id: string) {
-    return this.prisma.channel.findUnique({
+  async findOne(id: string) {
+    const channel = await this.prisma.channel.findUnique({
       where: { id },
       select: {
         id: true,
-        visibility: true,
         name: true,
         imageUrl: true,
-        channels: {
+        visibility: true,
+        message: {
+          take: 1,
+          orderBy: {
+            createdAt: 'desc',
+          },
           select: {
+            senderID: true,
+            content: true,
+            attachment: true,
+            createdAt: true,
+            updatedAt: true,
+          },
+        },
+        channels: {
+          where: {
+            OR: [{ status: 'FREE' }, { status: 'MUTED' }],
+          },
+          include: {
             user: {
               select: {
+                id: true,
+                avatarUrl: true,
+                userName: true,
                 onlineStatus: true,
-              }
-            }
-          }
-        }
+              },
+            },
+          },
+        },
       },
     });
+
+    channel.channels.map((item) => {
+      item.user.onlineStatus = this.webSocketService.isOnline(item.user.id);
+    });
+
+    return channel;
+    // console.log(channel);
   }
 
   async update(updateChannelDto: UpdateChannelDto) {
@@ -110,7 +176,7 @@ export class ChannelService {
   }
 
   async listCurrentUserChannel(currentUserId: string) {
-    return this.prisma.channel.findMany({
+    let channelss: ChannelList[] = await this.prisma.channel.findMany({
       where: { channels: { some: { userID: currentUserId } } },
       select: {
         id: true,
@@ -130,8 +196,37 @@ export class ChannelService {
             updatedAt: true,
           },
         },
-        channels: true,
+        channels: {
+          where: {
+            OR: [{ status: 'FREE' }, { status: 'MUTED' }],
+          },
+          include: {
+            user: {
+              select: {
+                id: true,
+                avatarUrl: true,
+                userName: true,
+                onlineStatus: true,
+              },
+            },
+          },
+        },
       },
     });
+
+    return channelss.map((item) => {
+      item['reqByOwner'] =
+        item.channels.find((subitem) => subitem.role == 'OWNER').user.id ==
+        currentUserId;
+
+      item.channels.map((item) => {
+        item.user.onlineStatus = this.webSocketService.isOnline(item.user.id);
+      });
+
+      return item;
+    });
+
+    // console.log(channelss)
+    // return channelss;
   }
 }

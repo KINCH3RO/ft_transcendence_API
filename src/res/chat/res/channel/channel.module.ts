@@ -5,9 +5,10 @@ import { PrismaModule } from 'src/prisma/prisma.module';
 import { ChannelUserService } from './channel-user.service';
 import { ChannelUserController } from './channel-user.controller';
 import { HashingModule } from 'src/hashing/hashing.module';
+import { WebSocketModule } from 'src/res/web-socket/web-socket.module';
 
 @Module({
-  imports: [PrismaModule, HashingModule],
+  imports: [PrismaModule, HashingModule, WebSocketModule],
   controllers: [ChannelController, ChannelUserController],
   providers: [ChannelService, ChannelUserService],
 })
