@@ -41,7 +41,6 @@ export class MergeController {
     @ActiveUser() user: ActiveUserData,
     @Param('provider') provider: provider,
   ) {
-    console.log(provider);
     return this.authService.unlink(user.sub, provider);
   }
 }
