@@ -7,5 +7,6 @@ import { PrismaModule } from 'src/prisma/prisma.module';
   controllers: [MatchController],
   providers: [MatchService],
   imports: [PrismaModule],
+  exports: [MatchService],
 })
 export class MatchModule {}

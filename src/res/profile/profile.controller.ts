@@ -1,4 +1,4 @@
-import { Controller, Get, Body, Patch, Param } from '@nestjs/common';
+import { Controller, Get, Body, Patch, Param, Inject } from '@nestjs/common';
 import { ProfileService } from './profile.service';
 import { UpdateProfileDto } from './dto/update-profile.dto';
 import { ActiveUser } from 'src/iam/authentication/decorators/active-user.decorator';
@@ -15,8 +15,8 @@ export class ProfileController {
   }
 
   @Get('leaderboard')
-  getLeaderboardData(matchService: MatchService) {
-    return this.profileService.getLeaderboardData(matchService);
+  getLeaderboardData() {
+    return this.profileService.getLeaderboardData();
   }
 
   @Get('data')

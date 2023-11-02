@@ -6,7 +6,10 @@ import { MatchService } from '../match/match.service';
 
 @Injectable()
 export class ProfileService {
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(
+    private readonly prismaService: PrismaService,
+    private readonly matchService: MatchService,
+  ) {}
   private readonly logger = new Logger(ProfileService.name);
 
   async findSelf(user: ActiveUserData) {
@@ -95,7 +98,7 @@ export class ProfileService {
     return { ...result, username: result.userName, xpRequirements };
   }
 
-  async getLeaderboardData(matchService: MatchService) {
+  async getLeaderboardData() {
     const result = await this.prismaService.user.findMany({
       select: {
         id: true,
@@ -106,10 +109,14 @@ export class ProfileService {
       },
     });
 
-    const profilesWithStats = result.map((profile) => {
-      const stats = matchService.getStatsById(profile.id);
-      return { ...profile, stats };
+    const promises = result.map(async (profile) => {
+      const stats = await this.matchService.getStatsById(profile.id);
+      return { ...profile, winrate: stats.winrate, games: stats.total };
     });
+
+    const profilesWithStats = await Promise.all(promises);
+
+    profilesWithStats.sort((a, b) => b.profile.rating - a.profile.rating);
 
     return profilesWithStats;
   }
