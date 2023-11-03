@@ -6,6 +6,7 @@ import { channelUser } from '@prisma/client';
 import { HashingService } from 'src/hashing/hashing.service';
 import { WebSocketService } from 'src/res/web-socket/web-socket.service';
 import { ChannelList } from './entities/channellist.entity';
+import { channel } from 'diagnostics_channel';
 
 @Injectable()
 export class ChannelService {
@@ -140,7 +141,7 @@ export class ChannelService {
   }
 
   async listCurrentUserChannel(currentUserId: string) {
-    return this.prisma.channel.findMany({
+    let list: any = await this.prisma.channel.findMany({
       where: { channels: { some: { userID: currentUserId } } },
       select: {
         id: true,
@@ -163,5 +164,12 @@ export class ChannelService {
         channels: true,
       },
     });
+
+    list.map((item) => {
+      let channel_user = item.channels.find((x) => x.userID == currentUserId);
+      item['owner'] = channel_user.role;
+    });
+
+    return list;
   }
 }

@@ -7,6 +7,7 @@ import { JoinChannelDto } from './dto/join-channel.dto';
 import { HashingService } from 'src/hashing/hashing.service';
 import { ActiveUserData } from 'src/iam/interfaces/active-user.interface';
 import { ChannelUser } from './entities/channel.entity';
+import { LeaveChannelDto } from './dto/leave-channel.dto';
 
 @Injectable()
 export class ChannelUserService {
@@ -56,6 +57,12 @@ export class ChannelUserService {
   remove(deleteChannelUserDto: CreateChannelUserDto) {
     return this.prisma.channelUser.delete({
       where: { userID_channelID: deleteChannelUserDto },
+    });
+  }
+
+  leaveChannel(user_id: string, channel_id: string) {
+    return this.prisma.channelUser.deleteMany({
+      where: { channelID: channel_id, userID: user_id },
     });
   }
 
@@ -170,7 +177,7 @@ export class ChannelUserService {
     user_id: string,
     channel_id: string,
   ): Promise<ChannelUser[]> {
-    let members = await this.prisma.channelUser.findMany({
+    return this.prisma.channelUser.findMany({
       where: {
         channelID: channel_id,
         OR: [{ status: 'FREE' }, { status: 'MUTED' }],
@@ -193,12 +200,6 @@ export class ChannelUserService {
         },
       },
     });
-
-    members.map((item) => {
-      item["isOwner"] = user_id == members.find((item) => item.role == 'OWNER').user.id;
-		});
-
-		return members;
   }
 
   async listActiveUserChannels(activeUser: ActiveUserData) {

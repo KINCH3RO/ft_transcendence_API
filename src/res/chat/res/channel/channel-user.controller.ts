@@ -5,6 +5,7 @@ import { CreateChannelUserDto } from './dto/create-channelUser.dto';
 import { ActiveUser } from 'src/iam/authentication/decorators/active-user.decorator';
 import { ActiveUserData } from 'src/iam/interfaces/active-user.interface';
 import { JoinChannelDto } from './dto/join-channel.dto';
+import { LeaveChannelDto } from './dto/leave-channel.dto';
 
 @Controller('channelUser')
 export class ChannelUserController {
@@ -21,8 +22,6 @@ export class ChannelUserController {
 	create(@Body() createChannelUserDto: CreateChannelUserDto) {
 		return this.channelUserService.create(createChannelUserDto);
 	}
-
-
 
 	@Post('joinChannel')
 	joinChannel(
@@ -65,6 +64,12 @@ export class ChannelUserController {
 	@Get(':room_id')
 	findMember(@ActiveUser() user: ActiveUserData, @Param('room_id') channel_id: string) {
 		return this.channelUserService.findMembers(user.sub, channel_id);
+	}
+
+	@Delete(':room_id')
+	leaveChannel(@ActiveUser() user: ActiveUserData, @Param('room_id') channel_id: string) {
+		console.log("leave: ", user.sub, channel_id)
+		return this.channelUserService.leaveChannel(user.sub, channel_id);
 	}
 
 }
