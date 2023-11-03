@@ -11,7 +11,7 @@ async function bootstrap() {
 	}));
 	app.enableCors();
 	const { httpAdapter } = app.get(HttpAdapterHost);
-	// app.useGlobalFilters(new PrismaClientExceptionFilter(httpAdapter));
+	app.useGlobalFilters(new PrismaClientExceptionFilter(httpAdapter));
 
 	await app.listen(3001);
 }
