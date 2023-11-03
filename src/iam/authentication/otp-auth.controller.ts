@@ -1,12 +1,4 @@
-import {
-  Body,
-  Controller,
-  ForbiddenException,
-  HttpCode,
-  HttpStatus,
-  Post,
-  Res,
-} from '@nestjs/common';
+import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
 import { ActiveUser } from './decorators/active-user.decorator';
 import { OtpAuthService } from './otp-auth.service';
 import { ActiveUserData } from '../interfaces/active-user.interface';
