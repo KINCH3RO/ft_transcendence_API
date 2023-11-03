@@ -4,16 +4,38 @@ import { UpdateChannelDto } from './dto/update-channel.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { channelUser } from '@prisma/client';
 import { HashingService } from 'src/hashing/hashing.service';
+import { WebSocketService } from 'src/res/web-socket/web-socket.service';
 
 @Injectable()
 export class ChannelService {
   constructor(
     private prisma: PrismaService,
     private hashingService: HashingService,
+    private webSocketService: WebSocketService,
   ) {}
 
   async create(createChannelDto: CreateChannelDto, id: string) {
     return this.prisma.channel.create({
+      select: {
+        id: true,
+        name: true,
+        imageUrl: true,
+        visibility: true,
+        message: {
+          take: 1,
+          orderBy: {
+            createdAt: 'desc',
+          },
+          select: {
+            senderID: true,
+            content: true,
+            attachment: true,
+            createdAt: true,
+            updatedAt: true,
+          },
+        },
+        channels: true,
+      },
       data: {
         imageUrl: createChannelDto.imageUrl,
         name: createChannelDto.name,
@@ -37,8 +59,8 @@ export class ChannelService {
     return this.prisma.channel.findMany();
   }
 
-  findOne(id: string) {
-    return this.prisma.channel.findUnique({
+  async findOne(id: string) {
+    const channel = await this.prisma.channel.findUnique({
       where: { id },
       select: {
         id: true,
@@ -49,13 +71,20 @@ export class ChannelService {
           select: {
             user: {
               select: {
+                id: true,
                 onlineStatus: true,
-              }
-            }
-          }
-        }
+              },
+            },
+          },
+        },
       },
     });
+
+    channel.channels.map((item) => {
+      item.user.onlineStatus = this.webSocketService.isOnline(item.user.id);
+    });
+
+    return channel;
   }
 
   async update(updateChannelDto: UpdateChannelDto) {
@@ -110,7 +139,7 @@ export class ChannelService {
   }
 
   async listCurrentUserChannel(currentUserId: string) {
-    return this.prisma.channel.findMany({
+    let list: any = await this.prisma.channel.findMany({
       where: { channels: { some: { userID: currentUserId } } },
       select: {
         id: true,
@@ -133,5 +162,12 @@ export class ChannelService {
         channels: true,
       },
     });
+
+    list.map((item) => {
+      let channel_user = item.channels.find((x) => x.userID == currentUserId);
+      item['owner'] = channel_user.role;
+    });
+
+    return list;
   }
 }
