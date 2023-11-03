@@ -36,6 +36,7 @@ export class ProfileService {
     const result = await this.prismaService.user.findUnique({
       where: { id: user.sub },
       select: {
+        id: true,
         avatarUrl: true,
         bannerUrl: true,
         userName: true,
@@ -43,13 +44,21 @@ export class ProfileService {
       },
     });
 
-    return result;
+    this.logger.verbose(`findSelfData returned: `, result);
+
+    const xpRequirements = {
+      current: this.calculateRequiredXp(result.profile.level + 1),
+      previous: this.calculateRequiredXp(result.profile.level),
+    };
+
+    return { ...result, username: result.userName, xpRequirements };
   }
 
   async findDataByUserId(id: string) {
     const result = await this.prismaService.user.findUnique({
       where: { id },
       select: {
+        id: true,
         avatarUrl: true,
         bannerUrl: true,
         userName: true,
@@ -57,13 +66,19 @@ export class ProfileService {
       },
     });
 
-    return result;
+    const xpRequirements = {
+      current: this.calculateRequiredXp(result.profile.level + 1),
+      previous: this.calculateRequiredXp(result.profile.level),
+    };
+
+    return { ...result, username: result.userName, xpRequirements };
   }
 
   async findDataByUsername(name: string) {
     const result = await this.prismaService.user.findUnique({
       where: { userName: name },
       select: {
+        id: true,
         avatarUrl: true,
         bannerUrl: true,
         userName: true,
@@ -71,7 +86,12 @@ export class ProfileService {
       },
     });
 
-    return result;
+    const xpRequirements = {
+      current: this.calculateRequiredXp(result.profile.level + 1),
+      previous: this.calculateRequiredXp(result.profile.level),
+    };
+
+    return { ...result, username: result.userName, xpRequirements };
   }
 
   update(user: ActiveUserData, updateProfileDto: UpdateProfileDto) {
@@ -85,5 +105,11 @@ export class ProfileService {
     });
 
     return result;
+  }
+
+  calculateRequiredXp(level: number) {
+    const formula = 10 * (((level - 1) * level) / 2);
+
+    return formula;
   }
 }

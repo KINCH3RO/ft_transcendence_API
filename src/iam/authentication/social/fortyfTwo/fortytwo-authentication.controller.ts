@@ -27,8 +27,9 @@ export class FortytwoAuthenticationController {
   @HttpCode(HttpStatus.OK)
   @UseGuards(FortytwoOAuthGuard)
   async handleRedirect(@Req() request, @Res({ passthrough: true }) response) {
-    const { access_token, provider_info } =
+    const { access_token, provider_info, twoFactorAuth } =
       await this.providerAuthenticationService.signIn(request.user);
+    if (twoFactorAuth) response.cookie('TWO_AUTH_FACT', 'activated');
     if (access_token) response.cookie('INFO', access_token);
     else response.cookie('PROVIDER', provider_info);
     response.redirect(`${process.env.FRONTEND_HOST}/authCallback`);

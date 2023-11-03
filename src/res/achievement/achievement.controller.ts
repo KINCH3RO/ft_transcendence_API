@@ -33,6 +33,11 @@ export class AchievementController {
     return this.achievementService.findAllUser(user);
   }
 
+  @Get('user/:id')
+  findAllUserById(@Param('id') id: string) {
+    return this.achievementService.findAllUserById(id);
+  }
+
   @Get(':id')
   findOne(@Param('id', ParseIntPipe) id: number) {
     return this.achievementService.findOne(id);
