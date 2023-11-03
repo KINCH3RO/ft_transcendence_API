@@ -22,8 +22,6 @@ export class ChannelUserController {
 		return this.channelUserService.create(createChannelUserDto);
 	}
 
-
-
 	@Post('joinChannel')
 	joinChannel(
 		@ActiveUser() user: ActiveUserData,
@@ -63,8 +61,14 @@ export class ChannelUserController {
 		return this.channelUserService.listActiveUserChannels(ActiveUser);
 	}
 	@Get(':room_id')
-	findMember(@Param('room_id') channel_id: string) {
-		return this.channelUserService.findMembers(channel_id);
+	findMember(@ActiveUser() user: ActiveUserData, @Param('room_id') channel_id: string) {
+		return this.channelUserService.findMembers(user.sub, channel_id);
+	}
+
+	@Delete(':room_id')
+	leaveChannel(@ActiveUser() user: ActiveUserData, @Param('room_id') channel_id: string) {
+		console.log("leave: ", user.sub, channel_id)
+		return this.channelUserService.leaveChannel(user.sub, channel_id);
 	}
 
 }
