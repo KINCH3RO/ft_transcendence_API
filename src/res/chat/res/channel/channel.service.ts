@@ -5,8 +5,6 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { channelUser } from '@prisma/client';
 import { HashingService } from 'src/hashing/hashing.service';
 import { WebSocketService } from 'src/res/web-socket/web-socket.service';
-import { ChannelList } from './entities/channellist.entity';
-import { channel } from 'diagnostics_channel';
 
 @Injectable()
 export class ChannelService {

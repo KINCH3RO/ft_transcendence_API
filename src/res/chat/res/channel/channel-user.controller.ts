@@ -5,7 +5,6 @@ import { CreateChannelUserDto } from './dto/create-channelUser.dto';
 import { ActiveUser } from 'src/iam/authentication/decorators/active-user.decorator';
 import { ActiveUserData } from 'src/iam/interfaces/active-user.interface';
 import { JoinChannelDto } from './dto/join-channel.dto';
-import { LeaveChannelDto } from './dto/leave-channel.dto';
 
 @Controller('channelUser')
 export class ChannelUserController {

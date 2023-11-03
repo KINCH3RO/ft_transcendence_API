@@ -7,7 +7,6 @@ import { JoinChannelDto } from './dto/join-channel.dto';
 import { HashingService } from 'src/hashing/hashing.service';
 import { ActiveUserData } from 'src/iam/interfaces/active-user.interface';
 import { ChannelUser } from './entities/channel.entity';
-import { LeaveChannelDto } from './dto/leave-channel.dto';
 
 @Injectable()
 export class ChannelUserService {
