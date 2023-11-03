@@ -13,6 +13,9 @@ export class LobbyService {
 	lobbies: Lobby[] = [];
 
 	async createLobby(lobby: LobbyCreate) {
+
+		if (this.isPlayerOnLobby(lobby.players[0]) || this.isPlayerOnLobby(lobby.players[1]))
+			throw "already exist"
 		let user1: UserData = await this.profileService.findDataByUserId(lobby.players[0]);
 		let user2: UserData = await this.profileService.findDataByUserId(lobby.players[1]);
 
@@ -32,7 +35,7 @@ export class LobbyService {
 	}
 
 	deleteLobby(lobbyId: string) {
-		this.lobbies.filter(lobby => lobby.id != lobbyId);
+		this.lobbies = this.lobbies.filter(lobby => lobby.id != lobbyId);
 	}
 
 	isPlayerOnLobby(playerId: string) {
@@ -43,5 +46,7 @@ export class LobbyService {
 	getLobby(playerId: string) {
 		return this.lobbies.find(lobby => lobby.players.filter(x => x.id == playerId)) ?? null;
 	}
+
+
 
 }

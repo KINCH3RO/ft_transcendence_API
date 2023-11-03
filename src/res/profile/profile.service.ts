@@ -44,7 +44,7 @@ export class ProfileService {
 			},
 		});
 
-		this.logger.verbose(`findSelfData returned: `, result);
+		// this.logger.verbose(`findSelfData returned: `, result);
 
 		const xpRequirements = {
 			current: this.calculateRequiredXp(result.profile.level + 1),

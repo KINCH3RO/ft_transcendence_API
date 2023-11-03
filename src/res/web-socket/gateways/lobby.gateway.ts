@@ -31,10 +31,7 @@ export class LobbyGate {
 	io: Server;
 	@SubscribeMessage("lobbyInvite")
 	handleLobbyInvite(socket: Socket, data: BodyData) {
-
-
-		this.io.to(data.data.id).emit("lobbyInvite", data.sender)
-
+		this.io.to(data.data.receiver).emit("lobbyInvite", data.data.senderInfo)
 	}
 
 	@SubscribeMessage("getLobbyData")
@@ -43,16 +40,18 @@ export class LobbyGate {
 		if (!lobby)
 			return;
 		lobby.isOwner = lobby.owner == data.sender.id;
-		socket.emit("lobbyData", this.lobbyService.getLobby(data.sender.id))
+		socket.emit("lobbyData", lobby)
 	}
 
 	@SubscribeMessage("lobbyAccept")
-	handleLobbyCreate(socket: Socket, data: BodyData) {
+	async handleLobbyCreate(socket: Socket, data: BodyData) {
 
-		this.lobbyService.createLobby({
-			players: [data.data.id, data.sender.id],
-		}).then(lobby => {
-			console.log(lobby);
+
+		try {
+			let lobby = await this.lobbyService.createLobby({
+				players: [data.data.id, data.sender.id],
+			})
+
 			this.webSocketService.getSockets(lobby.players[0].id).forEach(socketID => {
 				this.io.sockets.sockets.get(socketID).join(lobby.id);
 				lobby.isOwner = lobby.owner == lobby.players[0].id;
@@ -64,8 +63,10 @@ export class LobbyGate {
 				lobby.isOwner = lobby.owner == lobby.players[1].id;
 				this.io.to(lobby.players[1].id).emit("lobbyData", lobby)
 			})
+		} catch (error) {
+			console.log(error);
+		}
 
-		})
 	}
 
 	@SubscribeMessage("leaveLobby")
@@ -74,7 +75,9 @@ export class LobbyGate {
 		let lobby: Lobby = data.data;
 		if (!lobby)
 			return;
-		this.io.to(lobby.id).emit("leaveLobby")
+		let oppnentdID = lobby.players.find(x => x.id != data.sender.id).id
+		this.io.to(oppnentdID).emit("leaveLobby", lobby.players.find(x => x.id == data.sender.id))
+		this.io.to(data.sender.id).emit("leaveLobby")
 		this.webSocketService.getSockets(lobby.players[0].id).forEach(socketID => {
 			this.io.sockets.sockets.get(socketID).leave(lobby.id);
 		})
@@ -92,9 +95,11 @@ export class LobbyGate {
 		let lobby: Lobby = data.data;
 		if (!lobby)
 			return;
+		lobby.isOwner = true;
+		this.io.to(lobby.players[0].id).emit("lobbyChange", lobby)
+		lobby.isOwner = false;
+		this.io.to(lobby.players[1].id).emit("lobbyChange", lobby)
 
-
-		this.io.to(lobby.id).emit("lobbyChange", lobby)
 	}
 
 

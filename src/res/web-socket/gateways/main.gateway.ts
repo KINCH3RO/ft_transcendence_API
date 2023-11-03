@@ -13,6 +13,8 @@ import { TokenGuard } from '../token.guard';
 import { TokenPipe } from '../token.pipe';
 import { BodyData } from '../types/body-data.interface';
 import { WebSocketService } from '../services/web-socket.service';
+import { LobbyService } from '../services/lobby.service';
+import Lobby from '../types/lobby.interface';
 //handling present events
 
 @UseFilters(new BaseWsExceptionFilter())
@@ -20,7 +22,7 @@ import { WebSocketService } from '../services/web-socket.service';
 @UsePipes(new TokenPipe(new JwtService()))
 @WebSocketGateway({ cors: true, transports: ['websocket'] })
 export class MainGate implements OnGatewayConnection, OnGatewayDisconnect {
-	constructor(private readonly webSocketService: WebSocketService) { }
+	constructor(private readonly webSocketService: WebSocketService, private lobbyService: LobbyService) { }
 
 	@WebSocketServer()
 	io: Server;
@@ -34,9 +36,22 @@ export class MainGate implements OnGatewayConnection, OnGatewayDisconnect {
 		if (!client.handshake.query.userId)
 			return false;
 		this.webSocketService.userDisconnected(client.handshake.query.userId, client.id, (userID) => {
-			client.broadcast.emit("disconnected", userID)
-		})
 
+			client.broadcast.emit("disconnected", userID)
+
+			let lobby: Lobby = this.lobbyService.getLobby(userID);
+			//lobby stuff
+			if (!lobby)
+				return;
+			let oppnentdID = lobby.players.find(x => x.id != userID).id
+			this.io.to(lobby.id).emit("leaveLobby", lobby.players.find(x => x.id == userID))
+			this.webSocketService.getSockets(oppnentdID).forEach(socketID => {
+				this.io.sockets.sockets.get(socketID).leave(lobby.id);
+			})
+
+			this.lobbyService.deleteLobby(lobby.id);
+			//end lobby
+		})
 	}
 
 	@SubscribeMessage('connected')
