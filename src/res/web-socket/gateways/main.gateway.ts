@@ -97,7 +97,7 @@ export class MainGate implements OnGatewayConnection, OnGatewayDisconnect {
 					try {
 						let lobby = await this.lobbyService.createLobby({
 							players: [this.queuedPlayers[i].id, data.sender.id],
-						})
+						}, this.queuedPlayers[i].gamemode, true, this.queuedPlayers[i].ranked, "starting")
 
 						this.webSocketService.getSockets(lobby.players[0].id).forEach(socketID => {
 							this.io.sockets.sockets.get(socketID).join(lobby.id);
@@ -111,7 +111,7 @@ export class MainGate implements OnGatewayConnection, OnGatewayDisconnect {
 							this.io.to(lobby.players[1].id).emit("lobbyData", lobby)
 						})
 
-						this.io.to(lobby.id).emit("Match found")
+						this.io.to(lobby.id).emit("matchFound")
 						this.queuedPlayers.splice(i, 1);
 
 					} catch (error) {

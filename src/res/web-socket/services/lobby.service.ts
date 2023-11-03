@@ -12,7 +12,7 @@ export class LobbyService {
 	constructor(private profileService: ProfileService) { }
 	lobbies: Lobby[] = [];
 
-	async createLobby(lobby: LobbyCreate) {
+	async createLobby(lobby: LobbyCreate, mode: string = "Normal", queueLobby: boolean = false, ranked: boolean = false, lobbySate: "idle" | "ingame" | "starting" = "idle") {
 
 		if (this.isPlayerOnLobby(lobby.players[0]) || this.isPlayerOnLobby(lobby.players[1]))
 			throw "already exist"
@@ -22,11 +22,11 @@ export class LobbyService {
 		let createdLobby: Lobby = {
 			id: randomUUID(),
 			players: [user1, user2],
-			mode: "Normal",
-			queueLobby: false,
+			mode: mode,
+			queueLobby: queueLobby,
 			owner: lobby.players[0],
-			ranked: false,
-			lobbySate: "idle",
+			ranked: ranked,
+			lobbySate: lobbySate,
 			isOwner: false,
 			gameData: {}
 		}
