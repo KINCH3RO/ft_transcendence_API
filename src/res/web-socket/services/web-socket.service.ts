@@ -1,22 +1,27 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UUID } from 'crypto';
+import userPresence from '../types/user-presence.interface';
 
 @Injectable()
 export class WebSocketService {
 	constructor(private jwtService: JwtService) { }
 
-	onlineUsers: { [userId: string]: string[] } = {};
+	onlineUsers: { [userId: string]: userPresence } = {};
 
 	userConnected(userID: string, socketID: string, callback: () => void = null) {
 
 		console.log("connect")
 		if (!this.onlineUsers[userID]) {
 			callback && callback();
-			this.onlineUsers[userID] = [socketID]
+			this.onlineUsers[userID] =
+			{
+				sockets: [socketID],
+				state: 'Online'
+			}
 		}
 		else
-			this.onlineUsers[userID].push(socketID);
+			this.onlineUsers[userID].sockets.push(socketID);
 		console.log(this.onlineUsers);
 	}
 
@@ -24,6 +29,7 @@ export class WebSocketService {
 
 		console.log("disconnect")
 		let userID = "none";
+
 		try {
 			userID = this.jwtService.verify(token,
 				{
@@ -34,8 +40,8 @@ export class WebSocketService {
 		}
 		if (!this.onlineUsers[userID])
 			return;
-		if (this.onlineUsers[userID].length > 1)
-			this.onlineUsers[userID] = this.onlineUsers[userID].filter((id: string) => socketID != id)
+		if (this.onlineUsers[userID].sockets.length > 1)
+			this.onlineUsers[userID].sockets = this.onlineUsers[userID].sockets.filter((id: string) => socketID != id)
 		else {
 			callback && callback(userID);
 			delete this.onlineUsers[userID];
@@ -44,12 +50,16 @@ export class WebSocketService {
 	}
 
 	getSockets(userID: string) {
-		return this.onlineUsers[userID];
+		return this.onlineUsers[userID].sockets;
 
 	}
 	isOnline(userID: string): boolean {
 		if (this.onlineUsers[userID])
 			return true;
 		return false;
+	}
+
+	setPresenceState(userID: string, state: "Online" | "AFK" | "In-Game" | "In-Queue" | "In-Lobby") {
+		this.onlineUsers[userID].state = state;
 	}
 }
