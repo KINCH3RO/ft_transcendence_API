@@ -43,6 +43,7 @@ export class UsersService {
         avatarUrl: true,
         bannerUrl: true,
         password: true,
+        twoFactorAuthEnabled: true,
       },
     });
     return { ...user, password: user.password ? true : false };
@@ -102,24 +103,29 @@ export class UsersService {
     });
   }
 
-  createByProvider(providerUserData: ProviderUserData) {
-    return this.prisma.user.create({
-      data: {
-        fullName: providerUserData.fullName,
-        userName: providerUserData.username,
-        avatarUrl: providerUserData.photo,
-        profile: {
-          create: {},
-        },
-        associatedAccounts: {
-          create: {
-            providerID: providerUserData.id,
-            email: providerUserData.email,
-            provider: providerUserData.providerType,
+  async createByProvider(providerUserData: ProviderUserData) {
+    try {
+      const user = await this.prisma.user.create({
+        data: {
+          fullName: providerUserData.fullName,
+          userName: providerUserData.username,
+          avatarUrl: providerUserData.photo,
+          profile: {
+            create: {},
+          },
+          associatedAccounts: {
+            create: {
+              providerID: providerUserData.id,
+              email: providerUserData.email,
+              provider: providerUserData.providerType,
+            },
           },
         },
-      },
-    });
+      });
+      return user;
+    } catch (err) {
+      return null;
+    }
   }
 
   findByName(name: string, id: string) {
@@ -144,6 +150,14 @@ export class UsersService {
         providerID: providerUserData.id,
         provider: providerUserData.providerType,
         email: providerUserData.email,
+      },
+    });
+  }
+  deleteProvider(userID: string, providerType: provider) {
+    return this.prisma.associatedAccount.deleteMany({
+      where: {
+        userID,
+        provider: providerType,
       },
     });
   }

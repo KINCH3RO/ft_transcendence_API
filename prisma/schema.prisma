@@ -8,33 +8,36 @@ generator client {
 }
 
 model user {
-    id                 String              @id @default(uuid())
-    userName           String              @unique
-    email              String?             @unique
-    fullName           String?
-    password           String?
-    verifiedAt         DateTime?
-    onlineStatus       Boolean             @default(false)
-    avatarUrl          String              @default("http://localhost:3001/upload/banners/avatar1.jpeg")
-    bannerUrl          String              @default("http://localhost:3001/upload/banners/banner1.jpeg")
-    createdAt          DateTime            @default(now())
-    updatedAt          DateTime            @updatedAt
-    associatedAccounts associatedAccount[] @relation(name: "associatedAccountToUser")
-    profile            profile             @relation(name: "profileToUser", fields: [profileID], references: [id], onDelete: Cascade)
-    profileID          String              @unique
-    wonmatches         matches[]           @relation(name: "winner")
-    lostmatches        matches[]           @relation(name: "loser")
-    notifications      notifications[]     @relation(name: "notificationsToUser")
-    achievements       achievements[]      @relation(name: "achievementsToUser")
-    sentRequests       friendRequests[]    @relation(name: "senderReq")
-    receivedRequests   friendRequests[]    @relation(name: "receiverReq")
-    sentFriends        friendStatus[]      @relation(name: "sender")
-    receiveFriends     friendStatus[]      @relation(name: "receiver")
-    channels           channelUser[]       @relation(name: "channelUserToUser")
-    sendDM             directMessage[]     @relation(name: "senderDM")
-    receiveDM          directMessage[]     @relation(name: "receiverDM")
-    sentmessages       message[]           @relation(name: "messageToUser")
+  id                   String              @id @default(uuid())
+  userName             String              @unique
+  email                String?             @unique
+  fullName             String?
+  password             String?
+  verifiedAt           DateTime?
+  twoFactorAuthSecret  String?
+  twoFactorAuthEnabled Boolean             @default(false)
+  onlineStatus         Boolean             @default(false)
+  avatarUrl            String              @default("http://localhost:3001/upload/banners/avatar1.jpeg")
+  bannerUrl            String              @default("http://localhost:3001/upload/banners/banner1.jpeg")
+  createdAt            DateTime            @default(now())
+  updatedAt            DateTime            @updatedAt
+  associatedAccounts   associatedAccount[] @relation(name: "associatedAccountToUser")
+  profile              profile             @relation(name: "profileToUser", fields: [profileID], references: [id], onDelete: Cascade)
+  profileID            String              @unique
+  wonmatches           matches[]           @relation(name: "winner")
+  lostmatches          matches[]           @relation(name: "loser")
+  notifications        notifications[]     @relation(name: "notificationsToUser")
+  achievements         achievements[]      @relation(name: "achievementsToUser")
+  sentRequests         friendRequests[]    @relation(name: "senderReq")
+  receivedRequests     friendRequests[]    @relation(name: "receiverReq")
+  sentFriends          friendStatus[]      @relation(name: "sender")
+  receiveFriends       friendStatus[]      @relation(name: "receiver")
+  channels             channelUser[]       @relation(name: "channelUserToUser")
+  sendDM               directMessage[]     @relation(name: "senderDM")
+  receiveDM            directMessage[]     @relation(name: "receiverDM")
+  sentmessages         message[]           @relation(name: "messageToUser")
 }
+
 
 model associatedAccount {
     id         String   @id @default(uuid())
