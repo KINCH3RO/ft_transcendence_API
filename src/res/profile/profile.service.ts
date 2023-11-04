@@ -107,6 +107,40 @@ export class ProfileService {
         userName: true,
         profile: true,
       },
+      orderBy: [{ profile: { rating: 'asc' } }, { userName: 'asc' }],
+      take: 10,
+    });
+
+    const promises = result.map(async (profile) => {
+      const stats = await this.matchService.getStatsById(profile.id);
+      return {
+        ...profile,
+        username: profile.userName,
+        winrate: stats.winrate,
+        games: stats.total,
+      };
+    });
+
+    const profilesWithStats = await Promise.all(promises);
+
+    profilesWithStats.sort((a, b) => b.profile.rating - a.profile.rating);
+
+    return profilesWithStats;
+  }
+
+  async getLeaderboardDataOffset(offset: number) {
+    console.log('offset', offset);
+    const result = await this.prismaService.user.findMany({
+      select: {
+        id: true,
+        avatarUrl: true,
+        bannerUrl: true,
+        userName: true,
+        profile: true,
+      },
+      orderBy: [{ profile: { rating: 'asc' } }, { userName: 'asc' }],
+      take: 20,
+      skip: offset,
     });
 
     const promises = result.map(async (profile) => {

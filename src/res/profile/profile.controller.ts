@@ -19,6 +19,11 @@ export class ProfileController {
     return this.profileService.getLeaderboardData();
   }
 
+  @Get('leaderboard/:offset')
+  getLeaderboardDataOffset(@Param('offset') offset: number) {
+    return this.profileService.getLeaderboardDataOffset(offset);
+  }
+
   @Get('data')
   findSelfData(@ActiveUser() user: ActiveUserData) {
     return this.profileService.findSelfData(user);
