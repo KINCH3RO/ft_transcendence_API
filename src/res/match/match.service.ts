@@ -60,7 +60,6 @@ export class MatchService {
           },
         ],
       },
-      take: 5,
     });
 
     return result;
