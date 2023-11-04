@@ -25,8 +25,8 @@ export class ChannelController {
 	}
 
 	@Get("filter")
-	findChannelByName(@Query('name') name: string) {
-		return this.channelService.findChannelByName(name);
+	findChannelByName(@ActiveUser() user: ActiveUserData, @Query('name') name: string) {
+		return this.channelService.findChannelByName(user.sub, name);
 	}
 
 	@Get(':id')
