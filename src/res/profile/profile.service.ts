@@ -174,7 +174,7 @@ export class ProfileService {
   }
 
   calculateRequiredXp(level: number) {
-    const formula = 10 * (((level - 1) * level) / 2);
+    const formula = 650 * (((level - 1) * level) / 2);
 
     return formula;
   }
