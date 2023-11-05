@@ -57,14 +57,10 @@ export class MainGate implements OnGatewayConnection, OnGatewayDisconnect {
 
 	@SubscribeMessage('connected')
 	handleConnect(socket: Socket, data: BodyData) {
-
+		// join rooms with sender id
 		socket.join(data.sender.id);
-
-		for (let i = 0; i < data.data.length; i++)
-			socket.join(data.data);
-
-
-
+		// join all user channels
+		socket.join(data.data);
 		this.webSocketService.userConnected(data.sender.id, socket.id, () => {
 			socket.broadcast.emit("connected", data.sender.id);
 		})
