@@ -47,6 +47,9 @@ export class LobbyService {
 		return this.lobbies.find(lobby => lobby.players.filter(x => x.id == playerId)) ?? null;
 	}
 
+	Exist(lobbyId: string): boolean {
+		return !!this.lobbies.find(lobby => lobby.id == lobbyId)
+	}
 
 
 }

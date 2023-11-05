@@ -38,8 +38,8 @@ export class MainGate implements OnGatewayConnection, OnGatewayDisconnect {
 			return false;
 		this.webSocketService.userDisconnected(client.handshake.query.userId, client.id, (userID) => {
 
-			client.broadcast.emit("disconnected", userID)
 
+			client.broadcast.emit("disconnected", userID)
 			let lobby: Lobby = this.lobbyService.getLobby(userID);
 			//lobby stuff
 			if (!lobby)
@@ -77,76 +77,6 @@ export class MainGate implements OnGatewayConnection, OnGatewayDisconnect {
 		this.webSocketService.setPresenceState(data.sender.id, data.data);
 		// console.log(this.webSocketService.onlineUsers[data.sender.id]);
 	}
-
-	//matchmaking system
-	queuedPlayers: queueData[] = []
-
-
-
-	@SubscribeMessage("enterQueue")
-	async handleEnterQueue(socket: Socket, data: BodyData) {
-
-
-		if (this.queuedPlayers.length > 0) {
-			console.log("yes");
-			for (let i = 0; i < this.queuedPlayers.length; i++) {
-
-				if (Math.abs(this.queuedPlayers[i].rating - data.data.rating) < 500 && this.queuedPlayers[i].ranked == data.data.ranked && this.queuedPlayers[i].gamemode == data.data.gamemode) {
-					console.log(this.queuedPlayers);
-
-					try {
-						let lobby = await this.lobbyService.createLobby({
-							players: [this.queuedPlayers[i].id, data.sender.id],
-						}, this.queuedPlayers[i].gamemode, true, this.queuedPlayers[i].ranked, "starting")
-
-						this.webSocketService.getSockets(lobby.players[0].id).forEach(socketID => {
-							this.io.sockets.sockets.get(socketID).join(lobby.id);
-							lobby.isOwner = lobby.owner == lobby.players[0].id;
-							this.io.to(lobby.players[0].id).emit("lobbyData", lobby)
-						})
-
-						this.webSocketService.getSockets(lobby.players[1].id).forEach(socketID => {
-							this.io.sockets.sockets.get(socketID).join(lobby.id);
-							lobby.isOwner = lobby.owner == lobby.players[1].id;
-							this.io.to(lobby.players[1].id).emit("lobbyData", lobby)
-						})
-
-						this.io.to(lobby.id).emit("matchFound")
-						this.queuedPlayers.splice(i, 1);
-
-					} catch (error) {
-						console.log(error);
-					}
-					//if match found no need to push
-					return;
-				}
-
-
-			}
-		}
-
-		this.queuedPlayers.push(
-			{
-				id: data.sender.id,
-				...data.data
-			}
-		)
-
-
-		console.log(this.queuedPlayers);
-
-
-
-	}
-
-	@SubscribeMessage("leaveQueue")
-	handleLeaveQueue(socket: Socket, data: BodyData) {
-
-		this.queuedPlayers = this.queuedPlayers.filter(x => x.id != data.sender.id)
-		console.log(this.queuedPlayers);
-
-	}
-
 
 
 }
