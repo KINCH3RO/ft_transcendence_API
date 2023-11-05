@@ -2,10 +2,14 @@ import { Injectable, Logger } from '@nestjs/common';
 import { UpdateProfileDto } from './dto/update-profile.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { ActiveUserData } from 'src/iam/interfaces/active-user.interface';
+import { MatchService } from '../match/match.service';
 
 @Injectable()
 export class ProfileService {
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(
+    private readonly prismaService: PrismaService,
+    private readonly matchService: MatchService,
+  ) {}
   private readonly logger = new Logger(ProfileService.name);
 
   async findSelf(user: ActiveUserData) {
@@ -94,6 +98,64 @@ export class ProfileService {
     return { ...result, username: result.userName, xpRequirements };
   }
 
+  async getLeaderboardData() {
+    const result = await this.prismaService.user.findMany({
+      select: {
+        id: true,
+        avatarUrl: true,
+        bannerUrl: true,
+        userName: true,
+        profile: true,
+      },
+      orderBy: [{ profile: { rating: 'desc' } }, { userName: 'asc' }],
+      take: 10,
+    });
+
+    const promises = result.map(async (profile) => {
+      const stats = await this.matchService.getStatsById(profile.id);
+      return {
+        ...profile,
+        username: profile.userName,
+        winrate: stats.winrate,
+        games: stats.total,
+      };
+    });
+
+    const profilesWithStats = await Promise.all(promises);
+
+    return profilesWithStats;
+  }
+
+  async getLeaderboardDataOffset(offset: number) {
+    console.log('offset', offset);
+    const result = await this.prismaService.user.findMany({
+      select: {
+        id: true,
+        avatarUrl: true,
+        bannerUrl: true,
+        userName: true,
+        profile: true,
+      },
+      orderBy: [{ profile: { rating: 'desc' } }, { userName: 'asc' }],
+      take: 20,
+      skip: offset,
+    });
+
+    const promises = result.map(async (profile) => {
+      const stats = await this.matchService.getStatsById(profile.id);
+      return {
+        ...profile,
+        username: profile.userName,
+        winrate: stats.winrate,
+        games: stats.total,
+      };
+    });
+
+    const profilesWithStats = await Promise.all(promises);
+
+    return profilesWithStats;
+  }
+
   update(user: ActiveUserData, updateProfileDto: UpdateProfileDto) {
     this.logger.log(`update Profile for user id: ${user.sub}`);
 
@@ -108,7 +170,7 @@ export class ProfileService {
   }
 
   calculateRequiredXp(level: number) {
-    const formula = 10 * (((level - 1) * level) / 2);
+    const formula = 650 * (((level - 1) * level) / 2);
 
     return formula;
   }
