@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   ParseIntPipe,
+  Query,
 } from '@nestjs/common';
 import { MatchService } from './match.service';
 import { CreateMatchDto } from './dto/create-match.dto';
@@ -26,6 +27,14 @@ export class MatchController {
   @Get()
   findAll(@ActiveUser() user: ActiveUserData) {
     return this.matchService.findAll(user);
+  }
+
+  @Get('offset/:id')
+  findAllByIdByOffset(
+    @Param('id') id: string,
+    @Query('offset') offset: number,
+  ) {
+    return this.matchService.findAllByIdByOffset(id, offset);
   }
 
   @Get(':id')

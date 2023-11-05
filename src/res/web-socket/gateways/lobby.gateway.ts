@@ -65,7 +65,7 @@ export class LobbyGate {
 				this.io.to(lobby.players[1].id).emit("lobbyData", lobby)
 			})
 		} catch (error) {
-			console.log(error);
+			// console.log(error);
 		}
 
 	}
@@ -111,7 +111,7 @@ export class LobbyGate {
 			return;
 		lobby.lobbySate = "starting"
 		this.io.to(lobby.id).emit("lobbyChange", lobby)
-		console.log("counting down");
+		// console.log("counting down");
 
 		this.matchCountdown(lobby);
 
@@ -149,7 +149,7 @@ export class LobbyGate {
 			for (let i = 0; i < this.queuedPlayers.length; i++) {
 
 				if (Math.abs(this.queuedPlayers[i].rating - data.data.rating) < 500 && this.queuedPlayers[i].ranked == data.data.ranked && this.queuedPlayers[i].gamemode == data.data.gamemode) {
-					console.log(this.queuedPlayers);
+					// console.log(this.queuedPlayers);
 
 					try {
 						let lobby = await this.lobbyService.createLobby({
@@ -174,7 +174,7 @@ export class LobbyGate {
 						this.queuedPlayers.splice(i, 1);
 
 					} catch (error) {
-						console.log(error);
+						// console.log(error);
 					}
 					//if match found no need to push
 					return;
@@ -192,7 +192,7 @@ export class LobbyGate {
 		)
 
 
-		console.log(this.queuedPlayers);
+		// console.log(this.queuedPlayers);
 
 
 
@@ -202,7 +202,7 @@ export class LobbyGate {
 	handleLeaveQueue(socket: Socket, data: BodyData) {
 
 		this.queuedPlayers = this.queuedPlayers.filter(x => x.id != data.sender.id)
-		console.log(this.queuedPlayers);
+		// console.log(this.queuedPlayers);
 
 	}
 

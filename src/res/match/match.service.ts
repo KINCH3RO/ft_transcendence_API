@@ -65,6 +65,30 @@ export class MatchService {
     return result;
   }
 
+  async findAllByIdByOffset(id: string, offset: number) {
+    console.log('offset:', offset);
+    const result = await this.prismaService.matches.findMany({
+      where: {
+        OR: [
+          {
+            winnerID: {
+              equals: id,
+            },
+          },
+          {
+            loserID: {
+              equals: id,
+            },
+          },
+        ],
+      },
+      skip: offset,
+      take: 5,
+    });
+
+    return result;
+  }
+
   async getStats(user: ActiveUserData) {
     const matches = await this.findAll(user);
     let highest = 0;
