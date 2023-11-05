@@ -107,7 +107,7 @@ export class ProfileService {
         userName: true,
         profile: true,
       },
-      orderBy: [{ profile: { rating: 'asc' } }, { userName: 'asc' }],
+      orderBy: [{ profile: { rating: 'desc' } }, { userName: 'asc' }],
       take: 10,
     });
 
@@ -123,8 +123,6 @@ export class ProfileService {
 
     const profilesWithStats = await Promise.all(promises);
 
-    profilesWithStats.sort((a, b) => b.profile.rating - a.profile.rating);
-
     return profilesWithStats;
   }
 
@@ -138,7 +136,7 @@ export class ProfileService {
         userName: true,
         profile: true,
       },
-      orderBy: [{ profile: { rating: 'asc' } }, { userName: 'asc' }],
+      orderBy: [{ profile: { rating: 'desc' } }, { userName: 'asc' }],
       take: 20,
       skip: offset,
     });
@@ -154,8 +152,6 @@ export class ProfileService {
     });
 
     const profilesWithStats = await Promise.all(promises);
-
-    profilesWithStats.sort((a, b) => b.profile.rating - a.profile.rating);
 
     return profilesWithStats;
   }
