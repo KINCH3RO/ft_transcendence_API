@@ -141,6 +141,8 @@ export class LobbyGate {
 			}
 		}, 1000)
 	}
+
+
 	@SubscribeMessage("enterQueue")
 	async handleEnterQueue(socket: Socket, data: BodyData) {
 
@@ -148,7 +150,9 @@ export class LobbyGate {
 		if (this.queuedPlayers.length > 0) {
 			for (let i = 0; i < this.queuedPlayers.length; i++) {
 
-				if (Math.abs(this.queuedPlayers[i].rating - data.data.rating) < 500 && this.queuedPlayers[i].ranked == data.data.ranked && this.queuedPlayers[i].gamemode == data.data.gamemode) {
+				const isRanked = this.queuedPlayers[i].ranked == data.data.ranked && data.data.ranked == true;
+
+				if ((isRanked && Math.abs(this.queuedPlayers[i].rating - data.data.rating) < 500) || this.queuedPlayers[i].gamemode == data.data.gamemode) {
 					// console.log(this.queuedPlayers);
 
 					try {
