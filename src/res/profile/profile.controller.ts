@@ -7,48 +7,48 @@ import { MatchService } from '../match/match.service';
 
 @Controller('profile')
 export class ProfileController {
-  constructor(private readonly profileService: ProfileService) {}
+	constructor(private readonly profileService: ProfileService) { }
 
-  @Get()
-  findSelf(@ActiveUser() user: ActiveUserData) {
-    return this.profileService.findSelf(user);
-  }
+	@Get()
+	findSelf(@ActiveUser() user: ActiveUserData) {
+		return this.profileService.findSelf(user);
+	}
 
-  @Get('leaderboard')
-  getLeaderboardData() {
-    return this.profileService.getLeaderboardData();
-  }
+	@Get('leaderboard')
+	getLeaderboardData() {
+		return this.profileService.getLeaderboardData();
+	}
 
-  @Get('leaderboard/:offset')
-  getLeaderboardDataOffset(@Param('offset') offset: number) {
-    return this.profileService.getLeaderboardDataOffset(offset);
-  }
+	@Get('leaderboard/:offset')
+	getLeaderboardDataOffset(@Param('offset') offset: number) {
+		return this.profileService.getLeaderboardDataOffset(offset);
+	}
 
-  @Get('data')
-  findSelfData(@ActiveUser() user: ActiveUserData) {
-    return this.profileService.findSelfData(user);
-  }
+	@Get('data')
+	findSelfData(@ActiveUser() user: ActiveUserData) {
+		return this.profileService.findSelfData(user);
+	}
 
-  @Get(':userId')
-  findOneByUserId(@Param('userId') id: string) {
-    return this.profileService.findOneByUserId(id);
-  }
+	@Get(':userId')
+	findOneByUserId(@Param('userId') id: string) {
+		return this.profileService.findOneByUserId(id);
+	}
 
-  @Get('data/:userId')
-  findDataByUserId(@Param('userId') id: string) {
-    return this.profileService.findDataByUserId(id);
-  }
+	@Get('data/:userId')
+	findDataByUserId(@Param('userId') id: string) {
+		return this.profileService.findDataByUserId(id);
+	}
 
-  @Get('data/name/:name')
-  findDataByUsername(@Param('name') name: string) {
-    return this.profileService.findDataByUsername(name);
-  }
+	@Get('data/name/:name')
+	findDataByUsername(@Param('name') name: string) {
+		return this.profileService.findDataByUsername(name);
+	}
 
-  @Patch()
-  update(
-    @ActiveUser() user: ActiveUserData,
-    @Body() updateProfileDto: UpdateProfileDto,
-  ) {
-    return this.profileService.update(user, updateProfileDto);
-  }
+	@Patch()
+	update(
+		@ActiveUser() user: ActiveUserData,
+		@Body() updateProfileDto: UpdateProfileDto,
+	) {
+		return this.profileService.update(user, updateProfileDto);
+	}
 }

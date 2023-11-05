@@ -8,7 +8,7 @@ import { FriendRequest } from '../../entities/friendRequest.entity';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { $Enums, friendStatus } from '@prisma/client';
 
-import { WebSocketService } from 'src/res/web-socket/web-socket.service';
+import { WebSocketService } from 'src/res/web-socket/services/web-socket.service';
 
 @Injectable()
 export class FriendStatusService {
@@ -61,8 +61,8 @@ export class FriendStatusService {
 
 
 
-	async getFriendsList(userID: string): Promise<friendStatus[]> {
-		const friends: friendStatus[] = await this.prismaService.friendStatus.findMany({
+	async getFriendsList(userID: string, onlineFriends: boolean = false): Promise<friendStatus[]> {
+		let friends: friendStatus[] = await this.prismaService.friendStatus.findMany({
 			include: {
 				sender: {
 					select:
@@ -94,7 +94,7 @@ export class FriendStatusService {
 			}
 		})
 
-		return friends.map((data: FriendStatus) => {
+		friends = friends.map((data: FriendStatus) => {
 			let baseData: FriendStatus = {
 				receiverID: data.receiverID,
 				senderID: data.senderID,
@@ -110,6 +110,9 @@ export class FriendStatusService {
 			return baseData;
 		});
 
+		if (onlineFriends)
+			return friends.filter(data => data["friend"].onlineStatus == true)
+		return friends;
 	}
 
 

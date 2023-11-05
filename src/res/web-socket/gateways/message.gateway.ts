@@ -4,14 +4,14 @@ import {
 	WebSocketGateway,
 	WebSocketServer,
 } from '@nestjs/websockets';
-import { WebSocketService } from './web-socket.service';
+import { WebSocketService } from '../services/web-socket.service';
 import { Socket, Server } from 'socket.io';
 import { UseFilters, UseGuards, UsePipes } from '@nestjs/common';
-import { TokenGuard } from './token.guard';
-import { TokenPipe } from './token.pipe';
+import { TokenGuard } from '../token.guard';
+import { TokenPipe } from '../token.pipe';
 import { JwtService } from '@nestjs/jwt';
 import { BaseWsExceptionFilter } from '@nestjs/websockets';
-import { BodyData } from './body-data.interface';
+import { BodyData } from '../types/body-data.interface';
 //handling present events
 
 @UseFilters(new BaseWsExceptionFilter())
@@ -51,6 +51,8 @@ export class MessageGate {
 
 
 	}
+
+
 
 
 
