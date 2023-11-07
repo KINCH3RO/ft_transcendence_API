@@ -3,7 +3,7 @@ import { $Enums, directMessage } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { DirectMessage } from './entities/direct-message.entity';
 
-import { WebSocketService } from 'src/res/web-socket/web-socket.service';
+import { WebSocketService } from 'src/res/web-socket/services/web-socket.service';
 import { UpdateDirectMessageDto } from './update-directMessage.dto';
 
 @Injectable()

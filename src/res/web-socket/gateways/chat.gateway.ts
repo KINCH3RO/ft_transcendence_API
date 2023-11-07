@@ -1,17 +1,18 @@
 import {
-  SubscribeMessage,
-  WebSocketGateway,
-  WebSocketServer,
-  OnGatewayConnection,
-  BaseWsExceptionFilter,
+	SubscribeMessage,
+	WebSocketGateway,
+	WebSocketServer,
+	OnGatewayConnection,
+	BaseWsExceptionFilter,
 } from '@nestjs/websockets';
-import { WebSocketService } from './web-socket.service';
-import { Socket, Server } from 'socket.io';
+import { WebSocketService } from '../services/web-socket.service';
 import { UseFilters, UseGuards, UsePipes } from '@nestjs/common';
-import { TokenGuard } from './token.guard';
-import { TokenPipe } from './token.pipe';
+import { Socket, Server } from 'socket.io';
+import { TokenGuard } from '../token.guard';
+import { TokenPipe } from '../token.pipe';
 import { JwtService } from '@nestjs/jwt';
-import { BodyData } from './body-data.interface';
+import { BodyData } from '../types/body-data.interface';
+
 
 @UseFilters(new BaseWsExceptionFilter())
 @UseGuards(TokenGuard)
