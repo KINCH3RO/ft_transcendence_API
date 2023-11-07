@@ -23,6 +23,23 @@ export class ChannelUserService {
         role: 'MEMBER',
         status: 'FREE',
       },
+      include: {
+        channel: {
+          select: {
+            imageUrl: true,
+            name: true,
+            visibility: true,
+          },
+        },
+        user: {
+          select: {
+            id: true,
+            avatarUrl: true,
+            userName: true,
+            onlineStatus: true,
+          },
+        },
+      },
     });
   }
 

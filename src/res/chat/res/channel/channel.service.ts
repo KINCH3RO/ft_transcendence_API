@@ -128,15 +128,48 @@ export class ChannelService {
 		]);
 	}
 
-	findChannelByName(name: string) {
-		return this.prisma.channel.findMany({
-			take: 20,
-			where: {
-				name: { startsWith: name, mode: 'insensitive' },
-				visibility: { not: 'PRIVATE' },
-			},
-		});
-	}
+  async findChannelByName(currentUserId: string, name: string) {
+    let list: any = await this.prisma.channel.findMany({
+      take: 20,
+      where: {
+        name: { startsWith: name, mode: 'insensitive' },
+        visibility: { not: 'PRIVATE' },
+      },
+      select: {
+        id: true,
+        name: true,
+        imageUrl: true,
+        visibility: true,
+        message: {
+          take: 1,
+          orderBy: {
+            createdAt: 'desc',
+          },
+          select: {
+            senderID: true,
+            content: true,
+            attachment: true,
+            createdAt: true,
+            updatedAt: true,
+          },
+        },
+        channels: true,
+      },
+    });
+
+    list.map((item) => {
+      let channel_user = item.channels.find((x) => x.userID == currentUserId);
+      if (channel_user) {
+        item['isMemeber'] = true;
+        item['owner'] = channel_user.role;
+      } else
+        item['isMemeber'] = false;
+    });
+
+
+
+    return list;
+  }
 
 	async listCurrentUserChannel(currentUserId: string) {
 		let list: any = await this.prisma.channel.findMany({
@@ -163,10 +196,14 @@ export class ChannelService {
 			},
 		});
 
-		list.map((item) => {
-			let channel_user = item.channels.find((x) => x.userID == currentUserId);
-			item['owner'] = channel_user.role;
-		});
+    list.map((item) => {
+      let channel_user = item.channels.find((x) => x.userID == currentUserId);
+      if (channel_user) {
+        item['isMemeber'] = true;
+        item['owner'] = channel_user.role;
+      } else
+        item['isMemeber'] = false;
+    });
 
 		return list;
 	}
