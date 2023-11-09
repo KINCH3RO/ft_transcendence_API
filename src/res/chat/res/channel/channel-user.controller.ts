@@ -48,11 +48,12 @@ export class ChannelUserController {
 
 	@Patch("free")
 	free(@ActiveUser() user: ActiveUserData, @Body() targetChannelUserDto: UpdateChannelUserDto) {
+		console.log(targetChannelUserDto)
 		return this.channelUserService.channelAction(user.sub, targetChannelUserDto, "FREE");
 	}
 
 	@Delete("kick")
-	kick(@ActiveUser() user: ActiveUserData, @Body() targetChannelUserDto: UpdateChannelUserDto) {
+	kick(@ActiveUser() user: ActiveUserData, @Body() targetChannelUserDto: CreateChannelUserDto) {
 		return this.channelUserService.kick(user.sub, targetChannelUserDto);
 	}
 
@@ -60,10 +61,15 @@ export class ChannelUserController {
 	listActiveUserChannels(@ActiveUser() ActiveUser: ActiveUserData) {
 		return this.channelUserService.listActiveUserChannels(ActiveUser);
 	}
-	
+
 	@Get(':room_id')
 	findMember(@ActiveUser() user: ActiveUserData, @Param('room_id') channel_id: string) {
 		return this.channelUserService.findMembers(user.sub, channel_id);
+	}
+
+	@Get('blockedList/:room_id')
+	listBlockedMember(@ActiveUser() user: ActiveUserData, @Param('room_id') channel_id: string) {
+		return this.channelUserService.listBlockedMember(user.sub, channel_id);
 	}
 
 	@Delete(':room_id')

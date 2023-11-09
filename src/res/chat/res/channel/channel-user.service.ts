@@ -91,11 +91,15 @@ export class ChannelUserService {
       channelID: targetChannelUserDto.channelID,
       userID: userID,
     };
+    let target_: CreateChannelUserDto = {
+      channelID: targetChannelUserDto.channelID,
+      userID: targetChannelUserDto.userID,
+    }
 
     const duration = targetChannelUserDto.duration ?? BigInt(0);
     const promises = [
       this.findOne(actorChannelUserDto),
-      this.findOne(targetChannelUserDto),
+      this.findOne(target_),
     ];
     const [actor, target] = await Promise.all(promises);
 
@@ -206,6 +210,28 @@ export class ChannelUserService {
             visibility: true,
           },
         },
+        user: {
+          select: {
+            id: true,
+            avatarUrl: true,
+            userName: true,
+            onlineStatus: true,
+          },
+        },
+      },
+    });
+  }
+
+  async listBlockedMember(
+    user_id: string,
+    channel_id: string,
+  ): Promise<ChannelUser[]> {
+    return this.prisma.channelUser.findMany({
+      where: {
+        channelID: channel_id,
+        status: 'BANNED',
+      },
+      include: {
         user: {
           select: {
             id: true,

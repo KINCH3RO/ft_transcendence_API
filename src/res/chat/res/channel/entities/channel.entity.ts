@@ -16,6 +16,7 @@ export class ChannelUser implements channelUser {
 	role: $Enums.channelRole;
 	status: $Enums.channelStatus;
 	duration: bigint;
+	joinedAt: Date;
 }
 
 export class Channel implements channel {
