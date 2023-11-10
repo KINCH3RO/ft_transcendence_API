@@ -41,6 +41,7 @@ export class LobbyService {
         paddle2: { x: 99, y: 50, isUP: false, isDown: false },
         ball: { x: 50, y: 50, xDirection: 1, yDirection: 1 },
         score: [0, 0],
+        scoreUpdated: false,
       },
     };
     this.lobbies.push(createdLobby);

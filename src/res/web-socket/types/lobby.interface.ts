@@ -9,8 +9,9 @@ export default interface Lobby {
   owner: string;
   queueLobby: boolean;
   isOwner?: boolean;
-  lobbySate: 'ingame' | 'idle' | 'starting';
+  lobbySate: 'ingame' | 'idle' | 'starting' | 'finished';
   gameData: GameData;
+  intervalId?: NodeJS.Timeout;
 }
 
 export interface LobbyCreate {
@@ -22,6 +23,7 @@ export interface GameData {
   paddle2: Paddle;
   ball: Ball;
   score: number[];
+  scoreUpdated: boolean;
 }
 
 export interface Paddle {
