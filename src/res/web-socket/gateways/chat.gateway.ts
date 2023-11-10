@@ -53,8 +53,17 @@ export class ChatGate {
 
   @SubscribeMessage('channel left')
   handleLeftRoom(socket: Socket, data: BodyData) {
-    console.log('left' , data)
     this.server.to(data.data.channelID).emit('a member left', data.sender.id);
+  }
+
+  @SubscribeMessage('updateChannelInfo')
+  handleRoomUpdated(socket: Socket, data: BodyData) {
+    this.server.to(data.data.id).emit('channelUpdated', data.data);
+  }
+
+  @SubscribeMessage('deleteChannel')
+  handleRoomRemoved(socket: Socket, data: BodyData) {
+    this.server.to(data.data.id).emit('roomRemoved', data.data);
   }
 
 }

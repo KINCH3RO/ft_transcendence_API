@@ -150,7 +150,7 @@ export class ChannelUserService {
 
     const [targetChannel, targetChannelUser] = await Promise.all(promises);
 
-    if (targetChannel.visibility == 'PROTECTED') {
+    if (targetChannel.visibility == 'PROTECTED' || targetChannel.visibility == 'PUBLIC' && targetChannel.password) {
       if (joinChannelDto.password == undefined)
         throw new HttpException('This channel Protected', HttpStatus.FORBIDDEN);
 
