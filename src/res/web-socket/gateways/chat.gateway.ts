@@ -24,30 +24,15 @@ export class ChatGate {
   //handling chat events
   constructor(private readonly webSocketService: WebSocketService) {}
 
-  // @SubscribeMessage('client_ID')
-  // handleRoom(socket: Socket, clientId: string) {
-  //   socket.join(clientId);
-  // }
-
-  // @SubscribeMessage('msgs')
-  // handleMsg(socket: Socket, data: { msg: string; room: string }) {
-  //   this.server.to(data.room).emit('chatToClient', data.msg);
-  // }
-
-  // @SubscribeMessage('joinRoom')
-  // handleJoinRoom(socket: Socket, room: string) {
-  //   socket.join(room);
-  //   socket.emit('joind', room);
-  // }
-
-  // @SubscribeMessage('leaveRoom')
-  // handleLeaveRoom(socket: Socket, room: string) {
-  //   socket.leave(room);
-  //   socket.emit('left', room);
-  // }
+  @SubscribeMessage('channelCreated')
+  handleCreatedRoom(socket: Socket, data: BodyData) {
+    console.log('>>>>>>>>>> her joind a channel with id:', data.data)
+    socket.join(data.data)
+  }
 
   @SubscribeMessage('channel joined')
   handleJoinRoom(socket: Socket, data: BodyData) {
+    console.log('>>>>>>>>>> yes joind:', data.data.channelID, data.data)
     this.server.to(data.data.channelID).emit('new member joind', data.data);
   }
 

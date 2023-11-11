@@ -93,6 +93,12 @@ export class ChannelService {
   }
 
   async update(updateChannelDto: UpdateChannelDto) {
+
+    let pass;
+
+    if (updateChannelDto.password)
+      pass = await this.hashingService.hash(updateChannelDto.password);
+
     return this.prisma.channel.update({
       where: {
         id: updateChannelDto.id,
@@ -100,7 +106,7 @@ export class ChannelService {
       data: {
         imageUrl: updateChannelDto.imageUrl,
         name: updateChannelDto.name,
-        password: updateChannelDto.password ? await this.hashingService.hash(updateChannelDto.password): null,
+        password: pass,
         visibility: updateChannelDto.visibility,
       },
     });
