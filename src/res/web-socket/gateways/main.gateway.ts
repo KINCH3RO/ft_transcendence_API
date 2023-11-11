@@ -41,6 +41,7 @@ export class MainGate implements OnGatewayConnection, OnGatewayDisconnect {
 
 			client.broadcast.emit("disconnected", userID)
 			let lobby: Lobby = this.lobbyService.getLobby(userID);
+
 			//lobby stuff
 			if (!lobby)
 				return;
@@ -61,9 +62,16 @@ export class MainGate implements OnGatewayConnection, OnGatewayDisconnect {
 		socket.join(data.sender.id);
 		// join all user channels
 		socket.join(data.data);
+
+
 		this.webSocketService.userConnected(data.sender.id, socket.id, () => {
 			socket.broadcast.emit("connected", data.sender.id);
 		})
+		// join lobby room if exist
+		let lobby: Lobby = this.lobbyService.getLobby(data.sender.id);
+		if (!lobby)
+			return;
+		socket.join(lobby.id)
 
 	}
 

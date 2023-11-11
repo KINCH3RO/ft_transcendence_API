@@ -39,12 +39,13 @@ export class LobbyService {
 	}
 
 	isPlayerOnLobby(playerId: string) {
-		return !!this.lobbies.find(lobby => lobby.players.filter(x => x.id == playerId));
+		return !!this.lobbies.find(lobby => lobby.players.find(x => x.id == playerId));
 
 	}
 
 	getLobby(playerId: string) {
-		return this.lobbies.find(lobby => lobby.players.filter(x => x.id == playerId)) ?? null;
+
+		return this.lobbies.find(lobby => lobby.players.find(x => x.id == playerId));
 	}
 
 	Exist(lobbyId: string): boolean {
