@@ -148,8 +148,7 @@ export class LobbyGate {
         this.io.to(lobby.players[0].id).emit('lobbyChange', lobby);
         lobby.isOwner = false;
         this.io.to(lobby.players[1].id).emit('lobbyChange', lobby);
-        lobby.intervalId = setInterval(() => {
-          console.log('yes');
+        const gameInterval = setInterval(() => {
           const gameData = this.gameService.updateGame(lobby.gameData);
           this.io.to(lobby.id).emit('gameData', gameData);
           if (lobby.gameData.scoreUpdated) {
@@ -158,7 +157,7 @@ export class LobbyGate {
             if (lobby.gameData.score[0] == 5 || lobby.gameData.score[1] == 5) {
               lobby.lobbySate = 'finished';
               this.io.to(lobby.id).emit('lobbyChange', lobby);
-              clearInterval(lobby.intervalId);
+              clearInterval(gameInterval);
             }
           }
         }, 16);

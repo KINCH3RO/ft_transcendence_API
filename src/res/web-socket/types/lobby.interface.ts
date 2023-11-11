@@ -11,7 +11,6 @@ export default interface Lobby {
   isOwner?: boolean;
   lobbySate: 'ingame' | 'idle' | 'starting' | 'finished';
   gameData: GameData;
-  intervalId?: NodeJS.Timeout;
 }
 
 export interface LobbyCreate {
