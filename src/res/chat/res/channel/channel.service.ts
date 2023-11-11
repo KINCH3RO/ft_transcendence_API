@@ -93,7 +93,6 @@ export class ChannelService {
   }
 
   async update(updateChannelDto: UpdateChannelDto) {
-
     let pass;
 
     if (updateChannelDto.password)
@@ -181,7 +180,7 @@ export class ChannelService {
 
   async listCurrentUserChannel(currentUserId: string) {
     let list: any = await this.prisma.channel.findMany({
-      where: { channels: { some: { userID: currentUserId } } },
+      where: { channels: { some: { userID: currentUserId, status: { not: 'BANNED' } } } },
       select: {
         id: true,
         name: true,

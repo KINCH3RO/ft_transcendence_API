@@ -48,7 +48,6 @@ export class ChannelUserController {
 
 	@Patch("free")
 	free(@ActiveUser() user: ActiveUserData, @Body() targetChannelUserDto: UpdateChannelUserDto) {
-		console.log(targetChannelUserDto)
 		return this.channelUserService.channelAction(user.sub, targetChannelUserDto, "FREE");
 	}
 
@@ -74,7 +73,6 @@ export class ChannelUserController {
 
 	@Delete(':room_id')
 	leaveChannel(@ActiveUser() user: ActiveUserData, @Param('room_id') channel_id: string) {
-		console.log("leave: ", user.sub, channel_id)
 		return this.channelUserService.leaveChannel(user.sub, channel_id);
 	}
 

@@ -26,13 +26,11 @@ export class ChatGate {
 
   @SubscribeMessage('channelCreated')
   handleCreatedRoom(socket: Socket, data: BodyData) {
-    console.log('>>>>>>>>>> her joind a channel with id:', data.data)
     socket.join(data.data)
   }
 
   @SubscribeMessage('channel joined')
   handleJoinRoom(socket: Socket, data: BodyData) {
-    console.log('>>>>>>>>>> yes joind:', data.data.channelID, data.data)
     this.server.to(data.data.channelID).emit('new member joind', data.data);
   }
 
@@ -49,6 +47,18 @@ export class ChatGate {
   @SubscribeMessage('deleteChannel')
   handleRoomRemoved(socket: Socket, data: BodyData) {
     this.server.to(data.data.id).emit('roomRemoved', data.data);
+  }
+
+  @SubscribeMessage('getUnbanned')
+  handleUnbannedUserFromRoom(socket: Socket, data: BodyData) {
+    this.server.to(data.data.channelID).emit('aMemberUnbanned', data.data);
+    this.server.to(data.data.userID).emit('youGetUnbanned', data.data);
+  }
+
+  @SubscribeMessage('getBanned')
+  handleBannedUserFromRoom(socket: Socket, data: BodyData) {
+    this.server.to(data.data.channelID).emit('aMemberBanned', data.data);
+    this.server.to(data.data.userID).emit('youGetBanned', data.data);
   }
 
 }

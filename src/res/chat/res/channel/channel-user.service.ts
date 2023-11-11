@@ -67,6 +67,16 @@ export class ChannelUserService {
         status: updateChannelUserDto.status,
         duration: updateChannelUserDto.duration,
       },
+      select: {
+        userID: true,
+        user: true,
+        channelID: true,
+        channel: true,
+        duration: true,
+        role: true,
+        status: true,
+        joinedAt: true,
+      }
     });
   }
 
@@ -109,7 +119,7 @@ export class ChannelUserService {
       target.duration = duration
         ? BigInt(Math.round(Date.now() / 1000)) + duration
         : duration;
-    } else throw new HttpException('nice try', 500);
+    } else throw new HttpException('nice try', HttpStatus.FORBIDDEN);
 
     return this.update(target);
   }
