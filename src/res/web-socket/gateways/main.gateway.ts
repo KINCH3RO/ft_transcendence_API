@@ -1,4 +1,4 @@
-import { UseFilters, UseGuards, UsePipes } from '@nestjs/common';
+import { UseFilters, UseGuards, UseInterceptors, UsePipes } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import {
 	BaseWsExceptionFilter,
@@ -10,7 +10,6 @@ import {
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { TokenGuard } from '../token.guard';
-import { TokenPipe } from '../token.pipe';
 import { BodyData } from '../types/body-data.interface';
 import { WebSocketService } from '../services/web-socket.service';
 import { LobbyService } from '../services/lobby.service';
@@ -20,7 +19,6 @@ import Lobby from '../types/lobby.interface';
 
 @UseFilters(new BaseWsExceptionFilter())
 @UseGuards(TokenGuard)
-@UsePipes(new TokenPipe(new JwtService()))
 @WebSocketGateway({ cors: true, transports: ['websocket'] })
 export class MainGate implements OnGatewayConnection, OnGatewayDisconnect {
 	constructor(
@@ -32,6 +30,7 @@ export class MainGate implements OnGatewayConnection, OnGatewayDisconnect {
 	io: Server;
 
 	handleConnection(client: any, ...args: any[]) {
+		// console.log(client);
 		console.log('=> A socket has connected with ID: ', client.id);
 	}
 
@@ -61,6 +60,12 @@ export class MainGate implements OnGatewayConnection, OnGatewayDisconnect {
 		);
 	}
 
+
+	@SubscribeMessage('testTest')
+	ha(socket: Socket, data: BodyData) {
+		// join rooms with sender id
+
+	}
 	@SubscribeMessage('connected')
 	handleConnect(socket: Socket, data: BodyData) {
 		// join rooms with sender id
