@@ -92,11 +92,6 @@ export class MainGate implements OnGatewayConnection, OnGatewayDisconnect {
 
 
 
-	@SubscribeMessage('connected')
-	handleConnect(socket: Socket, data: BodyData) {
-		// join rooms with sender id
-
-	}
 
 	@SubscribeMessage('presence')
 	handlePresence(socket: Socket, data: BodyData) {
