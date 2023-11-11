@@ -124,11 +124,16 @@ export class ChannelUserService {
     return this.update(target);
   }
 
-  async kick(userID: string, targetChannelUserDto: CreateChannelUserDto) {
+  async kick(userID: string, param: any) {
     let actorChannelUserDto: CreateChannelUserDto = {
-      channelID: targetChannelUserDto.channelID,
+      channelID: param.channelID,
       userID: userID,
     };
+
+    let targetChannelUserDto: CreateChannelUserDto = {
+      channelID: param.channelID,
+      userID: param.userID
+    }
 
     const promises = [
       this.findOne(actorChannelUserDto),

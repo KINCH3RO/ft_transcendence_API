@@ -61,4 +61,10 @@ export class ChatGate {
     this.server.to(data.data.userID).emit('youGetBanned', data.data);
   }
 
+  @SubscribeMessage('getKicked')
+  handleKickedUserFromRoom(socket: Socket, data: BodyData) {
+    this.server.to(data.data.channelID).emit('aMemberKicked', data.data);
+    this.server.to(data.data.userID).emit('youGetKicked', data.data);
+  }
+
 }

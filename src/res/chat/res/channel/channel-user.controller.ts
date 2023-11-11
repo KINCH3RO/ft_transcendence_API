@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common';
 import { ChannelUserService } from './channel-user.service';
 import { UpdateChannelUserDto } from './dto/update-channelUser.dto';
 import { CreateChannelUserDto } from './dto/create-channelUser.dto';
@@ -52,8 +52,8 @@ export class ChannelUserController {
 	}
 
 	@Delete("kick")
-	kick(@ActiveUser() user: ActiveUserData, @Body() targetChannelUserDto: CreateChannelUserDto) {
-		return this.channelUserService.kick(user.sub, targetChannelUserDto);
+	kick(@ActiveUser() user: ActiveUserData, @Query() params: any) {
+		return this.channelUserService.kick(user.sub, params);
 	}
 
 	@Get("myChannels")
