@@ -29,16 +29,46 @@ export class MainGate implements OnGatewayConnection, OnGatewayDisconnect {
 	@WebSocketServer()
 	io: Server;
 
-	handleConnection(client: any, ...args: any[]) {
+	handleConnection(client: Socket, ...args: any[]) {
 		// console.log(client);
 		console.log('=> A socket has connected with ID: ', client.id);
+		if (!client.handshake.query.userId) {
+			client.disconnect()
+			return false;
+		}
+
+
+		this.webSocketService.getUserFromToken(client.handshake.query.userId as string, (userData) => {
+
+			client.join(userData.sub);
+			// join all user channels
+			// client.join(data.data);
+			this.webSocketService.userConnected(userData.sub, client.id, () => {
+				client.broadcast.emit('connected', userData.sub);
+			});
+
+			let lobby: Lobby = this.lobbyService.getLobby(userData.sub);
+			//lobby stuff
+			if (!lobby) return;
+			client.join(lobby.id)
+			lobby.isOwner = lobby.owner == userData.sub;
+			client.emit('lobbyData', lobby);
+
+		}, (err) => {
+			console.log(err);
+
+			client.disconnect()
+
+		})
+
+
 	}
 
-	handleDisconnect(client: any) {
+	handleDisconnect(client: Socket) {
 		console.log('=> A socket has disconnected with ID: ', client.id);
 		if (!client.handshake.query.userId) return false;
 		this.webSocketService.userDisconnected(
-			client.handshake.query.userId,
+			client.handshake.query.userId as string,
 			client.id,
 			(userID) => {
 				client.broadcast.emit('disconnected', userID);
@@ -61,20 +91,11 @@ export class MainGate implements OnGatewayConnection, OnGatewayDisconnect {
 	}
 
 
-	@SubscribeMessage('testTest')
-	ha(socket: Socket, data: BodyData) {
-		// join rooms with sender id
 
-	}
 	@SubscribeMessage('connected')
 	handleConnect(socket: Socket, data: BodyData) {
 		// join rooms with sender id
-		socket.join(data.sender.id);
-		// join all user channels
-		socket.join(data.data);
-		this.webSocketService.userConnected(data.sender.id, socket.id, () => {
-			socket.broadcast.emit('connected', data.sender.id);
-		});
+
 	}
 
 	@SubscribeMessage('presence')

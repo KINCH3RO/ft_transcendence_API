@@ -34,13 +34,6 @@ export class LobbyGate {
 		this.io.to(data.data.receiver).emit('lobbyInvite', data.data.senderInfo);
 	}
 
-	@SubscribeMessage('getLobbyData')
-	handleGetLobbyData(socket: Socket, data: BodyData) {
-		let lobby = this.lobbyService.getLobby(data.sender.id);
-		if (!lobby) return;
-		lobby.isOwner = lobby.owner == data.sender.id;
-		socket.emit('lobbyData', lobby);
-	}
 
 	@SubscribeMessage('lobbyAccept')
 	async handleLobbyCreate(socket: Socket, data: BodyData) {
