@@ -14,5 +14,5 @@ export class UpdateChannelUserDto extends PartialType(CreateChannelUserDto) {
 
   @IsNumber()
   @IsOptional()
-  duration: bigint;
+  duration: number;
 }

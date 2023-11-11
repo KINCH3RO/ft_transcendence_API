@@ -76,7 +76,7 @@ export class ChannelUserService {
         role: true,
         status: true,
         joinedAt: true,
-      }
+      },
     });
   }
 
@@ -104,20 +104,21 @@ export class ChannelUserService {
     let target_: CreateChannelUserDto = {
       channelID: targetChannelUserDto.channelID,
       userID: targetChannelUserDto.userID,
-    }
+    };
 
-    const duration = targetChannelUserDto.duration ?? BigInt(0);
-    const promises = [
-      this.findOne(actorChannelUserDto),
-      this.findOne(target_),
-    ];
+    const duration = targetChannelUserDto.duration ?? null;
+    const promises = [this.findOne(actorChannelUserDto), this.findOne(target_)];
     const [actor, target] = await Promise.all(promises);
 
-    if (target.role != 'OWNER' && actor.role == 'OWNER') target.status = status;
-    else if (actor.role == 'ADMINISTRATOR' && target.role == 'MEMBER') {
+    if (target.role != 'OWNER' && actor.role == 'OWNER') {
       target.status = status;
       target.duration = duration
-        ? BigInt(Math.round(Date.now() / 1000)) + duration
+        ? Math.round(Date.now() / 1000) + duration
+        : duration;
+    } else if (actor.role == 'ADMINISTRATOR' && target.role == 'MEMBER') {
+      target.status = status;
+      target.duration = duration
+        ? Math.round(Date.now() / 1000) + duration
         : duration;
     } else throw new HttpException('nice try', HttpStatus.FORBIDDEN);
 
@@ -132,8 +133,8 @@ export class ChannelUserService {
 
     let targetChannelUserDto: CreateChannelUserDto = {
       channelID: param.channelID,
-      userID: param.userID
-    }
+      userID: param.userID,
+    };
 
     const promises = [
       this.findOne(actorChannelUserDto),
@@ -165,7 +166,10 @@ export class ChannelUserService {
 
     const [targetChannel, targetChannelUser] = await Promise.all(promises);
 
-    if (targetChannel.visibility == 'PROTECTED' || targetChannel.visibility == 'PUBLIC' && targetChannel.password) {
+    if (
+      targetChannel.visibility == 'PROTECTED' ||
+      (targetChannel.visibility == 'PUBLIC' && targetChannel.password)
+    ) {
       if (joinChannelDto.password == undefined)
         throw new HttpException('This channel Protected', HttpStatus.FORBIDDEN);
 
