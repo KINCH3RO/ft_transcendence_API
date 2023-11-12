@@ -170,6 +170,9 @@ export class LobbyGate {
 
 		if (this.matchmakingService.Qplayers.length > 0) {
 			for (let i = 0; i < this.matchmakingService.Qplayers.length; i++) {
+
+				if (this.matchmakingService.Qplayers[i].id == data.sender.id)
+					return;
 				const isRanked =
 					this.matchmakingService.Qplayers[i].ranked == data.data.ranked &&
 					data.data.ranked == true;
