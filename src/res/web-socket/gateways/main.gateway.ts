@@ -1,4 +1,4 @@
-import { UseFilters, UseGuards, UsePipes } from '@nestjs/common';
+import { UseFilters, UseGuards, UseInterceptors, UsePipes } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import {
 	BaseWsExceptionFilter,
@@ -10,40 +10,68 @@ import {
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { TokenGuard } from '../token.guard';
-import { TokenPipe } from '../token.pipe';
 import { BodyData } from '../types/body-data.interface';
 import { WebSocketService } from '../services/web-socket.service';
 import { LobbyService } from '../services/lobby.service';
 import Lobby from '../types/lobby.interface';
+import { channel } from 'diagnostics_channel';
+import queueData from '../types/queue-data.interface';
+import { MatchmakingService } from '../services/matchmaking.service';
 
 //handling present events
 
 @UseFilters(new BaseWsExceptionFilter())
 @UseGuards(TokenGuard)
-@UsePipes(new TokenPipe(new JwtService()))
 @WebSocketGateway({ cors: true, transports: ['websocket'] })
 export class MainGate implements OnGatewayConnection, OnGatewayDisconnect {
 	constructor(
 		private readonly webSocketService: WebSocketService,
 		private lobbyService: LobbyService,
+		private matchmakingService: MatchmakingService
 	) { }
 
 	@WebSocketServer()
 	io: Server;
 
-	handleConnection(client: any, ...args: any[]) {
+	handleConnection(client: Socket, ...args: any[]) {
+		// console.log(client);
 		console.log('=> A socket has connected with ID: ', client.id);
-	}
+		if (!client.handshake.query.userId) {
+			client.disconnect()
+			return false;
+		}
+		this.webSocketService.getUserFromToken(client.handshake.query.userId as string, (userData) => {
+			client.join(userData.sub);
+			// join all user channels (chat)
+			this.webSocketService.getUserChannels(userData.sub).then(channels => client.join(channels))
+			//emit event to other user that the user is connected
+			this.webSocketService.userConnected(userData.sub, client.id, () => {
+				client.broadcast.emit('connected', userData.sub);
+			});
+			//emit queue event
+			const queueData: queueData = this.matchmakingService.getPlayerInQ(userData.sub);
+			if (queueData)
+				client.emit("enterQueue", queueData)
+			let lobby: Lobby = this.lobbyService.getLobby(userData.sub);
+			//lobby stuff
+			if (!lobby) return;
+			client.join(lobby.id)
+			lobby.isOwner = lobby.owner == userData.sub;
+			client.emit('lobbyData', lobby);
 
-	handleDisconnect(client: any) {
+		}, (err) => {
+			console.log(err);
+			client.disconnect()
+		})
+	}
+	handleDisconnect(client: Socket) {
 		console.log('=> A socket has disconnected with ID: ', client.id);
 		if (!client.handshake.query.userId) return false;
 		this.webSocketService.userDisconnected(
-			client.handshake.query.userId,
+			client.handshake.query.userId as string,
 			client.id,
 			(userID) => {
 				client.broadcast.emit('disconnected', userID);
-
 				let lobby: Lobby = this.lobbyService.getLobby(userID);
 				//lobby stuff
 				if (!lobby) return;
@@ -57,20 +85,14 @@ export class MainGate implements OnGatewayConnection, OnGatewayDisconnect {
 				});
 				this.lobbyService.deleteLobby(lobby.id);
 				//end lobby
+				//
+				// this.matchmakingService.removePlayer(user)
 			},
 		);
 	}
 
-	@SubscribeMessage('connected')
-	handleConnect(socket: Socket, data: BodyData) {
-		// join rooms with sender id
-		socket.join(data.sender.id);
-		// join all user channels
-		socket.join(data.data);
-		this.webSocketService.userConnected(data.sender.id, socket.id, () => {
-			socket.broadcast.emit('connected', data.sender.id);
-		});
-	}
+
+
 
 	@SubscribeMessage('presence')
 	handlePresence(socket: Socket, data: BodyData) {

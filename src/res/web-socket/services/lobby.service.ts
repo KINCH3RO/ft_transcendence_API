@@ -3,6 +3,7 @@ import Lobby, { LobbyCreate } from '../types/lobby.interface';
 import { randomUUID } from 'crypto';
 import { ProfileService } from 'src/res/profile/profile.service';
 import UserData from '../types/user-data.interface';
+import queueData from '../types/queue-data.interface';
 
 @Injectable()
 export class LobbyService {
@@ -68,5 +69,7 @@ export class LobbyService {
 	Exist(lobbyId: string): boolean {
 		return !!this.lobbies.find(lobby => lobby.id == lobbyId)
 	}
+
+
 
 }
