@@ -15,6 +15,7 @@ import { LobbyService } from '../services/lobby.service';
 import Lobby from '../types/lobby.interface';
 import queueData from '../types/queue-data.interface';
 import { GameService } from 'src/game/game.service';
+import { MatchmakingService } from '../services/matchmaking.service';
 //handling present events
 
 @UseFilters(new BaseWsExceptionFilter())
@@ -25,6 +26,7 @@ export class LobbyGate {
 		private readonly webSocketService: WebSocketService,
 		private lobbyService: LobbyService,
 		private gameService: GameService,
+		private matchmakingService: MatchmakingService
 	) { }
 
 	@WebSocketServer()
@@ -122,7 +124,6 @@ export class LobbyGate {
 	}
 
 	//matchmaking system
-	queuedPlayers: queueData[] = [];
 
 	matchCountdown(lobby: Lobby) {
 		let number = 2;
@@ -159,27 +160,35 @@ export class LobbyGate {
 
 	@SubscribeMessage('enterQueue')
 	async handleEnterQueue(socket: Socket, data: BodyData) {
-		if (this.queuedPlayers.length > 0) {
-			for (let i = 0; i < this.queuedPlayers.length; i++) {
+
+		const queueData: queueData = {
+			startDate: Date.now(),
+			id: data.sender.id,
+			...data.data,
+		}
+		this.io.to(data.sender.id).emit("enterQueue", queueData)
+
+		if (this.matchmakingService.Qplayers.length > 0) {
+			for (let i = 0; i < this.matchmakingService.Qplayers.length; i++) {
 				const isRanked =
-					this.queuedPlayers[i].ranked == data.data.ranked &&
+					this.matchmakingService.Qplayers[i].ranked == data.data.ranked &&
 					data.data.ranked == true;
 				// this.queuedPlayers[i].ranked && data.data.ranked
 				if (
 					(isRanked &&
-						Math.abs(this.queuedPlayers[i].rating - data.data.rating) < 500) ||
-					this.queuedPlayers[i].gamemode == data.data.gamemode // ??
+						Math.abs(this.matchmakingService.Qplayers[i].rating - data.data.rating) < 500) ||
+					this.matchmakingService.Qplayers[i].gamemode == data.data.gamemode // ??
 				) {
 					// console.log(this.queuedPlayers);
 
 					try {
 						let lobby = await this.lobbyService.createLobby(
 							{
-								players: [this.queuedPlayers[i].id, data.sender.id],
+								players: [this.matchmakingService.Qplayers[i].id, data.sender.id],
 							},
-							this.queuedPlayers[i].gamemode,
+							this.matchmakingService.Qplayers[i].gamemode,
 							true,
-							this.queuedPlayers[i].ranked,
+							this.matchmakingService.Qplayers[i].ranked,
 							'starting',
 						);
 
@@ -202,7 +211,7 @@ export class LobbyGate {
 						this.io.to(lobby.id).emit('matchFound');
 						this.matchCountdown(lobby);
 
-						this.queuedPlayers.splice(i, 1);
+						this.matchmakingService.Qplayers.splice(i, 1);
 					} catch (error) {
 						// console.log(error);
 					}
@@ -212,19 +221,15 @@ export class LobbyGate {
 			}
 		}
 
-		this.queuedPlayers.push({
-			id: data.sender.id,
-			...data.data,
-		});
-
-		// console.log(this.queuedPlayers);
+		this.matchmakingService.addPlayer(queueData);
 	}
 
 	@SubscribeMessage('leaveQueue')
 	handleLeaveQueue(socket: Socket, data: BodyData) {
-		this.queuedPlayers = this.queuedPlayers.filter(
-			(x) => x.id != data.sender.id,
-		);
-		// console.log(this.queuedPlayers);
+		this.matchmakingService.removePlayer(data.sender.id)
+		this.io.to(data.sender.id).emit("leaveQueue")
 	}
+
+
+
 }

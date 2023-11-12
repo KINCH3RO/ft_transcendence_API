@@ -3,10 +3,13 @@ import { JwtService } from '@nestjs/jwt';
 import { UUID } from 'crypto';
 import userPresence from '../types/user-presence.interface';
 import { ActiveUserData } from 'src/iam/interfaces/active-user.interface';
+import { ChannelUserService } from 'src/res/chat/res/channel/channel-user.service';
+import { PrismaModule } from 'src/prisma/prisma.module';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class WebSocketService {
-	constructor(private jwtService: JwtService) { }
+	constructor(private jwtService: JwtService, private prismaService: PrismaService) { }
 
 	onlineUsers: { [userId: string]: userPresence } = {};
 
@@ -76,5 +79,19 @@ export class WebSocketService {
 			err(error)
 		}
 
+	}
+
+	async getUserChannels(userID: string) {
+		let rooms = await this.prismaService.channelUser.findMany({
+			select: {
+				channelID: true,
+			},
+			where: {
+				userID,
+				NOT: { status: 'BANNED' },
+			},
+		});
+
+		return rooms.map((data) => data.channelID);
 	}
 }

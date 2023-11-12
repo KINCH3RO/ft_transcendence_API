@@ -14,6 +14,9 @@ import { BodyData } from '../types/body-data.interface';
 import { WebSocketService } from '../services/web-socket.service';
 import { LobbyService } from '../services/lobby.service';
 import Lobby from '../types/lobby.interface';
+import { channel } from 'diagnostics_channel';
+import queueData from '../types/queue-data.interface';
+import { MatchmakingService } from '../services/matchmaking.service';
 
 //handling present events
 
@@ -24,6 +27,7 @@ export class MainGate implements OnGatewayConnection, OnGatewayDisconnect {
 	constructor(
 		private readonly webSocketService: WebSocketService,
 		private lobbyService: LobbyService,
+		private matchmakingService: MatchmakingService
 	) { }
 
 	@WebSocketServer()
@@ -36,17 +40,18 @@ export class MainGate implements OnGatewayConnection, OnGatewayDisconnect {
 			client.disconnect()
 			return false;
 		}
-
-
 		this.webSocketService.getUserFromToken(client.handshake.query.userId as string, (userData) => {
-
 			client.join(userData.sub);
-			// join all user channels
-			// client.join(data.data);
+			// join all user channels (chat)
+			this.webSocketService.getUserChannels(userData.sub).then(channels => client.join(channels))
+			//emit event to other user that the user is connected
 			this.webSocketService.userConnected(userData.sub, client.id, () => {
 				client.broadcast.emit('connected', userData.sub);
 			});
-
+			//emit queue event
+			const queueData: queueData = this.matchmakingService.getPlayerInQ(userData.sub);
+			if (queueData)
+				client.emit("enterQueue", queueData)
 			let lobby: Lobby = this.lobbyService.getLobby(userData.sub);
 			//lobby stuff
 			if (!lobby) return;
@@ -56,14 +61,9 @@ export class MainGate implements OnGatewayConnection, OnGatewayDisconnect {
 
 		}, (err) => {
 			console.log(err);
-
 			client.disconnect()
-
 		})
-
-
 	}
-
 	handleDisconnect(client: Socket) {
 		console.log('=> A socket has disconnected with ID: ', client.id);
 		if (!client.handshake.query.userId) return false;
@@ -72,7 +72,6 @@ export class MainGate implements OnGatewayConnection, OnGatewayDisconnect {
 			client.id,
 			(userID) => {
 				client.broadcast.emit('disconnected', userID);
-
 				let lobby: Lobby = this.lobbyService.getLobby(userID);
 				//lobby stuff
 				if (!lobby) return;
@@ -86,6 +85,8 @@ export class MainGate implements OnGatewayConnection, OnGatewayDisconnect {
 				});
 				this.lobbyService.deleteLobby(lobby.id);
 				//end lobby
+				//
+				// this.matchmakingService.removePlayer(user)
 			},
 		);
 	}
