@@ -1,13 +1,18 @@
 import { PartialType } from '@nestjs/mapped-types';
 import { CreateChannelDto } from './create-channel.dto';
-import { IsOptional, IsUUID, MinLength } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsUUID, IsUrl, MinLength } from 'class-validator';
 
-export class UpdateChannelDto extends PartialType(CreateChannelDto) {
+export class UpdateChannelDto {
 	@IsUUID()
 	@IsOptional()
 	id: string;
 
-	@MinLength(8)
+	@IsUrl({require_tld: false})
+	@IsNotEmpty()
 	@IsOptional()
-	oldPass: string;
+	imageUrl: string;
+
+	@IsNotEmpty()
+	@IsOptional()
+	name: string;
 }

@@ -13,6 +13,7 @@ import { CreateChannelDto } from './dto/create-channel.dto';
 import { UpdateChannelDto } from './dto/update-channel.dto';
 import { ActiveUser } from 'src/iam/authentication/decorators/active-user.decorator';
 import { ActiveUserData } from 'src/iam/interfaces/active-user.interface';
+import { UpdatePasswordDto } from './dto/update-password.dto';
 
 @Controller('channel')
 export class ChannelController {
@@ -52,6 +53,11 @@ export class ChannelController {
   @Patch()
   update(@Body() updateChannelDto: UpdateChannelDto) {
     return this.channelService.update(updateChannelDto);
+  }
+
+  @Patch('password')
+  updatePassword(@Body() updatePasswordDto: UpdatePasswordDto) {
+    return this.channelService.updatePassword(updatePasswordDto);
   }
 
   @Delete(':channelId')

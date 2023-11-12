@@ -7,12 +7,14 @@ import { JoinChannelDto } from './dto/join-channel.dto';
 import { HashingService } from 'src/hashing/hashing.service';
 import { ActiveUserData } from 'src/iam/interfaces/active-user.interface';
 import { ChannelUser } from './entities/channel.entity';
+import { WebSocketService } from 'src/res/web-socket/services/web-socket.service';
 
 @Injectable()
 export class ChannelUserService {
   constructor(
     private prisma: PrismaService,
     private hashingService: HashingService,
+    private webSocketService: WebSocketService,
   ) {}
 
   create(createChannelUserDto: CreateChannelUserDto) {
@@ -216,7 +218,7 @@ export class ChannelUserService {
     user_id: string,
     channel_id: string,
   ): Promise<ChannelUser[]> {
-    return this.prisma.channelUser.findMany({
+    let holder = await this.prisma.channelUser.findMany({
       where: {
         channelID: channel_id,
         OR: [{ status: 'FREE' }, { status: 'MUTED' }],
@@ -239,6 +241,12 @@ export class ChannelUserService {
         },
       },
     });
+
+    holder.map((item) => {
+      item.user.onlineStatus = this.webSocketService.isOnline(item.user.id);
+    });
+
+    return holder;
   }
 
   async listBlockedMember(

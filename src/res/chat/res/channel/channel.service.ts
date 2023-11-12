@@ -6,6 +6,7 @@ import { channelUser } from '@prisma/client';
 import { HashingService } from 'src/hashing/hashing.service';
 import { WebSocketService } from 'src/res/web-socket/services/web-socket.service';
 import { Channel } from './entities/channel.entity';
+import { UpdatePasswordDto } from './dto/update-password.dto';
 
 @Injectable()
 export class ChannelService {
@@ -93,42 +94,38 @@ export class ChannelService {
     return channel;
   }
 
-  async update(updateChannelDto: UpdateChannelDto) {
-    let channel = await this.prisma.channel.findUnique({
+  update(updateChannelDto: UpdateChannelDto) {
+    return this.prisma.channel.update({
       where: { id: updateChannelDto.id },
+      data: updateChannelDto,
+    });
+  }
+
+  async updatePassword(updatePasswordDto: UpdatePasswordDto) {
+    let channel = await this.prisma.channel.findUnique({
+      where: { id: updatePasswordDto.id },
       select: {
         password: true,
         visibility: true,
       },
     });
 
-    if (channel.visibility == 'PROTECTED') {
-      // try {
-        let validpass = await this.hashingService.compare(
-          updateChannelDto.oldPass,
-          channel.password,
-        );
-        if (!validpass)
-          throw new HttpException('wrong password', HttpStatus.FORBIDDEN);
-      // } catch (error) {
-      //   console.log(error);
-      // }
+    if (channel.visibility == 'PROTECTED' && updatePasswordDto.oldPass) {
+      let validpass = await this.hashingService.compare(
+        updatePasswordDto.oldPass,
+        channel.password,
+      );
+      if (!validpass)
+        throw new HttpException('wrong password', HttpStatus.FORBIDDEN);
     }
 
     let pass = null;
-    if (updateChannelDto.password)
-      pass = await this.hashingService.hash(updateChannelDto.password);
+    if (updatePasswordDto.newPassword)
+      pass = await this.hashingService.hash(updatePasswordDto.newPassword);
 
     return this.prisma.channel.update({
-      where: {
-        id: updateChannelDto.id,
-      },
-      data: {
-        imageUrl: updateChannelDto.imageUrl,
-        name: updateChannelDto.name,
-        password: pass,
-        visibility: updateChannelDto.visibility,
-      },
+      where: { id: updatePasswordDto.id },
+      data: { password: pass, visibility: updatePasswordDto.visibility },
     });
   }
 
