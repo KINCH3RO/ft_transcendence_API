@@ -5,6 +5,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { channelUser } from '@prisma/client';
 import { HashingService } from 'src/hashing/hashing.service';
 import { WebSocketService } from 'src/res/web-socket/services/web-socket.service';
+import { Channel } from './entities/channel.entity';
 
 @Injectable()
 export class ChannelService {
@@ -93,8 +94,28 @@ export class ChannelService {
   }
 
   async update(updateChannelDto: UpdateChannelDto) {
-    let pass;
+    let channel = await this.prisma.channel.findUnique({
+      where: { id: updateChannelDto.id },
+      select: {
+        password: true,
+        visibility: true,
+      },
+    });
 
+    if (channel.visibility == 'PROTECTED') {
+      // try {
+        let validpass = await this.hashingService.compare(
+          updateChannelDto.oldPass,
+          channel.password,
+        );
+        if (!validpass)
+          throw new HttpException('wrong password', HttpStatus.FORBIDDEN);
+      // } catch (error) {
+      //   console.log(error);
+      // }
+    }
+
+    let pass = null;
     if (updateChannelDto.password)
       pass = await this.hashingService.hash(updateChannelDto.password);
 
@@ -144,6 +165,11 @@ export class ChannelService {
       where: {
         name: { startsWith: name, mode: 'insensitive' },
         visibility: { not: 'PRIVATE' },
+        channels: {
+          none: {
+            status: 'BANNED',
+          },
+        },
       },
       select: {
         id: true,
@@ -180,7 +206,11 @@ export class ChannelService {
 
   async listCurrentUserChannel(currentUserId: string) {
     let list: any = await this.prisma.channel.findMany({
-      where: { channels: { some: { userID: currentUserId, status: { not: 'BANNED' } } } },
+      where: {
+        channels: {
+          some: { userID: currentUserId, status: { not: 'BANNED' } },
+        },
+      },
       select: {
         id: true,
         name: true,

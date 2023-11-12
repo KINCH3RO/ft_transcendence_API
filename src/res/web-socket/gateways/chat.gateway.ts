@@ -29,14 +29,15 @@ export class ChatGate {
     socket.join(data.data)
   }
 
-  @SubscribeMessage('channel joined')
+  @SubscribeMessage('channelJoined')
   handleJoinRoom(socket: Socket, data: BodyData) {
-    this.server.to(data.data.channelID).emit('new member joind', data.data);
+    this.server.to(data.data.channelID).emit('newMemberJoind', data.data);
   }
 
-  @SubscribeMessage('channel left')
+  @SubscribeMessage('channelLeft')
   handleLeftRoom(socket: Socket, data: BodyData) {
-    this.server.to(data.data.channelID).emit('a member left', data.sender.id);
+    console.log('left ', data)
+    this.server.to(data.data.channelID).emit('aMemberLeft', data);
   }
 
   @SubscribeMessage('updateChannelInfo')
