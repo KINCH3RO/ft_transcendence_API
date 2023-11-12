@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common';
 import { ChannelUserService } from './channel-user.service';
 import { UpdateChannelUserDto } from './dto/update-channelUser.dto';
 import { CreateChannelUserDto } from './dto/create-channelUser.dto';
@@ -52,23 +52,27 @@ export class ChannelUserController {
 	}
 
 	@Delete("kick")
-	kick(@ActiveUser() user: ActiveUserData, @Body() targetChannelUserDto: UpdateChannelUserDto) {
-		return this.channelUserService.kick(user.sub, targetChannelUserDto);
+	kick(@ActiveUser() user: ActiveUserData, @Query() params: any) {
+		return this.channelUserService.kick(user.sub, params);
 	}
 
 	@Get("myChannels")
 	listActiveUserChannels(@ActiveUser() ActiveUser: ActiveUserData) {
 		return this.channelUserService.listActiveUserChannels(ActiveUser);
 	}
-	
+
 	@Get(':room_id')
 	findMember(@ActiveUser() user: ActiveUserData, @Param('room_id') channel_id: string) {
 		return this.channelUserService.findMembers(user.sub, channel_id);
 	}
 
+	@Get('blockedList/:room_id')
+	listBlockedMember(@ActiveUser() user: ActiveUserData, @Param('room_id') channel_id: string) {
+		return this.channelUserService.listBlockedMember(user.sub, channel_id);
+	}
+
 	@Delete(':room_id')
 	leaveChannel(@ActiveUser() user: ActiveUserData, @Param('room_id') channel_id: string) {
-		console.log("leave: ", user.sub, channel_id)
 		return this.channelUserService.leaveChannel(user.sub, channel_id);
 	}
 
