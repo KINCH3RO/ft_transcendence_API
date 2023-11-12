@@ -73,6 +73,8 @@ export class MainGate implements OnGatewayConnection, OnGatewayDisconnect {
 			(userID) => {
 				client.broadcast.emit('disconnected', userID);
 				let lobby: Lobby = this.lobbyService.getLobby(userID);
+				//matchmaking suff
+				this.matchmakingService.removePlayer(userID)
 				//lobby stuff
 				if (!lobby) return;
 				let oppnentdID = lobby.players.find((x) => x.id != userID).id;
@@ -86,7 +88,6 @@ export class MainGate implements OnGatewayConnection, OnGatewayDisconnect {
 				this.lobbyService.deleteLobby(lobby.id);
 				//end lobby
 				//
-				// this.matchmakingService.removePlayer(user)
 			},
 		);
 	}
