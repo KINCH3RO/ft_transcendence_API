@@ -8,8 +8,9 @@ import { HashingModule } from 'src/hashing/hashing.module';
 import { WebSocketModule } from 'src/res/web-socket/web-socket.module';
 
 @Module({
-  imports: [PrismaModule, HashingModule, WebSocketModule],
-  controllers: [ChannelController, ChannelUserController],
-  providers: [ChannelService, ChannelUserService],
+	exports: [ChannelUserService],
+	imports: [PrismaModule, HashingModule, WebSocketModule],
+	controllers: [ChannelController, ChannelUserController],
+	providers: [ChannelService, ChannelUserService],
 })
-export class ChannelModule {}
+export class ChannelModule { }

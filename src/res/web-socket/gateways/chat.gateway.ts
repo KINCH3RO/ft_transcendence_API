@@ -9,14 +9,12 @@ import { WebSocketService } from '../services/web-socket.service';
 import { UseFilters, UseGuards, UsePipes } from '@nestjs/common';
 import { Socket, Server } from 'socket.io';
 import { TokenGuard } from '../token.guard';
-import { TokenPipe } from '../token.pipe';
 import { JwtService } from '@nestjs/jwt';
 import { BodyData } from '../types/body-data.interface';
 
 
 @UseFilters(new BaseWsExceptionFilter())
 @UseGuards(TokenGuard)
-@UsePipes(new TokenPipe(new JwtService()))
 @WebSocketGateway({ cors: true, transports: ['websocket'] })
 export class ChatGate {
   @WebSocketServer()

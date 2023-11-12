@@ -33,7 +33,7 @@ import { WebSocketModule } from './res/web-socket/web-socket.module';
 		PrismaModule,
 		ConfigModule.forRoot({ isGlobal: true }),
 		UploadModule,
-		WebSocketModule
+		WebSocketModule,
 	],
 	controllers: [AppController],
 	providers: [AppService],
