@@ -26,17 +26,19 @@ export class ChatGate {
 
   @SubscribeMessage('channelCreated')
   handleCreatedRoom(socket: Socket, data: BodyData) {
+    console.log('create channel', data.data)
     socket.join(data.data)
   }
 
   @SubscribeMessage('channelJoined')
   handleJoinRoom(socket: Socket, data: BodyData) {
+    socket.join(data.data.channelID)
     this.server.to(data.data.channelID).emit('newMemberJoind', data.data);
   }
 
   @SubscribeMessage('channelLeft')
   handleLeftRoom(socket: Socket, data: BodyData) {
-    console.log('left ', data)
+    socket.leave(data.data.channelID)
     this.server.to(data.data.channelID).emit('aMemberLeft', data);
   }
 
