@@ -27,6 +27,8 @@ export class OtpAuthService {
   }
 
   verifyCode(token: string, secret: string) {
+	console.log(token,secret)
+	console.log(authenticator.generate(secret))
     return authenticator.verify({
       token,
       secret,

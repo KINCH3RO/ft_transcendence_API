@@ -9,89 +9,94 @@ import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class WebSocketService {
-	constructor(private jwtService: JwtService, private prismaService: PrismaService) { }
+  constructor(
+    private jwtService: JwtService,
+    private prismaService: PrismaService,
+  ) {}
 
-	onlineUsers: { [userId: string]: userPresence } = {};
+  onlineUsers: { [userId: string]: userPresence } = {};
 
-	userConnected(userID: string, socketID: string, callback: () => void = null) {
-		console.log('connect');
-		if (!this.onlineUsers[userID]) {
-			callback && callback();
-			this.onlineUsers[userID] = {
-				sockets: [socketID],
-				state: 'Online',
-			};
-		} else this.onlineUsers[userID].sockets.push(socketID);
-		console.log(this.onlineUsers);
-	}
+  userConnected(userID: string, socketID: string, callback: () => void = null) {
+    console.log('connect');
+    if (!this.onlineUsers[userID]) {
+      callback && callback();
+      this.onlineUsers[userID] = {
+        sockets: [socketID],
+        state: 'Online',
+      };
+    } else this.onlineUsers[userID].sockets.push(socketID);
+    console.log(this.onlineUsers);
+  }
 
-	userDisconnected(
-		token: string,
-		socketID: string,
-		callback: (userID: string) => void = null,
-	) {
-		console.log('disconnect');
-		let userID = 'none';
+  userDisconnected(
+    token: string,
+    socketID: string,
+    callback: (userID: string) => void = null,
+  ) {
+    console.log('disconnect');
+    let userID = 'none';
 
-		try {
-			userID = this.jwtService.verify(token, {
-				secret: process.env.JWT_SECRET,
-			}).sub;
-		} catch (error) {
-			throw error;
-		}
-		if (!this.onlineUsers[userID]) return;
-		if (this.onlineUsers[userID].sockets.length > 1)
-			this.onlineUsers[userID].sockets = this.onlineUsers[
-				userID
-			].sockets.filter((id: string) => socketID != id);
-		else {
-			callback && callback(userID);
-			delete this.onlineUsers[userID];
-		}
-		console.log(this.onlineUsers);
-	}
+    try {
+      userID = this.jwtService.verify(token, {
+        secret: process.env.JWT_SECRET,
+      }).sub;
+    } catch (error) {
+      throw error;
+    }
+    if (!this.onlineUsers[userID]) return;
+    if (this.onlineUsers[userID].sockets.length > 1)
+      this.onlineUsers[userID].sockets = this.onlineUsers[
+        userID
+      ].sockets.filter((id: string) => socketID != id);
+    else {
+      callback && callback(userID);
+      delete this.onlineUsers[userID];
+    }
+    console.log(this.onlineUsers);
+  }
 
-	getSockets(userID: string) {
-		return this.onlineUsers[userID].sockets;
-	}
-	isOnline(userID: string): boolean {
-		if (this.onlineUsers[userID]) return true;
-		return false;
-	}
+  getSockets(userID: string) {
+    return this.onlineUsers[userID].sockets;
+  }
+  isOnline(userID: string): boolean {
+    if (this.onlineUsers[userID]) return true;
+    return false;
+  }
 
-	setPresenceState(
-		userID: string,
-		state: 'Online' | 'AFK' | 'In-Game' | 'In-Queue' | 'In-Lobby',
-	) {
-		if (!this.onlineUsers[userID]) this.onlineUsers[userID].state = state;
-	}
+  setPresenceState(
+    userID: string,
+    state: 'Online' | 'AFK' | 'In-Game' | 'In-Queue' | 'In-Lobby',
+  ) {
+    if (!this.onlineUsers[userID]) this.onlineUsers[userID].state = state;
+  }
 
+  getUserFromToken(
+    token: string,
+    success: (userData: ActiveUserData) => void,
+    err: (err: any) => void,
+  ) {
+    try {
+      let data = this.jwtService.verify(token, {
+        secret: process.env.JWT_SECRET,
+      });
 
-	getUserFromToken(token: string, success: (userData: ActiveUserData) => void, err: (err: any) => void) {
-		try {
-			let data = this.jwtService.verify(token, {
-				secret: process.env.JWT_SECRET,
-			})
+      success(data);
+    } catch (error) {
+      err(error);
+    }
+  }
 
-			success(data)
-		} catch (error) {
-			err(error)
-		}
+  async getUserChannels(userID: string) {
+    let rooms = await this.prismaService.channelUser.findMany({
+      select: {
+        channelID: true,
+      },
+      where: {
+        userID,
+        NOT: { status: 'BANNED' },
+      },
+    });
 
-	}
-
-	async getUserChannels(userID: string) {
-		let rooms = await this.prismaService.channelUser.findMany({
-			select: {
-				channelID: true,
-			},
-			where: {
-				userID,
-				NOT: { status: 'BANNED' },
-			},
-		});
-
-		return rooms.map((data) => data.channelID);
-	}
+    return rooms.map((data) => data.channelID);
+  }
 }
