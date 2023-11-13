@@ -156,41 +156,42 @@ export class LobbyGate {
     }, 1000);
   }
 
-  @SubscribeMessage('enterQueue')
-  async handleEnterQueue(socket: Socket, data: BodyData) {
-    const queueData: queueData = {
-      startDate: Date.now(),
-      id: data.sender.id,
-      ...data.data,
-    };
-    this.io.to(data.sender.id).emit('enterQueue', queueData);
-    if (this.matchmakingService.Qplayers.length > 0) {
-      for (let i = 0; i < this.matchmakingService.Qplayers.length; i++) {
-        const isRanked =
-          this.matchmakingService.Qplayers[i].ranked == data.data.ranked &&
-          data.data.ranked == true;
-        // this.queuedPlayers[i].ranked && data.data.ranked
-        if (
-          (isRanked &&
-            Math.abs(
-              this.matchmakingService.Qplayers[i].rating - data.data.rating,
-            ) < 500) ||
-          this.matchmakingService.Qplayers[i].gamemode == data.data.gamemode // ??
-        ) {
-          // console.log(this.queuedPlayers);
-          try {
-            let lobby = await this.lobbyService.createLobby(
-              {
-                players: [
-                  this.matchmakingService.Qplayers[i].id,
-                  data.sender.id,
-                ],
-              },
-              this.matchmakingService.Qplayers[i].gamemode,
-              true,
-              this.matchmakingService.Qplayers[i].ranked,
-              'starting',
-            );
+	@SubscribeMessage('enterQueue')
+	async handleEnterQueue(socket: Socket, data: BodyData) {
+
+		const queueData: queueData = {
+			startDate: Date.now(),
+			id: data.sender.id,
+			...data.data,
+		}
+		this.io.to(data.sender.id).emit("enterQueue", queueData)
+
+		if (this.matchmakingService.Qplayers.length > 0) {
+			for (let i = 0; i < this.matchmakingService.Qplayers.length; i++) {
+
+				if (this.matchmakingService.Qplayers[i].id == data.sender.id)
+					return;
+				const isRanked =
+					this.matchmakingService.Qplayers[i].ranked == data.data.ranked &&
+					data.data.ranked == true;
+				// this.queuedPlayers[i].ranked && data.data.ranked
+				if (
+					(isRanked &&
+						Math.abs(this.matchmakingService.Qplayers[i].rating - data.data.rating) < 500) ||
+					this.matchmakingService.Qplayers[i].gamemode == data.data.gamemode // ??
+				) {
+					// console.log(this.queuedPlayers);
+
+					try {
+						let lobby = await this.lobbyService.createLobby(
+							{
+								players: [this.matchmakingService.Qplayers[i].id, data.sender.id],
+							},
+							this.matchmakingService.Qplayers[i].gamemode,
+							true,
+							this.matchmakingService.Qplayers[i].ranked,
+							'starting',
+						);
 
             this.webSocketService
               .getSockets(lobby.players[0].id)

@@ -5,128 +5,156 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { channelUser } from '@prisma/client';
 import { HashingService } from 'src/hashing/hashing.service';
 import { WebSocketService } from 'src/res/web-socket/services/web-socket.service';
+import { Channel } from './entities/channel.entity';
+import { UpdatePasswordDto } from './dto/update-password.dto';
 
 @Injectable()
 export class ChannelService {
-	constructor(
-		private prisma: PrismaService,
-		private hashingService: HashingService,
-		private webSocketService: WebSocketService,
-	) { }
+  constructor(
+    private prisma: PrismaService,
+    private hashingService: HashingService,
+    private webSocketService: WebSocketService,
+  ) {}
 
-	async create(createChannelDto: CreateChannelDto, id: string) {
-		return this.prisma.channel.create({
-			select: {
-				id: true,
-				name: true,
-				imageUrl: true,
-				visibility: true,
-				message: {
-					take: 1,
-					orderBy: {
-						createdAt: 'desc',
-					},
-					select: {
-						senderID: true,
-						content: true,
-						attachment: true,
-						createdAt: true,
-						updatedAt: true,
-					},
-				},
-				channels: true,
-			},
-			data: {
-				imageUrl: createChannelDto.imageUrl,
-				name: createChannelDto.name,
-				visibility: createChannelDto.visibility,
-				password: createChannelDto.password
-					? await this.hashingService.hash(createChannelDto.password)
-					: null,
-				channels: {
-					create: {
-						userID: id,
-						role: 'OWNER',
-						status: 'FREE',
-					},
-				},
-				message: {},
-			},
-		});
-	}
+  async create(createChannelDto: CreateChannelDto, id: string) {
+    let room: any = await this.prisma.channel.create({
+      select: {
+        id: true,
+        name: true,
+        imageUrl: true,
+        visibility: true,
+        message: {
+          take: 1,
+          orderBy: {
+            createdAt: 'desc',
+          },
+          select: {
+            senderID: true,
+            content: true,
+            attachment: true,
+            createdAt: true,
+            updatedAt: true,
+          },
+        },
+        channels: true,
+      },
+      data: {
+        imageUrl: createChannelDto.imageUrl,
+        name: createChannelDto.name,
+        visibility: createChannelDto.visibility,
+        password: createChannelDto.password
+          ? await this.hashingService.hash(createChannelDto.password)
+          : null,
+        channels: {
+          create: {
+            userID: id,
+            role: 'OWNER',
+            status: 'FREE',
+          },
+        },
+        message: {},
+      },
+    });
 
-	findAll() {
-		return this.prisma.channel.findMany();
-	}
+    room['isMemeber'] = true;
+    room['owner'] = 'OWNER';
 
-	async findOne(id: string) {
-		const channel = await this.prisma.channel.findUnique({
-			where: { id },
-			select: {
-				id: true,
-				visibility: true,
-				name: true,
-				imageUrl: true,
-				channels: {
-					select: {
-						user: {
-							select: {
-								id: true,
-								onlineStatus: true,
-							},
-						},
-					},
-				},
-			},
-		});
+    return room;
+  }
 
-		channel.channels.map((item) => {
-			item.user.onlineStatus = this.webSocketService.isOnline(item.user.id);
-		});
+  findAll() {
+    return this.prisma.channel.findMany();
+  }
 
-		return channel;
-	}
+  async findOne(id: string) {
+    const channel = await this.prisma.channel.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        visibility: true,
+        name: true,
+        imageUrl: true,
+        channels: {
+          select: {
+            user: {
+              select: {
+                id: true,
+                onlineStatus: true,
+              },
+            },
+          },
+        },
+      },
+    });
 
-	async update(updateChannelDto: UpdateChannelDto) {
-		return this.prisma.channel.update({
-			where: {
-				id: updateChannelDto.id,
-			},
-			data: {
-				imageUrl: updateChannelDto.imageUrl,
-				name: updateChannelDto.name,
-				password: await this.hashingService.hash(updateChannelDto.password),
-				visibility: updateChannelDto.visibility,
-			},
-		});
-	}
+    channel.channels.map((item) => {
+      item.user.onlineStatus = this.webSocketService.isOnline(item.user.id);
+    });
 
-	async remove(userId: string, removeChannelDto: UpdateChannelDto) {
-		const actor: channelUser = await this.prisma.channelUser.findUnique({
-			where: {
-				userID_channelID: { channelID: removeChannelDto.id, userID: userId },
-			},
-		});
+    return channel;
+  }
 
-		if (actor && actor.role != 'OWNER')
-			throw new HttpException('Nice try', HttpStatus.FORBIDDEN);
+  update(updateChannelDto: UpdateChannelDto) {
+    return this.prisma.channel.update({
+      where: { id: updateChannelDto.id },
+      data: updateChannelDto,
+    });
+  }
 
-		const deleteMessages = this.prisma.message.deleteMany({
-			where: { channelID: removeChannelDto.id },
-		});
-		const deleteUsers = this.prisma.channelUser.deleteMany({
-			where: { channelID: removeChannelDto.id },
-		});
-		const deleteChannel = this.prisma.channel.delete({
-			where: { id: removeChannelDto.id },
-		});
+  async updatePassword(updatePasswordDto: UpdatePasswordDto) {
+    let channel = await this.prisma.channel.findUnique({
+      where: { id: updatePasswordDto.id },
+      select: {
+        password: true,
+        visibility: true,
+      },
+    });
 
-		return this.prisma.$transaction([
-			deleteMessages,
-			deleteUsers,
-			deleteChannel,
-		]);
-	}
+    if (channel.visibility == 'PROTECTED' && updatePasswordDto.oldPass) {
+      let validpass = await this.hashingService.compare(
+        updatePasswordDto.oldPass,
+        channel.password,
+      );
+      if (!validpass)
+        throw new HttpException('wrong password', HttpStatus.FORBIDDEN);
+    }
+
+    let pass = null;
+    if (updatePasswordDto.newPassword)
+      pass = await this.hashingService.hash(updatePasswordDto.newPassword);
+
+    return this.prisma.channel.update({
+      where: { id: updatePasswordDto.id },
+      data: { password: pass, visibility: updatePasswordDto.visibility },
+    });
+  }
+
+  async remove(userId: string, channelId: string) {
+    const actor: channelUser = await this.prisma.channelUser.findUnique({
+      where: {
+        userID_channelID: { channelID: channelId, userID: userId },
+      },
+    });
+
+    if (actor && actor.role != 'OWNER')
+      throw new HttpException('Nice try', HttpStatus.FORBIDDEN);
+
+    const deleteMessages = this.prisma.message.deleteMany({
+      where: { channelID: channelId },
+    });
+    const deleteUsers = this.prisma.channelUser.deleteMany({
+      where: { channelID: channelId },
+    });
+    const deleteChannel = this.prisma.channel.delete({
+      where: { id: channelId },
+    });
+
+    return this.prisma.$transaction([
+      deleteMessages,
+      deleteUsers,
+      deleteChannel,
+    ]);
+  }
 
   async findChannelByName(currentUserId: string, name: string) {
     let list: any = await this.prisma.channel.findMany({
@@ -134,6 +162,11 @@ export class ChannelService {
       where: {
         name: { startsWith: name, mode: 'insensitive' },
         visibility: { not: 'PRIVATE' },
+        channels: {
+          none: {
+            status: 'BANNED',
+          },
+        },
       },
       select: {
         id: true,
@@ -162,49 +195,49 @@ export class ChannelService {
       if (channel_user) {
         item['isMemeber'] = true;
         item['owner'] = channel_user.role;
-      } else
-        item['isMemeber'] = false;
+      } else item['isMemeber'] = false;
     });
-
-
 
     return list;
   }
 
-	async listCurrentUserChannel(currentUserId: string) {
-		let list: any = await this.prisma.channel.findMany({
-			where: { channels: { some: { userID: currentUserId } } },
-			select: {
-				id: true,
-				name: true,
-				imageUrl: true,
-				visibility: true,
-				message: {
-					take: 1,
-					orderBy: {
-						createdAt: 'desc',
-					},
-					select: {
-						senderID: true,
-						content: true,
-						attachment: true,
-						createdAt: true,
-						updatedAt: true,
-					},
-				},
-				channels: true,
-			},
-		});
+  async listCurrentUserChannel(currentUserId: string) {
+    let list: any = await this.prisma.channel.findMany({
+      where: {
+        channels: {
+          some: { userID: currentUserId, status: { not: 'BANNED' } },
+        },
+      },
+      select: {
+        id: true,
+        name: true,
+        imageUrl: true,
+        visibility: true,
+        message: {
+          take: 1,
+          orderBy: {
+            createdAt: 'desc',
+          },
+          select: {
+            senderID: true,
+            content: true,
+            attachment: true,
+            createdAt: true,
+            updatedAt: true,
+          },
+        },
+        channels: true,
+      },
+    });
 
     list.map((item) => {
       let channel_user = item.channels.find((x) => x.userID == currentUserId);
       if (channel_user) {
         item['isMemeber'] = true;
         item['owner'] = channel_user.role;
-      } else
-        item['isMemeber'] = false;
+      } else item['isMemeber'] = false;
     });
 
-		return list;
-	}
+    return list;
+  }
 }

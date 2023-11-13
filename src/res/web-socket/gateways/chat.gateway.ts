@@ -17,42 +17,61 @@ import { BodyData } from '../types/body-data.interface';
 @UseGuards(TokenGuard)
 @WebSocketGateway({ cors: true, transports: ['websocket'] })
 export class ChatGate {
-	@WebSocketServer()
-	server: Server;
-	//handling chat events
-	constructor(private readonly webSocketService: WebSocketService) { }
+  @WebSocketServer()
+  server: Server;
+  //handling chat events
+  constructor(private readonly webSocketService: WebSocketService) {}
 
-	// @SubscribeMessage('client_ID')
-	// handleRoom(socket: Socket, clientId: string) {
-	//   socket.join(clientId);
-	// }
+  @SubscribeMessage('channelCreated')
+  handleCreatedRoom(socket: Socket, data: BodyData) {
+    console.log('create channel', data.data)
+    socket.join(data.data)
+  }
 
-	// @SubscribeMessage('msgs')
-	// handleMsg(socket: Socket, data: { msg: string; room: string }) {
-	//   this.server.to(data.room).emit('chatToClient', data.msg);
-	// }
+  @SubscribeMessage('channelJoined')
+  handleJoinRoom(socket: Socket, data: BodyData) {
+    socket.join(data.data.channelID)
+    this.server.to(data.data.channelID).emit('newMemberJoind', data.data);
+  }
 
-	// @SubscribeMessage('joinRoom')
-	// handleJoinRoom(socket: Socket, room: string) {
-	//   socket.join(room);
-	//   socket.emit('joind', room);
-	// }
+  @SubscribeMessage('channelLeft')
+  handleLeftRoom(socket: Socket, data: BodyData) {
+    socket.leave(data.data.channelID)
+    this.server.to(data.data.channelID).emit('aMemberLeft', data);
+  }
 
-	// @SubscribeMessage('leaveRoom')
-	// handleLeaveRoom(socket: Socket, room: string) {
-	//   socket.leave(room);
-	//   socket.emit('left', room);
-	// }
+  @SubscribeMessage('updateChannelInfo')
+  handleRoomUpdated(socket: Socket, data: BodyData) {
+    this.server.to(data.data.id).emit('channelUpdated', data.data);
+  }
 
-	@SubscribeMessage('channel joined')
-	handleJoinRoom(socket: Socket, data: BodyData) {
-		this.server.to(data.data.channelID).emit('new member joind', data.data);
-	}
+  @SubscribeMessage('deleteChannel')
+  handleRoomRemoved(socket: Socket, data: BodyData) {
+    this.server.to(data.data.id).emit('roomRemoved', data.data);
+  }
 
-	@SubscribeMessage('channel left')
-	handleLeftRoom(socket: Socket, data: BodyData) {
-		console.log('left', data)
-		this.server.to(data.data.channelID).emit('a member left', data.sender.id);
-	}
+  @SubscribeMessage('getUnbanned')
+  handleUnbannedUserFromRoom(socket: Socket, data: BodyData) {
+    this.server.to(data.data.channelID).emit('aMemberUnbanned', data.data);
+    this.server.to(data.data.userID).emit('youGetUnbanned', data.data);
+  }
+
+  @SubscribeMessage('getBanned')
+  handleBannedUserFromRoom(socket: Socket, data: BodyData) {
+    this.server.to(data.data.channelID).emit('aMemberBanned', data.data);
+    this.server.to(data.data.userID).emit('youGetBanned', data.data);
+  }
+
+  @SubscribeMessage('getKicked')
+  handleKickedUserFromRoom(socket: Socket, data: BodyData) {
+    this.server.to(data.data.channelID).emit('aMemberKicked', data.data);
+    this.server.to(data.data.userID).emit('youGetKicked', data.data);
+  }
+
+  @SubscribeMessage('getMuted')
+  handleMutedUserFromRoom(socket: Socket, data: BodyData) {
+    this.server.to(data.data.channelID).emit('aMemberMuted', data.data);
+    // this.server.to(data.data.userID).emit('youGetMuted', data.data);
+  }
 
 }

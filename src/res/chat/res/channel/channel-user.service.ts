@@ -7,12 +7,14 @@ import { JoinChannelDto } from './dto/join-channel.dto';
 import { HashingService } from 'src/hashing/hashing.service';
 import { ActiveUserData } from 'src/iam/interfaces/active-user.interface';
 import { ChannelUser } from './entities/channel.entity';
+import { WebSocketService } from 'src/res/web-socket/services/web-socket.service';
 
 @Injectable()
 export class ChannelUserService {
   constructor(
     private prisma: PrismaService,
     private hashingService: HashingService,
+    private webSocketService: WebSocketService,
   ) {}
 
   create(createChannelUserDto: CreateChannelUserDto) {
@@ -67,6 +69,16 @@ export class ChannelUserService {
         status: updateChannelUserDto.status,
         duration: updateChannelUserDto.duration,
       },
+      select: {
+        userID: true,
+        user: true,
+        channelID: true,
+        channel: true,
+        duration: true,
+        role: true,
+        status: true,
+        joinedAt: true,
+      },
     });
   }
 
@@ -91,29 +103,39 @@ export class ChannelUserService {
       channelID: targetChannelUserDto.channelID,
       userID: userID,
     };
+    let target_: CreateChannelUserDto = {
+      channelID: targetChannelUserDto.channelID,
+      userID: targetChannelUserDto.userID,
+    };
 
-    const duration = targetChannelUserDto.duration ?? BigInt(0);
-    const promises = [
-      this.findOne(actorChannelUserDto),
-      this.findOne(targetChannelUserDto),
-    ];
+    const duration = targetChannelUserDto.duration ?? null;
+    const promises = [this.findOne(actorChannelUserDto), this.findOne(target_)];
     const [actor, target] = await Promise.all(promises);
 
-    if (target.role != 'OWNER' && actor.role == 'OWNER') target.status = status;
-    else if (actor.role == 'ADMINISTRATOR' && target.role == 'MEMBER') {
+    if (target.role != 'OWNER' && actor.role == 'OWNER') {
       target.status = status;
       target.duration = duration
-        ? BigInt(Math.round(Date.now() / 1000)) + duration
+        ? Math.round(Date.now() / 1000) + duration
         : duration;
-    } else throw new HttpException('nice try', 500);
+    } else if (actor.role == 'ADMINISTRATOR' && target.role == 'MEMBER') {
+      target.status = status;
+      target.duration = duration
+        ? Math.round(Date.now() / 1000) + duration
+        : duration;
+    } else throw new HttpException('nice try', HttpStatus.FORBIDDEN);
 
     return this.update(target);
   }
 
-  async kick(userID: string, targetChannelUserDto: CreateChannelUserDto) {
+  async kick(userID: string, param: any) {
     let actorChannelUserDto: CreateChannelUserDto = {
-      channelID: targetChannelUserDto.channelID,
+      channelID: param.channelID,
       userID: userID,
+    };
+
+    let targetChannelUserDto: CreateChannelUserDto = {
+      channelID: param.channelID,
+      userID: param.userID,
     };
 
     const promises = [
@@ -146,7 +168,10 @@ export class ChannelUserService {
 
     const [targetChannel, targetChannelUser] = await Promise.all(promises);
 
-    if (targetChannel.visibility == 'PROTECTED') {
+    if (
+      targetChannel.visibility == 'PROTECTED' ||
+      (targetChannel.visibility == 'PUBLIC' && targetChannel.password)
+    ) {
       if (joinChannelDto.password == undefined)
         throw new HttpException('This channel Protected', HttpStatus.FORBIDDEN);
 
@@ -193,7 +218,7 @@ export class ChannelUserService {
     user_id: string,
     channel_id: string,
   ): Promise<ChannelUser[]> {
-    return this.prisma.channelUser.findMany({
+    let holder = await this.prisma.channelUser.findMany({
       where: {
         channelID: channel_id,
         OR: [{ status: 'FREE' }, { status: 'MUTED' }],
@@ -206,6 +231,34 @@ export class ChannelUserService {
             visibility: true,
           },
         },
+        user: {
+          select: {
+            id: true,
+            avatarUrl: true,
+            userName: true,
+            onlineStatus: true,
+          },
+        },
+      },
+    });
+
+    holder.map((item) => {
+      item.user.onlineStatus = this.webSocketService.isOnline(item.user.id);
+    });
+
+    return holder;
+  }
+
+  async listBlockedMember(
+    user_id: string,
+    channel_id: string,
+  ): Promise<ChannelUser[]> {
+    return this.prisma.channelUser.findMany({
+      where: {
+        channelID: channel_id,
+        status: 'BANNED',
+      },
+      include: {
         user: {
           select: {
             id: true,

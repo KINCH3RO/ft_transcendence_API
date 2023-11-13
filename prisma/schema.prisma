@@ -120,7 +120,8 @@ model channelUser {
     channelID String
     role      channelRole
     status    channelStatus
-    duration  BigInt?
+    duration  Int?
+    joinedAt DateTime      @default(now())
 
     @@id([userID, channelID])
 }
