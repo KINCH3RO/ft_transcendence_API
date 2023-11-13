@@ -122,7 +122,6 @@ model channelUser {
     status    channelStatus
     duration  Int?
     joinedAt DateTime      @default(now())
-
     @@id([userID, channelID])
 }
 

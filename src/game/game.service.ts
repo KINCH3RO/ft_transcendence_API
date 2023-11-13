@@ -8,10 +8,10 @@ import {
 @Injectable()
 export class GameService {
   constructor() {
-    this.xballSpeed = 1;
+    this.xballSpeed = 0.5;
     this.yballSpeed = 1.5;
-    this.paddleSpeed = 1;
     this.ballRaduis = 2;
+    this.paddleSpeed = 2;
     this.paddleRaduis = 1;
     this.paddleHeight = 20;
     this.paddleWidth = 1;
@@ -66,7 +66,7 @@ export class GameService {
   }
 
   checkRightPaddle(ball: Ball, paddle: Paddle) {
-    if (ball.x + this.ballRaduis >= paddle.x) {
+    if (ball.x + this.ballRaduis > paddle.x) {
       if (ball.y >= paddle.y && ball.y <= paddle.y + this.paddleHeight)
         ball.xDirection *= -1;
     }
@@ -75,11 +75,11 @@ export class GameService {
   updatePaddle(paddle: Paddle) {
     if (
       paddle.isDown &&
-      paddle.y + this.paddleHeight + this.paddleSpeed < 100
+      paddle.y + this.paddleHeight + this.paddleSpeed <= 100
     ) {
       paddle.y += this.paddleSpeed;
     }
-    if (paddle.isUP && paddle.y - this.paddleSpeed > 0) {
+    if (paddle.isUP && paddle.y - this.paddleSpeed >= 0) {
       paddle.y -= this.paddleSpeed;
     }
     return { x: paddle.x, y: paddle.y };
