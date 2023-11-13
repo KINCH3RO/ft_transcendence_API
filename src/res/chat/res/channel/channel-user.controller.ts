@@ -43,7 +43,7 @@ export class ChannelUserController {
 
 	@Patch("mute")
 	mute(@ActiveUser() user: ActiveUserData, @Body() targetChannelUserDto: UpdateChannelUserDto) {
-		return this.channelUserService.channelAction(user.sub, targetChannelUserDto, "MUTED");
+		return this.channelUserService.channelAction(user.sub, targetChannelUserDto);
 	}
 
 	@Patch("free")
