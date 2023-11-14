@@ -146,7 +146,7 @@ export class LobbyGate {
             lobby.gameData.scoreUpdated = false;
             if (lobby.gameData.score[0] == 5 || lobby.gameData.score[1] == 5) {
               lobby.lobbySate = 'finished';
-              this.io.to(lobby.id).emit('lobbyChange', lobby);
+              this.io.to(lobby.id).emit('gameEnd', lobby);
               clearInterval(gameInterval);
             }
           }
