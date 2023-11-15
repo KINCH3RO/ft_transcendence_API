@@ -57,7 +57,6 @@ export class ChatGate {
 		data.data.user.onlineStatus = this.webSocketService.isOnline(data.data.user.id);
 		if (data.data.user.onlineStatus)
 			data.data.user.state = this.webSocketService.getUserState(data.data.user.id)
-		console.log(data);
 
 		this.server.to(data.data.channelID).emit('aMemberUnbanned', data.data);
 		this.server.to(data.data.userID).emit('youGetUnbanned', data.data);
