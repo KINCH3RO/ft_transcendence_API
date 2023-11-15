@@ -86,6 +86,8 @@ export class ChannelService {
 				},
 			},
 		});
+		if (!channel)
+			throw new HttpException("Not Found", HttpStatus.NOT_FOUND)
 
 		channel.channels.map((item) => {
 			item.user.onlineStatus = this.webSocketService.isOnline(item.user.id);
