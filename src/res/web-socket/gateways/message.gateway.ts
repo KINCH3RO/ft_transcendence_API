@@ -52,8 +52,11 @@ export class MessageGate {
 
 	@SubscribeMessage("directMessage")
 	handeDmCreate(socket: Socket, data: BodyData) {
+
 		data.data['friend'] = data.data.receiver;
 		data.data['isSender'] = true
+		// console.log(data);
+
 		data.data['friend'].onlineStatus = this.webSocketService.isOnline(
 			data.data['friend'].id,
 		);

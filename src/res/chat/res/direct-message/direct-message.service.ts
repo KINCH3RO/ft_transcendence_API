@@ -14,7 +14,7 @@ export class DirectMessageService {
 	) { }
 
 	async create(senderId: string, receiverId: string) {
-		let dm = await this.findOne(senderId, receiverId)
+		let dm = await this.findOneData(senderId, receiverId)
 		if (!dm)
 			dm = await this.prisma.directMessage.create({
 				include: {
@@ -56,7 +56,6 @@ export class DirectMessageService {
 					message: {},
 				},
 			});
-
 
 
 		return dm;
@@ -147,7 +146,18 @@ export class DirectMessageService {
 			return baseData;
 		});
 	}
+
 	findOne(receiverID: string, senderID: string) {
+		return this.prisma.directMessage.findFirst({
+			where: {
+				OR: [
+					{ receiverID: receiverID, senderID: senderID },
+					{ receiverID: senderID, senderID: receiverID },
+				],
+			},
+		});
+	}
+	findOneData(receiverID: string, senderID: string) {
 		return this.prisma.directMessage.findFirst({
 			include: {
 				sender: {
