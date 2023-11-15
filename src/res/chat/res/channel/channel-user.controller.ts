@@ -43,7 +43,7 @@ export class ChannelUserController {
 
 	@Patch("mute")
 	mute(@ActiveUser() user: ActiveUserData, @Body() targetChannelUserDto: UpdateChannelUserDto) {
-		return this.channelUserService.channelAction(user.sub, targetChannelUserDto, "MUTED");
+		return this.channelUserService.channelAction(user.sub, targetChannelUserDto);
 	}
 
 	@Patch("free")
@@ -63,7 +63,7 @@ export class ChannelUserController {
 
 	@Get(':room_id')
 	findMember(@ActiveUser() user: ActiveUserData, @Param('room_id') channel_id: string) {
-		return this.channelUserService.findMembers(user.sub, channel_id);
+		return this.channelUserService.findMembers(channel_id);
 	}
 
 	@Get('blockedList/:room_id')
