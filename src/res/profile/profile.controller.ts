@@ -49,6 +49,6 @@ export class ProfileController {
 		@ActiveUser() user: ActiveUserData,
 		@Body() updateProfileDto: UpdateProfileDto,
 	) {
-		return this.profileService.update(user, updateProfileDto);
+		return this.profileService.update(user.sub, updateProfileDto);
 	}
 }

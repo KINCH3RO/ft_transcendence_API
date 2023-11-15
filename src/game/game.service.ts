@@ -12,28 +12,26 @@ export class GameService {
     this.yballSpeed = 1.5;
     this.ballRaduis = 2;
     this.paddleSpeed = 2;
-    this.paddleRaduis = 1;
     this.paddleHeight = 20;
     this.paddleWidth = 1;
   }
 
-  ballRaduis: number;
-  xballSpeed: number;
-  yballSpeed: number;
-  paddleSpeed: number;
-  paddleRaduis: number;
-  paddleHeight: number;
-  paddleWidth: number;
+  private ballRaduis: number;
+  private xballSpeed: number;
+  private yballSpeed: number;
+  private paddleSpeed: number;
+  private paddleHeight: number;
+  private paddleWidth: number;
 
   updateGame(gameData: GameData) {
+    const paddle1 = this.updatePaddle(gameData.paddle1);
+    const paddle2 = this.updatePaddle(gameData.paddle2);
     const ball = this.updateBall(
       gameData.ball,
       gameData.paddle1,
       gameData.paddle2,
       gameData,
     );
-    const paddle1 = this.updatePaddle(gameData.paddle1);
-    const paddle2 = this.updatePaddle(gameData.paddle2);
     return { ball, paddle1, paddle2 };
   }
 
@@ -59,7 +57,7 @@ export class GameService {
   }
 
   checkLeftPaddle(ball: Ball, paddle: Paddle) {
-    if (ball.x - this.ballRaduis <= paddle.x + this.paddleWidth) {
+    if (ball.x - this.ballRaduis < paddle.x + this.paddleWidth) {
       if (ball.y >= paddle.y && ball.y <= paddle.y + this.paddleHeight)
         ball.xDirection *= -1;
     }

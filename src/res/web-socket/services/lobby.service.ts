@@ -37,8 +37,8 @@ export class LobbyService {
       lobbySate: lobbySate,
       isOwner: false,
       gameData: {
-        paddle1: { x: 0, y: 50, isUP: false, isDown: false },
-        paddle2: { x: 99, y: 50, isUP: false, isDown: false },
+        paddle1: { x: 0, y: 40, isUP: false, isDown: false },
+        paddle2: { x: 99, y: 40, isUP: false, isDown: false },
         ball: { x: 50, y: 50, xDirection: 1, yDirection: 1 },
         score: [0, 0],
         scoreUpdated: false,

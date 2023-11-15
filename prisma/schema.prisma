@@ -63,7 +63,7 @@ model matches {
     winnerID    String
     loser       user     @relation(name: "loser", fields: [loserID], references: [id])
     loserID     String
-    winnerScore Int
+    winnerScore Int      @default(5)
     loserScore  Int
     date        DateTime @default(now())
     gameMode    String
