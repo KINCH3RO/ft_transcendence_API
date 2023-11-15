@@ -14,23 +14,52 @@ export class DirectMessageService {
 	) { }
 
 	async create(senderId: string, receiverId: string) {
-		let dm: directMessage = await this.prisma.directMessage.findFirst({
-			where: {
-				OR: [
-					{ receiverID: senderId, senderID: receiverId },
-					{ receiverID: receiverId, senderID: senderId },
-				],
-			},
-		});
+		let dm = await this.findOne(senderId, receiverId)
+		if (!dm)
+			dm = await this.prisma.directMessage.create({
+				include: {
+					sender: {
+						select: {
+							avatarUrl: true,
+							userName: true,
+							id: true,
+							onlineStatus: true,
+							fullName: true,
+							profile: {
+								select: {
+									id: true,
+									rating: true,
+								},
+							},
+						},
+					},
+					receiver: {
+						select: {
+							avatarUrl: true,
+							userName: true,
+							id: true,
+							onlineStatus: true,
+							fullName: true,
+							profile: {
+								select: {
+									id: true,
+									rating: true,
+								},
+							},
+						},
+					},
+				},
+				data: {
 
-		if (dm) return dm;
-		return this.prisma.directMessage.create({
-			data: {
-				receiverID: receiverId,
-				senderID: senderId,
-				message: {},
-			},
-		});
+					receiverID: receiverId,
+					senderID: senderId,
+					message: {},
+				},
+			});
+
+
+
+		return dm;
 	}
 
 	findYourDM(senderId: string) {
@@ -120,6 +149,38 @@ export class DirectMessageService {
 	}
 	findOne(receiverID: string, senderID: string) {
 		return this.prisma.directMessage.findFirst({
+			include: {
+				sender: {
+					select: {
+						avatarUrl: true,
+						userName: true,
+						id: true,
+						onlineStatus: true,
+						fullName: true,
+						profile: {
+							select: {
+								id: true,
+								rating: true,
+							},
+						},
+					},
+				},
+				receiver: {
+					select: {
+						avatarUrl: true,
+						userName: true,
+						id: true,
+						onlineStatus: true,
+						fullName: true,
+						profile: {
+							select: {
+								id: true,
+								rating: true,
+							},
+						},
+					},
+				},
+			},
 			where: {
 				OR: [
 					{ receiverID: receiverID, senderID: senderID },
