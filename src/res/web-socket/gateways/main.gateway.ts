@@ -90,12 +90,14 @@ export class MainGate implements OnGatewayConnection, OnGatewayDisconnect {
 		);
 	}
 
+	@SubscribeMessage('presence')
+	handlePresence(socket: Socket, data: BodyData) {
+		console.log(data);
 
+		this.webSocketService.setPresenceState(data.sender.id, data.data);
+		socket.broadcast.emit('presence', data);
 
+		// console.log(this.webSocketService.onlineUsers[data.sender.id]);
+	}
 
-  @SubscribeMessage('presence')
-  handlePresence(socket: Socket, data: BodyData) {
-    this.webSocketService.setPresenceState(data.sender.id, data.data);
-    // console.log(this.webSocketService.onlineUsers[data.sender.id]);
-  }
 }

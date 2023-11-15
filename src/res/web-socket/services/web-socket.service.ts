@@ -63,12 +63,18 @@ export class WebSocketService {
     return false;
   }
 
-  setPresenceState(
-    userID: string,
-    state: 'Online' | 'AFK' | 'In-Game' | 'In-Queue' | 'In-Lobby',
-  ) {
-    if (!this.onlineUsers[userID]) this.onlineUsers[userID].state = state;
-  }
+
+	getUserState(userID: string): string {
+		if (this.onlineUsers[userID])
+			return this.onlineUsers[userID].state
+	}
+
+	setPresenceState(
+		userID: string,
+		state: 'Online' | 'AFK' | 'In-Game' | 'In-Queue' | 'In-Lobby',
+	) {
+		if (this.onlineUsers[userID]) this.onlineUsers[userID].state = state;
+	}
 
   getUserFromToken(
     token: string,

@@ -17,61 +17,68 @@ import { BodyData } from '../types/body-data.interface';
 @UseGuards(TokenGuard)
 @WebSocketGateway({ cors: true, transports: ['websocket'] })
 export class ChatGate {
-  @WebSocketServer()
-  server: Server;
-  //handling chat events
-  constructor(private readonly webSocketService: WebSocketService) {}
+	@WebSocketServer()
+	server: Server;
+	//handling chat events
+	constructor(private readonly webSocketService: WebSocketService) { }
 
-  @SubscribeMessage('channelCreated')
-  handleCreatedRoom(socket: Socket, data: BodyData) {
-    console.log('create channel', data.data)
-    socket.join(data.data)
-  }
+	@SubscribeMessage('channelCreated')
+	handleCreatedRoom(socket: Socket, data: BodyData) {
+		socket.join(data.data)
+	}
 
-  @SubscribeMessage('channelJoined')
-  handleJoinRoom(socket: Socket, data: BodyData) {
-    socket.join(data.data.channelID)
-    this.server.to(data.data.channelID).emit('newMemberJoind', data.data);
-  }
+	@SubscribeMessage('channelJoined')
+	handleJoinRoom(socket: Socket, data: BodyData) {
+		socket.join(data.data.channelID)
+		data.data.user.onlineStatus = this.webSocketService.isOnline(data.data.user.id);
+		if (data.data.user.onlineStatus)
+			data.data.user.state = this.webSocketService.getUserState(data.data.user.id)
+		this.server.to(data.data.channelID).emit('newMemberJoind', data.data);
+	}
 
-  @SubscribeMessage('channelLeft')
-  handleLeftRoom(socket: Socket, data: BodyData) {
-    socket.leave(data.data.channelID)
-    this.server.to(data.data.channelID).emit('aMemberLeft', data);
-  }
+	@SubscribeMessage('channelLeft')
+	handleLeftRoom(socket: Socket, data: BodyData) {
+		socket.leave(data.data.channelID)
+		this.server.to(data.data.channelID).emit('aMemberLeft', data);
+	}
 
-  @SubscribeMessage('updateChannelInfo')
-  handleRoomUpdated(socket: Socket, data: BodyData) {
-    this.server.to(data.data.id).emit('channelUpdated', data.data);
-  }
+	@SubscribeMessage('updateChannelInfo')
+	handleRoomUpdated(socket: Socket, data: BodyData) {
+		this.server.to(data.data.id).emit('channelUpdated', data.data);
+	}
 
-  @SubscribeMessage('deleteChannel')
-  handleRoomRemoved(socket: Socket, data: BodyData) {
-    this.server.to(data.data.id).emit('roomRemoved', data.data);
-  }
+	@SubscribeMessage('deleteChannel')
+	handleRoomRemoved(socket: Socket, data: BodyData) {
+		this.server.to(data.data.id).emit('roomRemoved', data.data);
+	}
 
-  @SubscribeMessage('getUnbanned')
-  handleUnbannedUserFromRoom(socket: Socket, data: BodyData) {
-    this.server.to(data.data.channelID).emit('aMemberUnbanned', data.data);
-    this.server.to(data.data.userID).emit('youGetUnbanned', data.data);
-  }
+	@SubscribeMessage('getUnbanned')
+	handleUnbannedUserFromRoom(socket: Socket, data: BodyData) {
+		data.data.user.onlineStatus = this.webSocketService.isOnline(data.data.user.id);
+		if (data.data.user.onlineStatus)
+			data.data.user.state = this.webSocketService.getUserState(data.data.user.id)
 
-  @SubscribeMessage('getBanned')
-  handleBannedUserFromRoom(socket: Socket, data: BodyData) {
-    this.server.to(data.data.channelID).emit('aMemberBanned', data.data);
-    this.server.to(data.data.userID).emit('youGetBanned', data.data);
-  }
+		this.server.to(data.data.channelID).emit('aMemberUnbanned', data.data);
+		this.server.to(data.data.userID).emit('youGetUnbanned', data.data);
+	}
 
-  @SubscribeMessage('getKicked')
-  handleKickedUserFromRoom(socket: Socket, data: BodyData) {
-    this.server.to(data.data.channelID).emit('aMemberKicked', data.data);
-    this.server.to(data.data.userID).emit('youGetKicked', data.data);
-  }
+	@SubscribeMessage('getBanned')
+	handleBannedUserFromRoom(socket: Socket, data: BodyData) {
+		this.server.to(data.data.channelID).emit('aMemberBanned', data.data);
+		this.server.to(data.data.userID).emit('youGetBanned', data.data);
+	}
 
-  @SubscribeMessage('getMuted')
-  handleMutedUserFromRoom(socket: Socket, data: BodyData) {
-    this.server.to(data.data.channelID).emit('aMemberMuted', data.data);
-    // this.server.to(data.data.userID).emit('youGetMuted', data.data);
-  }
+	@SubscribeMessage('getKicked')
+	handleKickedUserFromRoom(socket: Socket, data: BodyData) {
+		this.server.to(data.data.channelID).emit('aMemberKicked', data.data);
+		this.server.to(data.data.userID).emit('youGetKicked', data.data);
+	}
+
+	@SubscribeMessage('getMuted')
+	handleMutedUserFromRoom(socket: Socket, data: BodyData) {
+		this.server.to(data.data.channelID).emit('aMemberMuted', data.data);
+		this.server.to(data.data.userID).emit('youGetMuted', data.data);
+
+	}
 
 }
