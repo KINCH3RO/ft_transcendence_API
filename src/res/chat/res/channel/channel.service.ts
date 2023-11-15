@@ -195,11 +195,11 @@ export class ChannelService {
 		});
 
 		list.map((item) => {
-			let channel_user = item.channels.find((x) => x.userID == currentUserId);
+			let channel_user: channelUser = item.channels.find((x) => x.userID == currentUserId);
 			if (channel_user) {
 				item["muteDuration"] = channel_user.duration;
 				item['isMemeber'] = true;
-				item['owner'] = channel_user.role;
+				item['role'] = channel_user.role;
 			} else item['isMemeber'] = false;
 		});
 
@@ -246,7 +246,7 @@ export class ChannelService {
 			if (channel_user) {
 				item["muteDuration"] = channel_user.duration;
 				item['isMemeber'] = true;
-				item['owner'] = channel_user.role;
+				item['role'] = channel_user.role;
 			} else item['isMemeber'] = false;
 		});
 

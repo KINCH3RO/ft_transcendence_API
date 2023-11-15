@@ -214,7 +214,6 @@ export class ChannelUserService {
 	}
 
 	async findMembers(
-		user_id: string,
 		channel_id: string,
 	): Promise<ChannelUser[]> {
 		let holder = await this.prisma.channelUser.findMany({
@@ -236,6 +235,7 @@ export class ChannelUserService {
 						avatarUrl: true,
 						userName: true,
 						onlineStatus: true,
+						state: true
 					},
 				},
 			},
@@ -243,6 +243,8 @@ export class ChannelUserService {
 
 		holder.map((item) => {
 			item.user.onlineStatus = this.webSocketService.isOnline(item.user.id);
+			if (item.user.onlineStatus)
+				item.user.state = this.webSocketService.getUserState(item.user.id)
 		});
 
 		return holder;

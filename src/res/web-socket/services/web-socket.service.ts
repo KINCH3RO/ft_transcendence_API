@@ -60,11 +60,16 @@ export class WebSocketService {
 		return false;
 	}
 
+	getUserState(userID: string): string {
+		if (this.onlineUsers[userID])
+			return this.onlineUsers[userID].state
+	}
+
 	setPresenceState(
 		userID: string,
 		state: 'Online' | 'AFK' | 'In-Game' | 'In-Queue' | 'In-Lobby',
 	) {
-		if (!this.onlineUsers[userID]) this.onlineUsers[userID].state = state;
+		if (this.onlineUsers[userID]) this.onlineUsers[userID].state = state;
 	}
 
 
