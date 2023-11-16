@@ -1,14 +1,12 @@
 import {
-
-	SubscribeMessage,
-	WebSocketGateway,
-	WebSocketServer,
+  SubscribeMessage,
+  WebSocketGateway,
+  WebSocketServer,
 } from '@nestjs/websockets';
 import { WebSocketService } from '../services/web-socket.service';
 import { Socket, Server } from 'socket.io';
-import { UseFilters, UseGuards, UsePipes } from '@nestjs/common';
+import { UseFilters, UseGuards } from '@nestjs/common';
 import { TokenGuard } from '../token.guard';
-import { JwtService } from '@nestjs/jwt';
 import { BaseWsExceptionFilter } from '@nestjs/websockets';
 import { BodyData } from '../types/body-data.interface';
 //handling present events
@@ -16,8 +14,8 @@ import { BodyData } from '../types/body-data.interface';
 @UseFilters(new BaseWsExceptionFilter())
 @UseGuards(TokenGuard)
 @WebSocketGateway({ cors: true, transports: ['websocket'] })
-
 export class MessageGate {
+
 	constructor(private readonly webSocketService: WebSocketService) { }
 
 	@WebSocketServer()
@@ -33,8 +31,6 @@ export class MessageGate {
 		data.data.mine = (data.data.senderID == receiver);
 		// console.log(receiver);
 		this.io.to(receiver).emit("privateMessage", data.data);
-
-
 	}
 
 	@SubscribeMessage("channelMessage")
@@ -67,18 +63,6 @@ export class MessageGate {
 			data.data['friend'].id,
 		);
 		this.io.to(data.data.receiverID).emit("directMessage", data.data)
-
-
-
-
-
 	}
-
-
-
-
-
-
-
 
 }

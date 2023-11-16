@@ -1,12 +1,11 @@
-import { UseFilters, UseGuards, UseInterceptors, UsePipes } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
+import { UseFilters, UseGuards } from '@nestjs/common';
 import {
-	BaseWsExceptionFilter,
-	OnGatewayConnection,
-	OnGatewayDisconnect,
-	SubscribeMessage,
-	WebSocketGateway,
-	WebSocketServer,
+  BaseWsExceptionFilter,
+  OnGatewayConnection,
+  OnGatewayDisconnect,
+  SubscribeMessage,
+  WebSocketGateway,
+  WebSocketServer,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { TokenGuard } from '../token.guard';
@@ -14,7 +13,6 @@ import { BodyData } from '../types/body-data.interface';
 import { WebSocketService } from '../services/web-socket.service';
 import { LobbyService } from '../services/lobby.service';
 import Lobby from '../types/lobby.interface';
-import { channel } from 'diagnostics_channel';
 import queueData from '../types/queue-data.interface';
 import { MatchmakingService } from '../services/matchmaking.service';
 
@@ -24,14 +22,14 @@ import { MatchmakingService } from '../services/matchmaking.service';
 @UseGuards(TokenGuard)
 @WebSocketGateway({ cors: true, transports: ['websocket'] })
 export class MainGate implements OnGatewayConnection, OnGatewayDisconnect {
-	constructor(
-		private readonly webSocketService: WebSocketService,
-		private lobbyService: LobbyService,
-		private matchmakingService: MatchmakingService
-	) { }
+  constructor(
+    private readonly webSocketService: WebSocketService,
+    private lobbyService: LobbyService,
+    private matchmakingService: MatchmakingService,
+  ) {}
 
-	@WebSocketServer()
-	io: Server;
+  @WebSocketServer()
+  io: Server;
 
 	handleConnection(client: Socket, ...args: any[]) {
 		// console.log(client);
@@ -92,9 +90,6 @@ export class MainGate implements OnGatewayConnection, OnGatewayDisconnect {
 		);
 	}
 
-
-
-
 	@SubscribeMessage('presence')
 	handlePresence(socket: Socket, data: BodyData) {
 		console.log(data);
@@ -104,4 +99,5 @@ export class MainGate implements OnGatewayConnection, OnGatewayDisconnect {
 
 		// console.log(this.webSocketService.onlineUsers[data.sender.id]);
 	}
+
 }

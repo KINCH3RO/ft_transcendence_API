@@ -3,6 +3,7 @@ import {
   IsEnum,
   IsNotEmpty,
   IsNumber,
+  IsOptional,
   IsUUID,
 } from 'class-validator';
 import { gameMode } from '../entities/match.entity';
@@ -16,8 +17,9 @@ export class CreateMatchDto {
   @IsUUID()
   loserID: string;
 
+  @IsOptional()
   @IsNumber()
-  winnerScore: number;
+  winnerScore?: number;
 
   @IsNumber()
   loserScore: number;
