@@ -82,6 +82,9 @@ export class ChannelService {
 								onlineStatus: true,
 							},
 						},
+						status: true,
+						role: true,
+						duration: true,
 					},
 				},
 			},
@@ -91,6 +94,8 @@ export class ChannelService {
 
 		channel.channels.map((item) => {
 			item.user.onlineStatus = this.webSocketService.isOnline(item.user.id);
+			item["muteDuration"] = item.duration
+			item['role'] = item.role;
 		});
 
 		return channel;
