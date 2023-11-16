@@ -51,12 +51,16 @@ export class LobbyGate {
 	}
 
 
-	gameStarted(lobby: Lobby) {
-		lobby.lobbySate = 'ingame';
+	emitLobbyChange(lobby: Lobby) {
 		lobby.isOwner = true;
 		this.io.to(lobby.players[0].id).emit('lobbyChange', lobby);
 		lobby.isOwner = false;
 		this.io.to(lobby.players[1].id).emit('lobbyChange', lobby);
+	}
+
+	gameStarted(lobby: Lobby) {
+		lobby.lobbySate = 'ingame';
+		this.io.to(lobby.id).emit('lobbyChange', lobby)
 		const gameInterval = setInterval(async () => {
 			if (!this.lobbyService.Exist(lobby.id)) {
 				clearInterval(gameInterval);
@@ -67,16 +71,21 @@ export class LobbyGate {
 			if (lobby.gameData.scoreUpdated) {
 				this.io.to(lobby.id).emit('scoreChange', lobby.gameData.score);
 				lobby.gameData.scoreUpdated = false;
-				if (lobby.gameData.score[0] == 5 || lobby.gameData.score[1] == 5) {
-					lobby.lobbySate = 'idle';
-					lobby.isOwner = true;
-					this.io.to(lobby.players[0].id).emit('lobbyChange', lobby);
-					lobby.isOwner = false;
-					this.io.to(lobby.players[1].id).emit('lobbyChange', lobby);
-					this.io.to(lobby.id).emit('gameEnd', lobby);
-					await this.statsService.saveGame(lobby);
-					clearInterval(gameInterval);
+				if (lobby.gameData.score[0] != 5 && lobby.gameData.score[1] != 5)
+					return
+				lobby.lobbySate = 'idle';
+				this.io.to(lobby.id).emit('gameEnd', lobby);
+				await this.statsService.saveGame(lobby);
+				if (lobby.queueLobby) {
+					this.io.to(lobby.id).emit('leaveLobby');
+					this.clearLobby(lobby)
 				}
+				else {
+					this.resetGameData(lobby)
+					this.emitLobbyChange(lobby)
+				}
+				clearInterval(gameInterval);
+
 			}
 		}, 16.6666666667);
 	}
@@ -101,6 +110,16 @@ export class LobbyGate {
 			});
 		return lobby;
 
+	}
+
+	resetGameData(lobby: Lobby) {
+		lobby.gameData = {
+			paddle1: { x: 0, y: 40, isUP: false, isDown: false },
+			paddle2: { x: 99, y: 40, isUP: false, isDown: false },
+			ball: { x: 50, y: 50, xDirection: 1, yDirection: 1 },
+			score: [0, 0],
+			scoreUpdated: false,
+		}
 	}
 
 
@@ -183,10 +202,7 @@ export class LobbyGate {
 
 		let lobby: Lobby = data.data;
 		if (!lobby) return;
-		lobby.isOwner = true;
-		this.io.to(lobby.players[0].id).emit('lobbyChange', lobby);
-		lobby.isOwner = false;
-		this.io.to(lobby.players[1].id).emit('lobbyChange', lobby);
+		this.emitLobbyChange(lobby)
 	}
 
 	@SubscribeMessage('paddleDown')
