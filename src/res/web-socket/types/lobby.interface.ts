@@ -15,6 +15,11 @@ export default interface Lobby {
 
 export interface LobbyCreate {
 	players: [string, string];
+	mode?: string,
+	queueLobby?: boolean
+	ranked?: boolean
+	lobbySate?: 'idle' | 'ingame' | 'starting'
+
 }
 
 export interface GameData {

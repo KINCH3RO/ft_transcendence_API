@@ -12,7 +12,7 @@ import { TokenGuard } from '../token.guard';
 import { WebSocketService } from '../services/web-socket.service';
 import { BodyData } from '../types/body-data.interface';
 import { LobbyService } from '../services/lobby.service';
-import Lobby from '../types/lobby.interface';
+import Lobby, { LobbyCreate } from '../types/lobby.interface';
 import queueData from '../types/queue-data.interface';
 import { GameService } from 'src/game/game.service';
 import { MatchmakingService } from '../services/matchmaking.service';
@@ -33,37 +33,7 @@ export class LobbyGate {
 
 	@WebSocketServer()
 	io: Server;
-	@SubscribeMessage('lobbyInvite')
-	handleLobbyInvite(socket: Socket, data: BodyData) {
-		this.io.to(data.data.receiver).emit('lobbyInvite', data.data.senderInfo);
-	}
 
-	@SubscribeMessage('lobbyAccept')
-	async handleLobbyCreate(socket: Socket, data: BodyData) {
-		try {
-			let lobby = await this.lobbyService.createLobby({
-				players: [data.data.id, data.sender.id],
-			});
-
-			this.webSocketService
-				.getSockets(lobby.players[0].id)
-				.forEach((socketID) => {
-					this.io.sockets.sockets.get(socketID).join(lobby.id);
-					lobby.isOwner = lobby.owner == lobby.players[0].id;
-					this.io.to(lobby.players[0].id).emit('lobbyData', lobby);
-				});
-
-			this.webSocketService
-				.getSockets(lobby.players[1].id)
-				.forEach((socketID) => {
-					this.io.sockets.sockets.get(socketID).join(lobby.id);
-					lobby.isOwner = lobby.owner == lobby.players[1].id;
-					this.io.to(lobby.players[1].id).emit('lobbyData', lobby);
-				});
-		} catch (error) {
-			// console.log(error);
-		}
-	}
 
 
 	clearLobby(lobby: Lobby) {
@@ -78,6 +48,120 @@ export class LobbyGate {
 				this.io.sockets.sockets.get(socketID).leave(lobby.id);
 			});
 		this.lobbyService.deleteLobby(lobby.id);
+	}
+
+
+	gameStarted(lobby: Lobby) {
+		lobby.lobbySate = 'ingame';
+		lobby.isOwner = true;
+		this.io.to(lobby.players[0].id).emit('lobbyChange', lobby);
+		lobby.isOwner = false;
+		this.io.to(lobby.players[1].id).emit('lobbyChange', lobby);
+		const gameInterval = setInterval(async () => {
+			if (!this.lobbyService.Exist(lobby.id)) {
+				clearInterval(gameInterval);
+				return;
+			}
+			const gameData = this.gameService.updateGame(lobby.gameData);
+			this.io.to(lobby.id).emit('gameData', gameData);
+			if (lobby.gameData.scoreUpdated) {
+				this.io.to(lobby.id).emit('scoreChange', lobby.gameData.score);
+				lobby.gameData.scoreUpdated = false;
+				if (lobby.gameData.score[0] == 5 || lobby.gameData.score[1] == 5) {
+					lobby.lobbySate = 'idle';
+					lobby.isOwner = true;
+					this.io.to(lobby.players[0].id).emit('lobbyChange', lobby);
+					lobby.isOwner = false;
+					this.io.to(lobby.players[1].id).emit('lobbyChange', lobby);
+					this.io.to(lobby.id).emit('gameEnd', lobby);
+					await this.statsService.saveGame(lobby);
+					clearInterval(gameInterval);
+				}
+			}
+		}, 16.6666666667);
+	}
+
+	async createLobby(lobbyData: LobbyCreate) {
+		let lobby = await this.lobbyService.createLobby(lobbyData);
+
+		this.webSocketService
+			.getSockets(lobby.players[0].id)
+			.forEach((socketID) => {
+				this.io.sockets.sockets.get(socketID).join(lobby.id);
+				lobby.isOwner = lobby.owner == lobby.players[0].id;
+				this.io.to(lobby.players[0].id).emit('lobbyData', lobby);
+			});
+
+		this.webSocketService
+			.getSockets(lobby.players[1].id)
+			.forEach((socketID) => {
+				this.io.sockets.sockets.get(socketID).join(lobby.id);
+				lobby.isOwner = lobby.owner == lobby.players[1].id;
+				this.io.to(lobby.players[1].id).emit('lobbyData', lobby);
+			});
+		return lobby;
+
+	}
+
+
+
+	findGame(data: BodyData) {
+
+
+		if (this.matchmakingService.Qplayers.length <= 0)
+			return null
+		for (let i = 0; i < this.matchmakingService.Qplayers.length; i++) {
+			console.log(this.matchmakingService.Qplayers[i].gameMode);
+			console.log(data.data.gameMode);
+			if (this.matchmakingService.Qplayers[i].id == data.sender.id) return null;
+
+			if (this.matchmakingService.Qplayers[i].gameMode != data.data.gameMode) continue;
+			if (this.matchmakingService.Qplayers[i].ranked != data.data.ranked) continue;
+			const ranked = this.matchmakingService.Qplayers[i].ranked;
+			const gameMode = this.matchmakingService.Qplayers[i].gameMode;
+			if (ranked &&
+				Math.abs(
+					this.matchmakingService.Qplayers[i].rating - data.data.rating,
+				) > 500)
+				continue;
+
+			return { gameMode, ranked, player: this.matchmakingService.Qplayers.splice(i, 1)[0] }
+		}
+		return null;
+
+	}
+
+
+	matchCountdown(lobby: Lobby) {
+		let number = 5;
+		const interval = setInterval(() => {
+			if (!this.lobbyService.Exist(lobby.id)) {
+				clearInterval(interval);
+				return;
+			}
+			if (number > 0) this.io.to(lobby.id).emit('matchStarting', --number);
+			else {
+
+				this.gameStarted(lobby)
+				clearInterval(interval);
+			}
+		}, 1000);
+	}
+
+
+
+	@SubscribeMessage('lobbyInvite')
+	handleLobbyInvite(socket: Socket, data: BodyData) {
+		this.io.to(data.data.receiver).emit('lobbyInvite', data.data.senderInfo);
+	}
+
+
+
+	@SubscribeMessage('lobbyAccept')
+	async handleLobbyCreate(socket: Socket, data: BodyData) {
+		this.createLobby({
+			players: [data.data.id, data.sender.id],
+		}).then().catch()
 	}
 
 	@SubscribeMessage('leaveLobby')
@@ -133,116 +217,44 @@ export class LobbyGate {
 
 	//matchmaking system
 
-	gameStarted(lobby: Lobby) {
-		lobby.lobbySate = 'ingame';
-		lobby.isOwner = true;
-		this.io.to(lobby.players[0].id).emit('lobbyChange', lobby);
-		lobby.isOwner = false;
-		this.io.to(lobby.players[1].id).emit('lobbyChange', lobby);
-		const gameInterval = setInterval(async () => {
-			const gameData = this.gameService.updateGame(lobby.gameData);
-			this.io.to(lobby.id).emit('gameData', gameData);
-			if (lobby.gameData.scoreUpdated) {
-				this.io.to(lobby.id).emit('scoreChange', lobby.gameData.score);
-				lobby.gameData.scoreUpdated = false;
-				if (lobby.gameData.score[0] == 10 || lobby.gameData.score[1] == 10) {
-					lobby.lobbySate = 'idle';
-					lobby.isOwner = true;
-					this.io.to(lobby.players[0].id).emit('lobbyChange', lobby);
-					lobby.isOwner = false;
-					this.io.to(lobby.players[1].id).emit('lobbyChange', lobby);
-					this.io.to(lobby.id).emit('gameEnd', lobby);
-					await this.statsService.saveGame(lobby);
-					clearInterval(gameInterval);
-				}
-			}
-		}, 16.6666666667);
-	}
 
-	matchCountdown(lobby: Lobby) {
-		let number = 2;
-		const interval = setInterval(() => {
-			if (!this.lobbyService.Exist(lobby.id)) {
-				clearInterval(interval);
-				return;
-			}
-			if (number > 0) this.io.to(lobby.id).emit('matchStarting', --number);
-			else {
 
-				this.gameStarted(lobby)
-				clearInterval(interval);
-			}
-		}, 1000);
-	}
 
 	@SubscribeMessage('enterQueue')
 	async handleEnterQueue(socket: Socket, data: BodyData) {
+
 		const queueData: queueData = {
 			startDate: Date.now(),
 			id: data.sender.id,
 			...data.data,
 		};
 		this.io.to(data.sender.id).emit('enterQueue', queueData);
+		const gameData = this.findGame(data)
+		if (!gameData) {
 
-		if (this.matchmakingService.Qplayers.length > 0) {
-			for (let i = 0; i < this.matchmakingService.Qplayers.length; i++) {
-				if (this.matchmakingService.Qplayers[i].id == data.sender.id) return;
-				const isRanked =
-					this.matchmakingService.Qplayers[i].ranked == data.data.ranked &&
-					data.data.ranked == true;
-				// this.queuedPlayers[i].ranked && data.data.ranked
-				if (
-					(isRanked &&
-						Math.abs(
-							this.matchmakingService.Qplayers[i].rating - data.data.rating,
-						) < 500) ||
-					this.matchmakingService.Qplayers[i].gamemode == data.data.gamemode // ??
-				) {
-					// console.log(this.queuedPlayers);
+			this.matchmakingService.addPlayer(queueData);
+			console.log(this.matchmakingService.Qplayers);
 
-					try {
-						let lobby = await this.lobbyService.createLobby(
-							{
-								players: [
-									this.matchmakingService.Qplayers[i].id,
-									data.sender.id,
-								],
-							},
-							this.matchmakingService.Qplayers[i].gamemode,
-							true,
-							this.matchmakingService.Qplayers[i].ranked,
-							'starting',
-						);
-
-						this.webSocketService
-							.getSockets(lobby.players[0].id)
-							.forEach((socketID) => {
-								this.io.sockets.sockets.get(socketID).join(lobby.id);
-								lobby.isOwner = lobby.owner == lobby.players[0].id;
-								this.io.to(lobby.players[0].id).emit('lobbyData', lobby);
-							});
-
-						this.webSocketService
-							.getSockets(lobby.players[1].id)
-							.forEach((socketID) => {
-								this.io.sockets.sockets.get(socketID).join(lobby.id);
-								lobby.isOwner = lobby.owner == lobby.players[1].id;
-								this.io.to(lobby.players[1].id).emit('lobbyData', lobby);
-							});
-
-						this.io.to(lobby.id).emit('matchFound');
-						this.matchCountdown(lobby);
-
-						this.matchmakingService.Qplayers.splice(i, 1);
-					} catch (error) {
-						// console.log(error);
-					}
-					//if match found no need to push
-					return;
-				}
-			}
+			return;
 		}
-		this.matchmakingService.addPlayer(queueData);
+		let lobby = await this.createLobby(
+
+			{
+				players: [
+					gameData.player.id,
+					data.sender.id,
+				],
+				mode: gameData.gameMode,
+				queueLobby: true,
+				ranked: gameData.player.ranked,
+				lobbySate: 'starting',
+			},
+
+		);
+		this.io.to(lobby.id).emit('matchFound');
+		this.matchCountdown(lobby);
+
+
 	}
 
 	@SubscribeMessage('leaveQueue')
@@ -250,4 +262,7 @@ export class LobbyGate {
 		this.matchmakingService.removePlayer(data.sender.id);
 		this.io.to(data.sender.id).emit('leaveQueue');
 	}
+
+
+
 }
