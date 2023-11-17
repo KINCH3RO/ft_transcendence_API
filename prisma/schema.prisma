@@ -68,6 +68,7 @@ model matches {
     date        DateTime @default(now())
     gameMode    String
     ranked      Boolean
+    duration    Int?
 }
 
 model notifications {
