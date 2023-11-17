@@ -55,12 +55,20 @@ export class StatsService {
       rating: winner.profile.rating + (lobby.ranked ? winnerRating : 0),
       coins: winner.profile.coins + winnerCoins,
       xp: winner.profile.xp + winnerXp,
+      level: this.rewardsService.handleLevelUp(
+        winner,
+        winner.profile.xp + loserXp,
+      ),
     });
 
     const loserPromise = this.profileService.update(loser.id, {
-      rating: loser.profile.rating + +(lobby.ranked ? loserRating : 0),
+      rating: loser.profile.rating + (lobby.ranked ? loserRating : 0),
       coins: loser.profile.coins + loserCoins,
       xp: loser.profile.xp + loserXp,
+      level: this.rewardsService.handleLevelUp(
+        loser,
+        loser.profile.xp + loserXp,
+      ),
     });
     await Promise.all([matchPromise, winnerPromise, loserPromise]);
   }

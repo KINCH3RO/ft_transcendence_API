@@ -5,9 +5,9 @@ import { PrismaModule } from 'src/prisma/prisma.module';
 import { MatchModule } from '../match/match.module';
 
 @Module({
-	exports: [ProfileService],
-	controllers: [ProfileController],
-	providers: [ProfileService],
-	imports: [PrismaModule, MatchModule],
+  exports: [ProfileService],
+  controllers: [ProfileController],
+  providers: [ProfileService],
+  imports: [PrismaModule, MatchModule],
 })
-export class ProfileModule { }
+export class ProfileModule {}
