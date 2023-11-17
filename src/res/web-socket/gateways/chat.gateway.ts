@@ -66,30 +66,32 @@ export class ChatGate {
       );
 
     this.server.to(data.data.channelID).emit('aMemberUnbanned', data.data);
-    this.server.to(data.data.userID).emit('youGetUnbanned', data.data);
+    this.server.to(data.data.userID).emit('YouGotUnbanned', data.data);
   }
 
   @SubscribeMessage('getBanned')
   handleBannedUserFromRoom(socket: Socket, data: BodyData) {
     this.server.to(data.data.channelID).emit('aMemberBanned', data.data);
-    this.server.to(data.data.userID).emit('youGetBanned', data.data);
+    this.server.to(data.data.userID).emit('YouGotBanned', data.data);
   }
 
   @SubscribeMessage('getKicked')
   handleKickedUserFromRoom(socket: Socket, data: BodyData) {
     this.server.to(data.data.channelID).emit('aMemberKicked', data.data);
-    this.server.to(data.data.userID).emit('youGetKicked', data.data);
+    this.server.to(data.data.userID).emit('YouGotKicked', data.data);
   }
 
   @SubscribeMessage('getMuted')
   handleMutedUserFromRoom(socket: Socket, data: BodyData) {
     this.server.to(data.data.channelID).emit('aMemberMuted', data.data);
-    this.server.to(data.data.userID).emit('youGetMuted', data.data);
+    this.server.to(data.data.userID).emit('YouGotMuted', data.data);
   }
 
   @SubscribeMessage('roleAction')
   handleRoleAtRoom(socket: Socket, data: BodyData) {
-    this.server.to(data.data.channelID).emit('SomeOneRoleHasChanged', data.data);
+    this.server
+      .to(data.data.channelID)
+      .emit('SomeOneRoleHasChanged', data.data);
   }
 
   @SubscribeMessage('DM_blockUser')
@@ -97,7 +99,7 @@ export class ChatGate {
     this.server.to(data.data.friend.id).emit('youGotBlocked_DM', data.data);
   }
 
-	@SubscribeMessage('DM_unblockUser')
+  @SubscribeMessage('DM_unblockUser')
   handleUnblockedUserFromDM(socket: Socket, data: BodyData) {
     this.server.to(data.data.friend.id).emit('youGotUnblocked_DM', data.data);
   }
