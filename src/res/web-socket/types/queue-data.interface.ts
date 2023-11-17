@@ -1,7 +1,7 @@
 export default interface queueData {
 	id: string
 	rating: number
-	gamemode: string
+	gameMode: string
 	ranked: boolean
 	startDate: number
 }
