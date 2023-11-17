@@ -39,7 +39,6 @@ export class StatsService {
     const [winnerRating, loserRating] = this.rewardsService.calculateEloGain(
       winner,
       loser,
-      loserScore,
     );
 
     const matchPromise = this.matchService.create({
@@ -57,7 +56,7 @@ export class StatsService {
       xp: winner.profile.xp + winnerXp,
       level: this.rewardsService.handleLevelUp(
         winner,
-        winner.profile.xp + loserXp,
+        winner.profile.xp + winnerXp,
       ),
     });
 

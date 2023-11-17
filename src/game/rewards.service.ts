@@ -9,8 +9,10 @@ export class RewardsService {
   constructor(private readonly profileService: ProfileService) {}
 
   calculateXpRewards(winner: UserData, loser: UserData, loserScore: number) {
-    const winnerXp = 200;
-    const loserXp = 100;
+    let winnerXp = 600;
+    const loserXp = 400;
+
+    if (loserScore < 3) winnerXp += 50;
 
     return [winnerXp, loserXp];
   }
@@ -18,7 +20,7 @@ export class RewardsService {
   handleLevelUp(player: UserData, XpAfterGame: number) {
     let level = player.profile.level;
 
-    while (XpAfterGame > this.profileService.calculateRequiredXp(level + 1)) {
+    while (XpAfterGame >= this.profileService.calculateRequiredXp(level + 1)) {
       level += 1;
     }
 
@@ -26,15 +28,36 @@ export class RewardsService {
   }
 
   calculateCoinsRewards(winner: UserData, loser: UserData, loserScore: number) {
-    const winnerCoins = 200;
-    const loserCoins = 50;
+    let winnerCoins = 100;
+    const loserCoins = 40;
+
+    if (loserScore < 3) winnerCoins += 50;
 
     return [winnerCoins, loserCoins];
   }
 
-  calculateEloGain(winner: UserData, loser: UserData, loserScore: number) {
-    const winnerRating = 100;
-    const loserRating = -100;
+  calculateEloGain(winner: UserData, loser: UserData) {
+    const sensitivity = 50;
+    const minRp = 15;
+
+    const EWinner =
+      1 /
+      (1 +
+        Math.pow(
+          10,
+          (loser.profile.rating - winner.profile.rating) / sensitivity,
+        ));
+
+    const ELoser =
+      1 /
+      (1 +
+        Math.pow(
+          10,
+          (winner.profile.rating - loser.profile.rating) / sensitivity,
+        ));
+
+    const winnerRating = Math.floor(sensitivity * (1 - EWinner)) + minRp;
+    const loserRating = Math.floor(sensitivity * -ELoser) + 1 - minRp;
 
     return [winnerRating, loserRating];
   }
