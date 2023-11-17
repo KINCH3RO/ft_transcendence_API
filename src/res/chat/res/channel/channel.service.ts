@@ -57,7 +57,7 @@ export class ChannelService {
 		});
 
 		room['isMemeber'] = true;
-		room['owner'] = 'OWNER';
+		room['role'] = 'OWNER';
 
 		return room;
 	}

@@ -87,6 +87,11 @@ export class ChatGate {
     this.server.to(data.data.userID).emit('youGetMuted', data.data);
   }
 
+  @SubscribeMessage('roleAction')
+  handleRoleAtRoom(socket: Socket, data: BodyData) {
+    this.server.to(data.data.channelID).emit('SomeOneRoleHasChanged', data.data);
+  }
+
   @SubscribeMessage('DM_blockUser')
   handleBlockedUserFromDM(socket: Socket, data: BodyData) {
     this.server.to(data.data.friend.id).emit('youGotBlocked_DM', data.data);

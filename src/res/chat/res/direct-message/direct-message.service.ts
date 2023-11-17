@@ -171,7 +171,7 @@ export class DirectMessageService {
       return baseData;
     }));
 
-		console.log(dms)
+		// console.log(dms)
     return dms;
   }
 
