@@ -1,11 +1,11 @@
 import { UseFilters, UseGuards } from '@nestjs/common';
 import {
-  BaseWsExceptionFilter,
-  OnGatewayConnection,
-  OnGatewayDisconnect,
-  SubscribeMessage,
-  WebSocketGateway,
-  WebSocketServer,
+	BaseWsExceptionFilter,
+	OnGatewayConnection,
+	OnGatewayDisconnect,
+	SubscribeMessage,
+	WebSocketGateway,
+	WebSocketServer,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { TokenGuard } from '../token.guard';
@@ -22,14 +22,14 @@ import { MatchmakingService } from '../services/matchmaking.service';
 @UseGuards(TokenGuard)
 @WebSocketGateway({ cors: true, transports: ['websocket'] })
 export class MainGate implements OnGatewayConnection, OnGatewayDisconnect {
-  constructor(
-    private readonly webSocketService: WebSocketService,
-    private lobbyService: LobbyService,
-    private matchmakingService: MatchmakingService,
-  ) {}
+	constructor(
+		private readonly webSocketService: WebSocketService,
+		private lobbyService: LobbyService,
+		private matchmakingService: MatchmakingService,
+	) { }
 
-  @WebSocketServer()
-  io: Server;
+	@WebSocketServer()
+	io: Server;
 
 	handleConnection(client: Socket, ...args: any[]) {
 		// console.log(client);
@@ -92,7 +92,6 @@ export class MainGate implements OnGatewayConnection, OnGatewayDisconnect {
 
 	@SubscribeMessage('presence')
 	handlePresence(socket: Socket, data: BodyData) {
-		console.log(data);
 
 		this.webSocketService.setPresenceState(data.sender.id, data.data);
 		socket.broadcast.emit('presence', data);
