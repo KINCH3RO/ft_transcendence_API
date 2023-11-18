@@ -1,4 +1,5 @@
 import { $Enums, directMessage, message, user } from "@prisma/client";
+import { User } from "src/res/users/entities/user.entity";
 
 export class DirectMessage implements directMessage {
 	blockStatus: $Enums.actionStatus;
@@ -6,10 +7,10 @@ export class DirectMessage implements directMessage {
 	id: string;
 	senderID: string;
 	receiverID: string;
-	sender?: user;
-	receiver?: user;
+	sender?: User;
+	receiver?: User;
 	message?: message;
 
 	isSender?: boolean
-	friend?: user;
+	friend?: User;
 }
