@@ -41,9 +41,6 @@ export class GameService {
     rightPaddle: Paddle,
     gameData: GameData,
   ) {
-    ball.x += this.xballSpeed * ball.xDirection;
-    ball.y += this.yballSpeed * ball.yDirection;
-
     if (ball.x + this.ballRaduis > 100 || ball.x - this.ballRaduis < 0) {
       this.updateScore(gameData, ball.x > 50);
       ball.x = 50;
@@ -53,20 +50,26 @@ export class GameService {
       ball.yDirection *= -1;
     this.checkLeftPaddle(ball, leftPaddle);
     this.checkRightPaddle(ball, rightPaddle);
+    ball.x += this.xballSpeed * ball.xDirection;
+    ball.y += this.yballSpeed * ball.yDirection;
     return { x: ball.x, y: ball.y };
   }
 
   checkLeftPaddle(ball: Ball, paddle: Paddle) {
     if (ball.x - this.ballRaduis < paddle.x + this.paddleWidth) {
-      if (ball.y >= paddle.y && ball.y <= paddle.y + this.paddleHeight)
+      if (ball.y >= paddle.y && ball.y <= paddle.y + this.paddleHeight) {
         ball.xDirection *= -1;
+        ball.x = paddle.x + this.ballRaduis + this.paddleWidth;
+      }
     }
   }
 
   checkRightPaddle(ball: Ball, paddle: Paddle) {
     if (ball.x + this.ballRaduis > paddle.x) {
-      if (ball.y >= paddle.y && ball.y <= paddle.y + this.paddleHeight)
+      if (ball.y >= paddle.y && ball.y <= paddle.y + this.paddleHeight) {
         ball.xDirection *= -1;
+        ball.x = paddle.x - this.ballRaduis;
+      }
     }
   }
 
