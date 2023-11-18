@@ -2,30 +2,18 @@ import { Injectable } from '@nestjs/common';
 import { MatchService } from 'src/res/match/match.service';
 import { ProfileService } from 'src/res/profile/profile.service';
 import Lobby from 'src/res/web-socket/types/lobby.interface';
+import { RewardsService } from './rewards.service';
 
 @Injectable()
 export class StatsService {
   constructor(
     private matchService: MatchService,
     private profileService: ProfileService,
-  ) {
-    this.winnerXp = 200;
-    this.loserXp = 100;
-    this.winnerCoins = 200;
-    this.loserCoins = 50;
-    this.winnerRating = 100;
-    this.loserRating = -100;
-  }
-
-  private winnerXp;
-  private loserXp;
-  private winnerCoins;
-  private loserCoins;
-  private winnerRating;
-  private loserRating;
+    private rewardsService: RewardsService,
+  ) {}
 
   async saveGame(lobby: Lobby) {
-    let loserScore =
+    const loserScore =
       lobby.gameData.score[0] == 5
         ? lobby.gameData.score[1]
         : lobby.gameData.score[0];
@@ -36,24 +24,50 @@ export class StatsService {
     const loser =
       lobby.gameData.score[1] == 5 ? lobby.players[0] : lobby.players[1];
 
+    const [winnerXp, loserXp] = this.rewardsService.calculateXpRewards(
+      winner,
+      loser,
+      loserScore,
+    );
+
+    const [winnerCoins, loserCoins] = this.rewardsService.calculateCoinsRewards(
+      winner,
+      loser,
+      loserScore,
+    );
+
+    const [winnerRating, loserRating] = this.rewardsService.calculateEloGain(
+      winner,
+      loser,
+    );
+
     const matchPromise = this.matchService.create({
       loserID: loser.id,
       winnerID: winner.id,
       ranked: lobby.ranked,
       gameMode: 'CLASSIC',
       loserScore,
+      duration: 200,
     });
 
     const winnerPromise = this.profileService.update(winner.id, {
-      rating: winner.profile.rating + (lobby.ranked ? this.winnerRating : 0),
-      coins: winner.profile.coins + this.winnerCoins,
-      xp: winner.profile.xp + this.winnerXp,
+      rating: winner.profile.rating + (lobby.ranked ? winnerRating : 0),
+      coins: winner.profile.coins + winnerCoins,
+      xp: winner.profile.xp + winnerXp,
+      level: this.rewardsService.handleLevelUp(
+        winner,
+        winner.profile.xp + winnerXp,
+      ),
     });
 
     const loserPromise = this.profileService.update(loser.id, {
-      rating: loser.profile.rating + +(lobby.ranked ? this.loserRating : 0),
-      coins: loser.profile.coins + this.loserCoins,
-      xp: loser.profile.xp + this.loserXp,
+      rating: loser.profile.rating + (lobby.ranked ? loserRating : 0),
+      coins: loser.profile.coins + loserCoins,
+      xp: loser.profile.xp + loserXp,
+      level: this.rewardsService.handleLevelUp(
+        loser,
+        loser.profile.xp + loserXp,
+      ),
     });
     await Promise.all([matchPromise, winnerPromise, loserPromise]);
   }

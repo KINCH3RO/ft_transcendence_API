@@ -116,7 +116,7 @@ export class ProfileService {
       return {
         ...profile,
         username: profile.userName,
-        winrate: stats.winrate,
+        winrate: stats.rankedWinrate,
         games: stats.total,
       };
     });
@@ -146,7 +146,7 @@ export class ProfileService {
       return {
         ...profile,
         username: profile.userName,
-        winrate: stats.winrate,
+        winrate: stats.rankedWinrate,
         games: stats.total,
       };
     });

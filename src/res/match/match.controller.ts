@@ -29,10 +29,19 @@ export class MatchController {
     return this.matchService.findAll(user);
   }
 
+  @Get('vs/:id')
+  findVsByIdByOffset(
+    @ActiveUser() user: ActiveUserData,
+    @Param('id') id: string,
+    @Query('offset', ParseIntPipe) offset: number,
+  ) {
+    return this.matchService.findVsByIdByOffset(user, id, offset);
+  }
+
   @Get('offset/:id')
   findAllByIdByOffset(
     @Param('id') id: string,
-    @Query('offset') offset: number,
+    @Query('offset', ParseIntPipe) offset: number,
   ) {
     return this.matchService.findAllByIdByOffset(id, offset);
   }

@@ -29,4 +29,7 @@ export class CreateMatchDto {
 
   @IsBoolean()
   ranked: boolean;
+
+  @IsNumber()
+  duration: number;
 }

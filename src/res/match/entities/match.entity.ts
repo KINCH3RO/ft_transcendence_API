@@ -9,6 +9,7 @@ export class Match implements matches {
   date: Date;
   gameMode: string;
   ranked: boolean;
+  duration: number;
 }
 
 export enum gameMode {
