@@ -59,6 +59,12 @@ export class LobbyService {
 		);
 	}
 
+	isJoinedLobby(player1: string, player2: string) {
+		return !!this.lobbies.find((lobby) =>
+			lobby.players.find((x) => x.id == player1) && lobby.players.find((x) => x.id == player2),
+		);
+	}
+
 	getLobby(playerId: string) {
 		return this.lobbies.find((lobby) =>
 			lobby.players.find((x) => x.id == playerId),

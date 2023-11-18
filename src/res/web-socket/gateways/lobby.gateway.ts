@@ -178,6 +178,11 @@ export class LobbyGate {
 
 	@SubscribeMessage('lobbyAccept')
 	async handleLobbyCreate(socket: Socket, data: BodyData) {
+		if (this.lobbyService.isJoinedLobby(data.data.id, data.sender.id)) {
+			this.io.to(data.sender.id).emit("alreadyInLobby")
+			return
+		}
+
 		this.createLobby({
 			players: [data.data.id, data.sender.id],
 		}).then().catch()
