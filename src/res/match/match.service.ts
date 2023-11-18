@@ -139,18 +139,25 @@ export class MatchService {
     let highest = 0;
     let currentSum = 0;
     let wins = 0;
+    let rankedWins = 0;
+    let totalRanked = 0;
 
     matches.map((match) => {
+      if (match.ranked) totalRanked++;
       if (match.winnerID === id) {
         wins++;
+        rankedWins += match.ranked ? 1 : 0;
         currentSum++;
       } else currentSum = 0;
       if (currentSum > highest) highest = currentSum;
     });
 
+    console.log((wins / matches.length) * 100);
+    console.log((rankedWins / totalRanked) * 100);
     return {
       winstreak: highest,
       winrate: (wins / matches.length) * 100,
+      rankedWinrate: (rankedWins / totalRanked) * 100,
       total: matches.length,
     };
   }
