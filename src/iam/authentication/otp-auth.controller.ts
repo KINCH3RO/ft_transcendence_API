@@ -1,4 +1,11 @@
-import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Post,
+} from '@nestjs/common';
 import { ActiveUser } from './decorators/active-user.decorator';
 import { OtpAuthService } from './otp-auth.service';
 import { ActiveUserData } from '../interfaces/active-user.interface';
@@ -13,7 +20,12 @@ export class OtpAuthController {
   @HttpCode(HttpStatus.OK)
   @Post('/activate')
   async activate(@ActiveUser() user: ActiveUserData) {
-    const uri = await this.otpService.enable2FA(user);
+    return this.otpService.enable2FA(user);
+  }
+
+  @Get('/qrcode')
+  async getCode(@ActiveUser() user: ActiveUserData) {
+    const uri = await this.otpService.getCode(user);
     return toDataURL(uri);
   }
 
