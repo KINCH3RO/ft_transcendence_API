@@ -27,21 +27,26 @@ export class OtpAuthService {
   }
 
   verifyCode(token: string, secret: string) {
-	console.log(token,secret)
-	console.log(authenticator.generate(secret))
     return authenticator.verify({
       token,
       secret,
     });
   }
 
-  async enable2FA(user: ActiveUserData) {
+  async getCode(user: ActiveUserData) {
     const { secret, uri } = await this.generateSecret(user.username);
     await this.prisma.user.update({
       where: { id: user.sub },
-      data: { twoFactorAuthEnabled: true, twoFactorAuthSecret: secret },
+      data: { twoFactorAuthSecret: secret },
     });
     return uri;
+  }
+
+  enable2FA(user: ActiveUserData) {
+    return this.prisma.user.update({
+      where: { id: user.sub },
+      data: { twoFactorAuthEnabled: true },
+    });
   }
 
   async disable2FA(id: string) {
