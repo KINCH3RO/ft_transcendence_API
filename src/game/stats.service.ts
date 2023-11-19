@@ -47,7 +47,7 @@ export class StatsService {
       ranked: lobby.ranked,
       gameMode: 'CLASSIC',
       loserScore,
-      duration: 200,
+      duration: lobby.gameData.timer,
     });
 
     const winnerPromise = this.profileService.update(winner.id, {
