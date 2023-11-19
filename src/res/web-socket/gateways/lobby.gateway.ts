@@ -1,5 +1,4 @@
-import { UseFilters, UseGuards, UsePipes } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
+import { UseFilters, UseGuards } from '@nestjs/common';
 import { Socket, Server } from 'socket.io';
 
 import {
@@ -58,9 +57,14 @@ export class LobbyGate {
   gameStarted(lobby: Lobby) {
     lobby.lobbySate = 'ingame';
     this.io.to(lobby.id).emit('lobbyChange', lobby);
+    const timerInterval = setInterval(() => {
+      lobby.gameData.timer++;
+      this.io.to(lobby.id).emit('timerChange', lobby.gameData.timer);
+    }, 1000);
     const gameInterval = setInterval(async () => {
       if (!this.lobbyService.Exist(lobby.id)) {
         clearInterval(gameInterval);
+        clearInterval(timerInterval);
         return;
       }
       const gameData = this.gameService.updateGame(lobby.gameData);
@@ -82,6 +86,7 @@ export class LobbyGate {
           this.emitLobbyChange(lobby);
         }
         clearInterval(gameInterval);
+        clearInterval(timerInterval);
       }
     }, 16.6666666667);
   }
@@ -114,6 +119,7 @@ export class LobbyGate {
       ball: { x: 50, y: 50, xDirection: 1, yDirection: 1 },
       score: [0, 0],
       scoreUpdated: false,
+      timer: 0,
     };
   }
 
