@@ -63,7 +63,7 @@ export class LobbyGate {
         clearInterval(gameInterval);
         return;
       }
-      const gameData = this.gameService.updateGame(lobby.gameData);
+      const gameData = this.gameService.updateGame(lobby.gameData, lobby.mode);
       this.io.to(lobby.id).emit('gameData', gameData);
       if (lobby.gameData.scoreUpdated) {
         this.io.to(lobby.id).emit('scoreChange', lobby.gameData.score);

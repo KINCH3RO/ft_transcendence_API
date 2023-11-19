@@ -1,3 +1,4 @@
+import { GameMode } from './game-mode.interface';
 import UserData from './user-data.interface';
 import { UUID } from 'crypto';
 
@@ -5,7 +6,7 @@ export default interface Lobby {
   id?: UUID;
   players: [UserData, UserData];
   ranked: boolean;
-  mode: string;
+  mode: GameMode;
   owner: string;
   queueLobby: boolean;
   isOwner?: boolean;
@@ -15,7 +16,7 @@ export default interface Lobby {
 
 export interface LobbyCreate {
   players: [string, string];
-  mode?: string;
+  mode?: GameMode;
   queueLobby?: boolean;
   ranked?: boolean;
   lobbySate?: 'idle' | 'ingame' | 'starting';

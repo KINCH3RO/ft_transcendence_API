@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { GameMode } from 'src/res/web-socket/types/game-mode.interface';
 import {
   Ball,
   GameData,
@@ -10,20 +11,31 @@ export class GameService {
   constructor() {
     this.xballSpeed = 0.5;
     this.yballSpeed = 1.5;
-    this.ballRaduis = 2;
+    this.ballRadius = 2;
     this.paddleSpeed = 2;
     this.paddleHeight = 20;
     this.paddleWidth = 1;
   }
 
-  private ballRaduis: number;
+  private ballRadius: number;
   private xballSpeed: number;
   private yballSpeed: number;
   private paddleSpeed: number;
   private paddleHeight: number;
   private paddleWidth: number;
+  private mode: GameMode;
 
-  updateGame(gameData: GameData) {
+  updateGame(gameData: GameData, mode: GameMode) {
+    this.mode = mode;
+    switch (mode) {
+      case 'Normal':
+        break;
+      case 'Speed Demons':
+        this.xballSpeed = 2;
+        this.yballSpeed = 2;
+        break;
+    }
+
     const paddle1 = this.updatePaddle(gameData.paddle1);
     const paddle2 = this.updatePaddle(gameData.paddle2);
     const ball = this.updateBall(
@@ -41,12 +53,12 @@ export class GameService {
     rightPaddle: Paddle,
     gameData: GameData,
   ) {
-    if (ball.x + this.ballRaduis > 100 || ball.x - this.ballRaduis < 0) {
+    if (ball.x + this.ballRadius > 100 || ball.x - this.ballRadius < 0) {
       this.updateScore(gameData, ball.x > 50);
       ball.x = 50;
       ball.y = 50;
     }
-    if (ball.y + this.ballRaduis > 100 || ball.y - this.ballRaduis < 0)
+    if (ball.y + this.ballRadius > 100 || ball.y - this.ballRadius < 0)
       ball.yDirection *= -1;
     this.checkLeftPaddle(ball, leftPaddle);
     this.checkRightPaddle(ball, rightPaddle);
@@ -56,19 +68,19 @@ export class GameService {
   }
 
   checkLeftPaddle(ball: Ball, paddle: Paddle) {
-    if (ball.x - this.ballRaduis < paddle.x + this.paddleWidth) {
+    if (ball.x - this.ballRadius < paddle.x + this.paddleWidth) {
       if (ball.y >= paddle.y && ball.y <= paddle.y + this.paddleHeight) {
         ball.xDirection *= -1;
-        ball.x = paddle.x + this.ballRaduis + this.paddleWidth;
+        ball.x = paddle.x + this.ballRadius + this.paddleWidth;
       }
     }
   }
 
   checkRightPaddle(ball: Ball, paddle: Paddle) {
-    if (ball.x + this.ballRaduis > paddle.x) {
+    if (ball.x + this.ballRadius > paddle.x) {
       if (ball.y >= paddle.y && ball.y <= paddle.y + this.paddleHeight) {
         ball.xDirection *= -1;
-        ball.x = paddle.x - this.ballRaduis;
+        ball.x = paddle.x - this.ballRadius;
       }
     }
   }
