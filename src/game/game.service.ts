@@ -9,41 +9,16 @@ import {
 @Injectable()
 export class GameService {
   constructor() {
-    this.xballSpeed = 0.5;
-    this.yballSpeed = 1.5;
     this.ballRadius = 2;
     this.paddleSpeed = 2;
-    this.paddleHeight = 20;
     this.paddleWidth = 1;
   }
 
   private ballRadius: number;
-  private xballSpeed: number;
-  private yballSpeed: number;
   private paddleSpeed: number;
-  private paddleHeight: number;
   private paddleWidth: number;
-  private mode: GameMode;
-
-  initModeVariants(mode: GameMode) {
-    this.mode = mode;
-    switch (mode) {
-      case 'Normal':
-        this.xballSpeed = 1;
-        this.yballSpeed = 1;
-        break;
-      case 'Speed Demons':
-        this.xballSpeed = 2;
-        this.yballSpeed = 2;
-        break;
-      case 'Elastico':
-        break;
-    }
-  }
 
   updateGame(gameData: GameData, mode: GameMode) {
-    this.initModeVariants(mode);
-
     const paddle1 = this.updatePaddle(gameData.paddle1);
     const paddle2 = this.updatePaddle(gameData.paddle2);
     const ball = this.updateBall(
@@ -70,14 +45,14 @@ export class GameService {
       ball.yDirection *= -1;
     this.checkLeftPaddle(ball, leftPaddle);
     this.checkRightPaddle(ball, rightPaddle);
-    ball.x += this.xballSpeed * ball.xDirection;
-    ball.y += this.yballSpeed * ball.yDirection;
+    ball.x += ball.xSpeed * ball.xDirection;
+    ball.y += ball.ySpeed * ball.yDirection;
     return { x: ball.x, y: ball.y };
   }
 
   checkLeftPaddle(ball: Ball, paddle: Paddle) {
     if (ball.x - this.ballRadius < paddle.x + this.paddleWidth) {
-      if (ball.y >= paddle.y && ball.y <= paddle.y + this.paddleHeight) {
+      if (ball.y >= paddle.y && ball.y <= paddle.y + paddle.height) {
         ball.xDirection *= -1;
         ball.x = paddle.x + this.ballRadius + this.paddleWidth;
       }
@@ -86,7 +61,7 @@ export class GameService {
 
   checkRightPaddle(ball: Ball, paddle: Paddle) {
     if (ball.x + this.ballRadius > paddle.x) {
-      if (ball.y >= paddle.y && ball.y <= paddle.y + this.paddleHeight) {
+      if (ball.y >= paddle.y && ball.y <= paddle.y + paddle.height) {
         ball.xDirection *= -1;
         ball.x = paddle.x - this.ballRadius;
       }
@@ -94,10 +69,7 @@ export class GameService {
   }
 
   updatePaddle(paddle: Paddle) {
-    if (
-      paddle.isDown &&
-      paddle.y + this.paddleHeight + this.paddleSpeed <= 100
-    ) {
+    if (paddle.isDown && paddle.y + paddle.height + this.paddleSpeed <= 100) {
       paddle.y += this.paddleSpeed;
     }
     if (paddle.isUP && paddle.y - this.paddleSpeed >= 0) {

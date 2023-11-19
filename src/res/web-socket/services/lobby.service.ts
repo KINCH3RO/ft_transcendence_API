@@ -1,8 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import Lobby, { LobbyCreate } from '../types/lobby.interface';
+import Lobby, { GameData, LobbyCreate } from '../types/lobby.interface';
 import { randomUUID } from 'crypto';
 import { ProfileService } from 'src/res/profile/profile.service';
 import UserData from '../types/user-data.interface';
+import { GameMode } from '../types/game-mode.interface';
 
 @Injectable()
 export class LobbyService {
@@ -33,17 +34,41 @@ export class LobbyService {
       ranked: ranked,
       lobbySate: lobbySate,
       isOwner: false,
-      gameData: {
-        paddle1: { x: 0, y: 40, isUP: false, isDown: false },
-        paddle2: { x: 99, y: 40, isUP: false, isDown: false },
-        ball: { x: 50, y: 50, xDirection: 1, yDirection: 1 },
-        score: [0, 0],
-        scoreUpdated: false,
-        gameStartDate: NaN,
-      },
+      gameData: this.initGameData(mode),
     };
     this.lobbies.push(createdLobby);
     return createdLobby;
+  }
+
+  initGameData(mode: GameMode): GameData {
+    const data = {
+      paddle1: { x: 0, y: 40, isUP: false, isDown: false, height: 20 },
+      paddle2: { x: 99, y: 40, isUP: false, isDown: false, height: 20 },
+      ball: {
+        x: 50,
+        y: 50,
+        xDirection: 1,
+        yDirection: 1,
+        xSpeed: 0.5,
+        ySpeed: 1.5,
+      },
+      score: [0, 0],
+      scoreUpdated: false,
+      gameStartDate: NaN,
+    };
+
+    switch (mode) {
+      case 'Normal':
+        break;
+      case 'Speed Demons':
+        data.ball.xSpeed *= 2;
+        data.ball.ySpeed *= 2;
+        break;
+      case 'Elastico':
+        break;
+    }
+
+    return data;
   }
 
   deleteLobby(lobbyId: string) {

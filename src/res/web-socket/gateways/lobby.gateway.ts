@@ -11,7 +11,7 @@ import { TokenGuard } from '../token.guard';
 import { WebSocketService } from '../services/web-socket.service';
 import { BodyData } from '../types/body-data.interface';
 import { LobbyService } from '../services/lobby.service';
-import Lobby, { LobbyCreate } from '../types/lobby.interface';
+import Lobby, { GameData, LobbyCreate } from '../types/lobby.interface';
 import queueData from '../types/queue-data.interface';
 import { GameService } from 'src/game/game.service';
 import { MatchmakingService } from '../services/matchmaking.service';
@@ -110,14 +110,7 @@ export class LobbyGate {
   }
 
   resetGameData(lobby: Lobby) {
-    lobby.gameData = {
-      paddle1: { x: 0, y: 40, isUP: false, isDown: false },
-      paddle2: { x: 99, y: 40, isUP: false, isDown: false },
-      ball: { x: 50, y: 50, xDirection: 1, yDirection: 1 },
-      score: [0, 0],
-      scoreUpdated: false,
-      gameStartDate: NaN,
-    };
+    lobby.gameData = this.lobbyService.initGameData(lobby.mode);
   }
 
   findGame(data: BodyData) {

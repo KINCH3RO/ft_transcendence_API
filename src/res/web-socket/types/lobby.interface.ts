@@ -37,6 +37,7 @@ export interface Paddle {
   y: number;
   isUP: boolean;
   isDown: boolean;
+  height: number;
 }
 
 export interface Ball {
@@ -44,4 +45,6 @@ export interface Ball {
   y: number;
   xDirection: number;
   yDirection: number;
+  xSpeed: number;
+  ySpeed: number;
 }
