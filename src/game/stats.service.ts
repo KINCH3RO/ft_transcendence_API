@@ -69,6 +69,7 @@ export class StatsService {
         loser.profile.xp + loserXp,
       ),
     });
+
     await Promise.all([matchPromise, winnerPromise, loserPromise]);
     return [
       {

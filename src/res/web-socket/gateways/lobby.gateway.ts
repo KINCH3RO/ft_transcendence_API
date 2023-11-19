@@ -56,15 +56,11 @@ export class LobbyGate {
 
   gameStarted(lobby: Lobby) {
     lobby.lobbySate = 'ingame';
+    lobby.gameData.gameStartDate = Date.now();
     this.io.to(lobby.id).emit('lobbyChange', lobby);
-    const timerInterval = setInterval(() => {
-      lobby.gameData.timer++;
-      this.io.to(lobby.id).emit('timerChange', lobby.gameData.timer);
-    }, 1000);
     const gameInterval = setInterval(async () => {
       if (!this.lobbyService.Exist(lobby.id)) {
         clearInterval(gameInterval);
-        clearInterval(timerInterval);
         return;
       }
       const gameData = this.gameService.updateGame(lobby.gameData);
@@ -75,9 +71,11 @@ export class LobbyGate {
         if (lobby.gameData.score[0] != 5 && lobby.gameData.score[1] != 5)
           return;
         lobby.lobbySate = 'idle';
+        lobby.gameData.timer =
+          (Date.now() - lobby.gameData.gameStartDate) / 1000;
         const [winner, loser] = await this.statsService.saveGame(lobby);
-        this.io.to(winner.id).emit('gameEnd', lobby, winner);
-        this.io.to(loser.id).emit('gameEnd', lobby, loser);
+        this.io.to(winner.id).emit('gameEnd', { lobby, rewards: winner });
+        this.io.to(loser.id).emit('gameEnd', { lobby, rewards: loser });
         if (lobby.queueLobby) {
           this.io.to(lobby.id).emit('leaveLobby');
           this.clearLobby(lobby);
@@ -86,7 +84,6 @@ export class LobbyGate {
           this.emitLobbyChange(lobby);
         }
         clearInterval(gameInterval);
-        clearInterval(timerInterval);
       }
     }, 16.6666666667);
   }
@@ -119,7 +116,7 @@ export class LobbyGate {
       ball: { x: 50, y: 50, xDirection: 1, yDirection: 1 },
       score: [0, 0],
       scoreUpdated: false,
-      timer: 0,
+      gameStartDate: NaN,
     };
   }
 

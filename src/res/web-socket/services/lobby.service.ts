@@ -39,7 +39,7 @@ export class LobbyService {
         ball: { x: 50, y: 50, xDirection: 1, yDirection: 1 },
         score: [0, 0],
         scoreUpdated: false,
-        timer: 0,
+        gameStartDate: NaN,
       },
     };
     this.lobbies.push(createdLobby);
