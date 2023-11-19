@@ -71,8 +71,9 @@ export class LobbyGate {
         if (lobby.gameData.score[0] != 5 && lobby.gameData.score[1] != 5)
           return;
         lobby.lobbySate = 'idle';
-        this.io.to(lobby.id).emit('gameEnd', lobby);
-        await this.statsService.saveGame(lobby);
+        const [winner, loser] = await this.statsService.saveGame(lobby);
+        this.io.to(winner.id).emit('gameEnd', lobby, winner);
+        this.io.to(loser.id).emit('gameEnd', lobby, loser);
         if (lobby.queueLobby) {
           this.io.to(lobby.id).emit('leaveLobby');
           this.clearLobby(lobby);

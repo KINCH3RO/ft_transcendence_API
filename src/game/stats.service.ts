@@ -70,5 +70,9 @@ export class StatsService {
       ),
     });
     await Promise.all([matchPromise, winnerPromise, loserPromise]);
+    return [
+      { id: winner.id, xp: winnerXp, coins: winnerCoins, rating: winnerRating },
+      { id: loser.id, xp: loserXp, coins: loserCoins, rating: loserRating },
+    ];
   }
 }
