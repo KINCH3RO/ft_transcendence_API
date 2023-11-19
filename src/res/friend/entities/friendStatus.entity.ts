@@ -1,5 +1,4 @@
 import { $Enums, friendStatus, user } from "@prisma/client";
-import { UUID } from "crypto";
 
 export class FriendStatus implements friendStatus {
 	senderID: string;
@@ -9,5 +8,6 @@ export class FriendStatus implements friendStatus {
 
 	isSender?: boolean
 	friend?: user;
+	state?: string
 
 }

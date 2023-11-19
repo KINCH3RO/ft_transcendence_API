@@ -67,6 +67,15 @@ export class FriendStatusService {
 				sender: {
 					select:
 					{
+						profile:
+						{
+							select: {
+								rating: true,
+								level: true
+							}
+						},
+						state: true,
+						bannerUrl: true,
 						avatarUrl: true,
 						userName: true,
 						id: true,
@@ -76,6 +85,15 @@ export class FriendStatusService {
 				receiver: {
 					select:
 					{
+						profile:
+						{
+							select: {
+								rating: true,
+								level: true
+							}
+						},
+						state: true,
+						bannerUrl: true,
 						avatarUrl: true,
 						userName: true,
 						id: true,
@@ -106,7 +124,8 @@ export class FriendStatusService {
 				baseData["friend"] = data.sender;
 			baseData["isSender"] = (userID == data.senderID)
 			baseData["friend"].onlineStatus = this.webSocketService.isOnline(baseData["friend"].id)
-			// baseData["profile"]
+			if (baseData["friend"].onlineStatus)
+				baseData["friend"].state = this.webSocketService.getUserState(baseData["friend"].id)
 			return baseData;
 		});
 
