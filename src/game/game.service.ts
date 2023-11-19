@@ -25,16 +25,24 @@ export class GameService {
   private paddleWidth: number;
   private mode: GameMode;
 
-  updateGame(gameData: GameData, mode: GameMode) {
+  initModeVariants(mode: GameMode) {
     this.mode = mode;
     switch (mode) {
       case 'Normal':
+        this.xballSpeed = 1;
+        this.yballSpeed = 1;
         break;
       case 'Speed Demons':
         this.xballSpeed = 2;
         this.yballSpeed = 2;
         break;
+      case 'Elastico':
+        break;
     }
+  }
+
+  updateGame(gameData: GameData, mode: GameMode) {
+    this.initModeVariants(mode);
 
     const paddle1 = this.updatePaddle(gameData.paddle1);
     const paddle2 = this.updatePaddle(gameData.paddle2);
