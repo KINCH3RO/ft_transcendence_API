@@ -89,7 +89,7 @@ export class LobbyGate {
   }
 
   async createLobby(lobbyData: LobbyCreate) {
-    let lobby = await this.lobbyService.createLobby(lobbyData);
+    const lobby = await this.lobbyService.createLobby(lobbyData);
 
     this.webSocketService
       .getSockets(lobby.players[0].id)
@@ -186,9 +186,9 @@ export class LobbyGate {
 
   @SubscribeMessage('leaveLobby')
   handleLeaveLobby(socket: Socket, data: BodyData) {
-    let lobby: Lobby = data.data;
+    const lobby: Lobby = data.data;
     if (!lobby) return;
-    let oppnentdID = lobby.players.find((x) => x.id != data.sender.id).id;
+    const oppnentdID = lobby.players.find((x) => x.id != data.sender.id).id;
     this.io.to(oppnentdID).emit(
       'leaveLobby',
       lobby.players.find((x) => x.id == data.sender.id),
@@ -199,14 +199,14 @@ export class LobbyGate {
 
   @SubscribeMessage('lobbyChange')
   handleLobbyChange(socket: Socket, data: BodyData) {
-    let lobby: Lobby = data.data;
+    const lobby: Lobby = data.data;
     if (!lobby) return;
     this.emitLobbyChange(lobby);
   }
 
   @SubscribeMessage('paddleDown')
   handlePaddleDown(socket: Socket, data: BodyData) {
-    let lobby: Lobby = this.lobbyService.getLobby(data.sender.id);
+    const lobby: Lobby = this.lobbyService.getLobby(data.sender.id);
     if (lobby.players[0].id == data.sender.id)
       lobby.gameData.paddle1.isDown = data.data.isDown;
     else lobby.gameData.paddle2.isDown = data.data.isDown;
@@ -214,7 +214,7 @@ export class LobbyGate {
 
   @SubscribeMessage('paddleUp')
   handlePaddleUp(socket: Socket, data: BodyData) {
-    let lobby: Lobby = this.lobbyService.getLobby(data.sender.id);
+    const lobby: Lobby = this.lobbyService.getLobby(data.sender.id);
     if (lobby.players[0].id == data.sender.id)
       lobby.gameData.paddle1.isUP = data.data.isUP;
     else lobby.gameData.paddle2.isUP = data.data.isUP;
@@ -222,7 +222,7 @@ export class LobbyGate {
 
   @SubscribeMessage('createPrivateGame')
   handeCreateGame(socket: Socket, data: BodyData) {
-    let lobby = this.lobbyService.getLobby(data.sender.id);
+    const lobby = this.lobbyService.getLobby(data.sender.id);
     if (!lobby) return;
     lobby.lobbySate = 'starting';
     this.io.to(lobby.id).emit('lobbyChange', lobby);
@@ -247,7 +247,7 @@ export class LobbyGate {
 
       return;
     }
-    let lobby = await this.createLobby({
+    const lobby = await this.createLobby({
       players: [gameData.player.id, data.sender.id],
       mode: gameData.gameMode,
       queueLobby: true,

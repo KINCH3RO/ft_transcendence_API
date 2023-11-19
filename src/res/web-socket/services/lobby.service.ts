@@ -18,13 +18,13 @@ export class LobbyService {
   }: LobbyCreate) {
     if (this.isPlayerOnLobby(players[0]) || this.isPlayerOnLobby(players[1]))
       throw 'already exist';
-    let user1: UserData = await this.profileService.findDataByUserId(
+    const user1: UserData = await this.profileService.findDataByUserId(
       players[0],
     );
-    let user2: UserData = await this.profileService.findDataByUserId(
+    const user2: UserData = await this.profileService.findDataByUserId(
       players[1],
     );
-    let createdLobby: Lobby = {
+    const createdLobby: Lobby = {
       id: randomUUID(),
       players: [user1, user2],
       mode: mode,
