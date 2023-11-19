@@ -116,8 +116,8 @@ export class LobbyGate {
   findGame(data: BodyData) {
     if (this.matchmakingService.Qplayers.length <= 0) return null;
     for (let i = 0; i < this.matchmakingService.Qplayers.length; i++) {
-      console.log(this.matchmakingService.Qplayers[i].gameMode);
-      console.log(data.data.gameMode);
+      // console.log(this.matchmakingService.Qplayers[i].gameMode);
+      // console.log(data.data.gameMode);
       if (this.matchmakingService.Qplayers[i].id == data.sender.id) return null;
 
       if (this.matchmakingService.Qplayers[i].gameMode != data.data.gameMode)
@@ -236,7 +236,7 @@ export class LobbyGate {
     const gameData = this.findGame(data);
     if (!gameData) {
       this.matchmakingService.addPlayer(queueData);
-      console.log(this.matchmakingService.Qplayers);
+      // console.log(this.matchmakingService.Qplayers);
 
       return;
     }
