@@ -17,7 +17,7 @@ model user {
     twoFactorAuthSecret  String?
     twoFactorAuthEnabled Boolean             @default(false)
     onlineStatus         Boolean             @default(false)
-    state                String              @default("wow")
+    state                String              @default("Offline")
     avatarUrl            String              @default("http://localhost:3001/upload/avatars/avatar1.png")
     bannerUrl            String              @default("http://localhost:3001/upload/banners/banner1.jpeg")
     createdAt            DateTime            @default(now())
@@ -123,6 +123,7 @@ model channelUser {
     status    channelStatus
     duration  Int?
     joinedAt  DateTime      @default(now())
+
     @@id([userID, channelID])
 }
 
