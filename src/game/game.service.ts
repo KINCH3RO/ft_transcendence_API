@@ -27,7 +27,15 @@ export class GameService {
       gameData.paddle2,
       gameData,
     );
-    return { ball, paddle1, paddle2 };
+
+    let orbs = [];
+
+    if (gameData.spawner) {
+      gameData.spawner.pullBallToOrbs(ball);
+      orbs = gameData.spawner.getOrbs();
+    }
+
+    return { ball, paddle1, paddle2, orbs };
   }
 
   updateBall(
