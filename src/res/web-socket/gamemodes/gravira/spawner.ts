@@ -21,16 +21,37 @@ export default class GraviraSpawner {
         300
       ) {
         if (orb.y > ball.y) {
-          ball.xDirection -= 0.1;
           ball.yDirection += 0.1;
-          // ball.y += 1;
+          ball.yDirection =
+            ball.yDirection < 0
+              ? this.restrictValue(ball.yDirection, -1.2, -0.8)
+              : this.restrictValue(ball.yDirection, 0.8, 1.2);
         } else if (orb.y < ball.y) {
-          ball.xDirection += 0.1;
           ball.yDirection -= 0.1;
-          // ball.y -= 1;
+          ball.yDirection =
+            ball.yDirection < 0
+              ? this.restrictValue(ball.yDirection, -1.2, -0.8)
+              : this.restrictValue(ball.yDirection, 0.8, 1.2);
+        }
+        if (orb.x > ball.x) {
+          ball.xDirection += 0.1;
+          ball.xDirection =
+            ball.xDirection < 0
+              ? this.restrictValue(ball.xDirection, -1.2, -0.8)
+              : this.restrictValue(ball.xDirection, 0.8, 1.2);
+        } else if (orb.x < ball.x) {
+          ball.xDirection -= 0.1;
+          ball.xDirection =
+            ball.xDirection < 0
+              ? this.restrictValue(ball.xDirection, -1.2, -0.8)
+              : this.restrictValue(ball.xDirection, 0.8, 1.2);
         }
       }
     });
+  }
+
+  restrictValue(value: number, min: number, max: number) {
+    return Math.min(Math.max(value, min), max);
   }
 
   getOrbs(): Orb[] {
