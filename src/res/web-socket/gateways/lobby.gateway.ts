@@ -215,6 +215,14 @@ export class LobbyGate {
     else lobby.gameData.paddle2.isUP = data.data.isUP;
   }
 
+  @SubscribeMessage('spacePressed')
+  handleSpacePressed(socket: Socket, data: BodyData) {
+    const lobby: Lobby = this.lobbyService.getLobby(data.sender.id);
+    if (lobby.players[0].id == data.sender.id)
+      lobby.gameData.paddle1.isSpace = data.data.isSpace;
+    else lobby.gameData.paddle2.isSpace = data.data.isSpace;
+  }
+
   @SubscribeMessage('createPrivateGame')
   handeCreateGame(socket: Socket, data: BodyData) {
     const lobby = this.lobbyService.getLobby(data.sender.id);

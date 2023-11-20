@@ -44,8 +44,22 @@ export class LobbyService {
 
   initGameData(mode: GameMode): GameData {
     const data: GameData = {
-      paddle1: { x: 0, y: 40, isUP: false, isDown: false, height: 20 },
-      paddle2: { x: 99, y: 40, isUP: false, isDown: false, height: 20 },
+      paddle1: {
+        x: 0,
+        y: 40,
+        isUP: false,
+        isDown: false,
+        isSpace: false,
+        height: 20,
+      },
+      paddle2: {
+        x: 99,
+        y: 40,
+        isUP: false,
+        isDown: false,
+        isSpace: false,
+        height: 20,
+      },
       ball: {
         x: 50,
         y: 50,

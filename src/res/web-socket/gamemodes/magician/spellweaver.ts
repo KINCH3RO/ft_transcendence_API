@@ -1,4 +1,4 @@
-import { Ball } from '../../types/lobby.interface';
+import { Ball, GameData } from '../../types/lobby.interface';
 
 export default class SpellWeaverEntity {
   private arcaneResources = [{ AP: 3 }, { AP: 3 }];
@@ -15,5 +15,7 @@ export default class SpellWeaverEntity {
     };
   }
 
-  enhanceBall(ball: Ball) {}
+  enhanceBall(ball: Ball, data: GameData) {
+    if (data.paddle1.isSpace) console.log('He pressed space');
+  }
 }

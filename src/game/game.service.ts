@@ -29,7 +29,8 @@ export class GameService {
     );
 
     let orbs = [];
-    orbs = gameData.spawner.getOrbs();
+
+    if (gameData.spawner) orbs = gameData.spawner.getOrbs();
 
     return { ball, paddle1, paddle2, orbs };
   }
@@ -55,7 +56,7 @@ export class GameService {
     }
 
     if (gameData.spellWeaver) {
-      gameData.spellWeaver.enhanceBall(ball);
+      gameData.spellWeaver.enhanceBall(ball, gameData);
     }
 
     ball.x += ball.xSpeed * ball.xDirection;
