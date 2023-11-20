@@ -54,6 +54,10 @@ export class GameService {
       gameData.spawner.pullBallToOrbs(ball);
     }
 
+    if (gameData.spellWeaver) {
+      gameData.spellWeaver.enhanceBall(ball);
+    }
+
     ball.x += ball.xSpeed * ball.xDirection;
     ball.y += ball.ySpeed * ball.yDirection;
 

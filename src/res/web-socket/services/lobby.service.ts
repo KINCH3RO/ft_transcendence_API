@@ -5,6 +5,7 @@ import { ProfileService } from 'src/res/profile/profile.service';
 import UserData from '../types/user-data.interface';
 import { GameMode } from '../types/game-mode.interface';
 import GraviraSpawner from '../gamemodes/gravira/spawner';
+import SpellWeaverEntity from '../gamemodes/magician/spellweaver';
 
 @Injectable()
 export class LobbyService {
@@ -66,6 +67,7 @@ export class LobbyService {
         data.ball.ySpeed *= 2;
         break;
       case 'Magician':
+        data.spellWeaver = new SpellWeaverEntity(data.ball);
         break;
       case 'Gravira':
         data.spawner = new GraviraSpawner();

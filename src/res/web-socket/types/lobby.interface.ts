@@ -1,4 +1,5 @@
 import GraviraSpawner from '../gamemodes/gravira/spawner';
+import SpellWeaverEntity from '../gamemodes/magician/spellweaver';
 import { GameMode } from './game-mode.interface';
 import UserData from './user-data.interface';
 import { UUID } from 'crypto';
@@ -32,6 +33,7 @@ export interface GameData {
   gameStartDate: number;
   timer?: number;
   spawner?: GraviraSpawner;
+  spellWeaver?: SpellWeaverEntity;
 }
 
 export interface Paddle {
