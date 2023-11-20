@@ -1,3 +1,5 @@
+import { Ball } from '../../types/lobby.interface';
+
 export default class GraviraSpawner {
   private orbs: Orb[] = [];
   private spawnInterval;
@@ -11,7 +13,7 @@ export default class GraviraSpawner {
     }
   }
 
-  pullBallToOrbs(ball: { x: number; y: number }) {
+  pullBallToOrbs(ball: Ball) {
     this.orbs.map((orb) => {
       if (
         Math.pow(Math.abs(orb.x - ball.x), 2) +
@@ -19,9 +21,13 @@ export default class GraviraSpawner {
         300
       ) {
         if (orb.y > ball.y) {
-          ball.y += 1;
+          ball.xDirection -= 0.1;
+          ball.yDirection += 0.1;
+          // ball.y += 1;
         } else if (orb.y < ball.y) {
-          ball.y -= 1;
+          ball.xDirection += 0.1;
+          ball.yDirection -= 0.1;
+          // ball.y -= 1;
         }
       }
     });

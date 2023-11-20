@@ -29,11 +29,7 @@ export class GameService {
     );
 
     let orbs = [];
-
-    if (gameData.spawner) {
-      gameData.spawner.pullBallToOrbs(ball);
-      orbs = gameData.spawner.getOrbs();
-    }
+    orbs = gameData.spawner.getOrbs();
 
     return { ball, paddle1, paddle2, orbs };
   }
@@ -53,8 +49,14 @@ export class GameService {
       ball.yDirection *= -1;
     this.checkLeftPaddle(ball, leftPaddle);
     this.checkRightPaddle(ball, rightPaddle);
+
+    if (gameData.spawner) {
+      gameData.spawner.pullBallToOrbs(ball);
+    }
+
     ball.x += ball.xSpeed * ball.xDirection;
     ball.y += ball.ySpeed * ball.yDirection;
+
     return { x: ball.x, y: ball.y };
   }
 
