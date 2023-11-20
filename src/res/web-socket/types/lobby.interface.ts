@@ -1,3 +1,4 @@
+import { GameMode } from './game-mode.interface';
 import UserData from './user-data.interface';
 import { UUID } from 'crypto';
 
@@ -5,21 +6,20 @@ export default interface Lobby {
 	id?: UUID;
 	players: [UserData, UserData];
 	ranked: boolean;
-	mode: string;
+	mode: GameMode;
 	owner: string;
 	queueLobby: boolean;
 	isOwner?: boolean;
-	lobbySate: 'ingame' | 'idle' | 'starting';
+	lobbySate: 'ingame' | 'idle' | 'starting' | 'finishing';
 	gameData: GameData;
 }
 
 export interface LobbyCreate {
 	players: [string, string];
-	mode?: string,
-	queueLobby?: boolean
-	ranked?: boolean
-	lobbySate?: 'idle' | 'ingame' | 'starting'
-
+	mode?: GameMode;
+	queueLobby?: boolean;
+	ranked?: boolean;
+	lobbySate?: 'idle' | 'ingame' | 'starting';
 }
 
 export interface GameData {
@@ -28,6 +28,8 @@ export interface GameData {
 	ball: Ball;
 	score: number[];
 	scoreUpdated: boolean;
+	gameStartDate: number;
+	timer?: number;
 }
 
 export interface Paddle {
@@ -35,6 +37,7 @@ export interface Paddle {
 	y: number;
 	isUP: boolean;
 	isDown: boolean;
+	height: number;
 }
 
 export interface Ball {
@@ -42,4 +45,6 @@ export interface Ball {
 	y: number;
 	xDirection: number;
 	yDirection: number;
+	xSpeed: number;
+	ySpeed: number;
 }

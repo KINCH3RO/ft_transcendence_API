@@ -47,7 +47,7 @@ export class StatsService {
       ranked: lobby.ranked,
       gameMode: 'CLASSIC',
       loserScore,
-      duration: 200,
+      duration: lobby.gameData.timer,
     });
 
     const winnerPromise = this.profileService.update(winner.id, {
@@ -69,6 +69,23 @@ export class StatsService {
         loser.profile.xp + loserXp,
       ),
     });
+
     await Promise.all([matchPromise, winnerPromise, loserPromise]);
+    return [
+      {
+        id: winner.id,
+        xp: winnerXp,
+        coins: winnerCoins,
+        rating: winnerRating,
+        achievements: [],
+      },
+      {
+        id: loser.id,
+        xp: loserXp,
+        coins: loserCoins,
+        rating: loserRating,
+        achievements: [],
+      },
+    ];
   }
 }
