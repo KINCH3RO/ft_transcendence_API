@@ -5,15 +5,27 @@ export default class GraviraSpawner {
   private spawnInterval;
 
   constructor() {
-    for (let i = 0; i < 4; i++) {
-      this.orbs.push({
-        x: Math.floor(Math.random() * 60 + 20),
-        y: Math.floor(Math.random() * 60 + 20),
-      });
-    }
+    this.orbs.push({
+      x: Math.floor(20),
+      y: Math.floor(30),
+    });
+    this.orbs.push({
+      x: Math.floor(20),
+      y: Math.floor(60),
+    });
+    this.orbs.push({
+      x: Math.floor(80),
+      y: Math.floor(30),
+    });
+    this.orbs.push({
+      x: Math.floor(80),
+      y: Math.floor(60),
+    });
   }
 
   pullBallToOrbs(ball: Ball) {
+    const maxBend = 1.3;
+    const minBend = 0.7;
     this.orbs.map((orb) => {
       if (
         Math.pow(Math.abs(orb.x - ball.x), 2) +
@@ -24,21 +36,21 @@ export default class GraviraSpawner {
           ball.yDirection += 0.1;
           ball.yDirection =
             ball.yDirection < 0
-              ? this.restrictValue(ball.yDirection, -1.2, -0.8)
-              : this.restrictValue(ball.yDirection, 0.8, 1.2);
+              ? this.restrictValue(ball.yDirection, -maxBend, -minBend)
+              : this.restrictValue(ball.yDirection, minBend, maxBend);
         } else if (orb.y < ball.y) {
           ball.yDirection -= 0.1;
           ball.yDirection =
             ball.yDirection < 0
-              ? this.restrictValue(ball.yDirection, -1.2, -0.8)
-              : this.restrictValue(ball.yDirection, 0.8, 1.2);
+              ? this.restrictValue(ball.yDirection, -maxBend, -minBend)
+              : this.restrictValue(ball.yDirection, minBend, maxBend);
         }
         if (orb.x > ball.x) {
           ball.xDirection += 0.1;
           ball.xDirection =
             ball.xDirection < 0
-              ? this.restrictValue(ball.xDirection, -1.2, -0.8)
-              : this.restrictValue(ball.xDirection, 0.8, 1.2);
+              ? this.restrictValue(ball.xDirection, -maxBend, -minBend)
+              : this.restrictValue(ball.xDirection, minBend, maxBend);
         } else if (orb.x < ball.x) {
           ball.xDirection -= 0.1;
           ball.xDirection =
