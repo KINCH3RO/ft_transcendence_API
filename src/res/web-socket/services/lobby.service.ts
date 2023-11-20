@@ -65,7 +65,7 @@ export class LobbyService {
         data.ball.xSpeed *= 2;
         data.ball.ySpeed *= 2;
         break;
-      case 'Elastico':
+      case 'Magician':
         break;
       case 'Gravira':
         data.spawner = new GraviraSpawner();
