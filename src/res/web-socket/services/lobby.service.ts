@@ -4,6 +4,7 @@ import { randomUUID } from 'crypto';
 import { ProfileService } from 'src/res/profile/profile.service';
 import UserData from '../types/user-data.interface';
 import { GameMode } from '../types/game-mode.interface';
+import GraviraSpawner from '../gamemodes/gravira/spawner';
 
 @Injectable()
 export class LobbyService {
@@ -41,7 +42,7 @@ export class LobbyService {
   }
 
   initGameData(mode: GameMode): GameData {
-    const data = {
+    const data: GameData = {
       paddle1: { x: 0, y: 40, isUP: false, isDown: false, height: 20 },
       paddle2: { x: 99, y: 40, isUP: false, isDown: false, height: 20 },
       ball: {
@@ -65,6 +66,9 @@ export class LobbyService {
         data.ball.ySpeed *= 2;
         break;
       case 'Elastico':
+        break;
+      case 'Gravira':
+        data.spawner = new GraviraSpawner();
         break;
     }
 
