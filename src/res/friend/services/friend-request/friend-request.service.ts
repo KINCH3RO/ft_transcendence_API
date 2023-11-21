@@ -88,7 +88,8 @@ export class FriendRequestService {
 
 
 	async sendRequest(userID: string, createFriendRequestDb: CreateFriendRequestDb) {
-		const friendStatus: friendStatus = await this.friendStatusService.findOne(createFriendRequestDb.senderID, createFriendRequestDb.senderID)
+
+		const friendStatus: friendStatus = await this.friendStatusService.findOne(createFriendRequestDb.senderID, createFriendRequestDb.receiverID)
 		if (createFriendRequestDb.senderID == createFriendRequestDb.receiverID)
 			throw new HttpException("", HttpStatus.FORBIDDEN);
 		if (friendStatus)
