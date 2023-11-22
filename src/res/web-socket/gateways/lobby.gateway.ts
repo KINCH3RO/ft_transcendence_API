@@ -54,6 +54,15 @@ export class LobbyGate {
 		this.io.to(lobby.players[1].id).emit('lobbyChange', lobby);
 	}
 
+	emitLeaveLobby(lobby: Lobby, senderID: string) {
+		const oppnentdID = lobby.players.find((x) => x.id != senderID).id;
+		this.io.to(oppnentdID).emit(
+			'leaveLobby',
+			lobby.players.find((x) => x.id == senderID),
+		);
+		this.io.to(senderID).emit('leaveLobby');
+	}
+
 	gameStarted(lobby: Lobby) {
 		lobby.lobbySate = 'ingame';
 		lobby.gameData.gameStartDate = Date.now();
@@ -171,6 +180,18 @@ export class LobbyGate {
 			this.io.to(data.sender.id).emit('alreadyInLobby');
 			return;
 		}
+		const lobby = this.lobbyService.getLobby(data.sender.id);
+		if (lobby
+		) {
+			if (lobby.lobbySate != "idle") {
+				this.io.to(data.sender.id).emit("cantLeave");
+				return
+			} else {
+				this.emitLeaveLobby(lobby, data.sender.id)
+				this.clearLobby(lobby);
+			}
+		}
+
 
 		this.createLobby({
 			players: [data.data.id, data.sender.id],
@@ -183,19 +204,18 @@ export class LobbyGate {
 	handleLeaveLobby(socket: Socket, data: BodyData) {
 		const lobby: Lobby = data.data;
 		if (!lobby) return;
-		const oppnentdID = lobby.players.find((x) => x.id != data.sender.id).id;
-		this.io.to(oppnentdID).emit(
-			'leaveLobby',
-			lobby.players.find((x) => x.id == data.sender.id),
-		);
-		this.io.to(data.sender.id).emit('leaveLobby');
+		this.emitLeaveLobby(lobby, data.sender.id)
 		this.clearLobby(lobby);
 	}
 
 	@SubscribeMessage('lobbyChange')
 	handleLobbyChange(socket: Socket, data: BodyData) {
-		const lobby: Lobby = data.data;
+		const incomingChange: Lobby = data.data;
+		const lobby = this.lobbyService.getLobby(data.sender.id)
 		if (!lobby) return;
+
+		lobby.ranked = incomingChange.ranked;
+		lobby.mode = incomingChange.mode;
 		this.emitLobbyChange(lobby);
 	}
 
