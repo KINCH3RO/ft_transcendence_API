@@ -1,73 +1,36 @@
 import { Ball, GameData, Paddle } from '../../types/lobby.interface';
 
 export default class SpellWeaverEntity {
-  private readonly defaultPaddle: Paddle;
+  private readonly defaultPaddle: { speed: number };
 
   constructor(ball: Ball, paddle: Paddle) {
-    // Might need to only keep speed...
-    this.defaultPaddle = {
-      height: paddle.height,
-      isCasting: paddle.isCasting,
-      isStunned: paddle.isStunned,
-      isDown: paddle.isDown,
-      isUP: paddle.isUP,
-      mana: paddle.mana,
-      numberPressed: paddle.numberPressed,
-      x: paddle.x,
-      y: paddle.y,
-      castDuration: paddle.castDuration,
-      stunDuration: paddle.stunDuration,
-      speed: paddle.speed,
-      homingStunOrbs: paddle.homingStunOrbs,
-    };
+    this.defaultPaddle = { speed: paddle.speed };
   }
 
   updatePaddleResources(gameData: GameData) {
-    //Paddle 1
-    const paddle1 = gameData.paddle1;
+    const paddle = [gameData.paddle1, gameData.paddle2];
 
-    paddle1.mana += 1 / 60;
-    if (paddle1.mana > 3) paddle1.mana = 3;
+    paddle.forEach((paddle) => {
+      paddle.mana += 1 / 60;
+      if (paddle.mana > 3) paddle.mana = 3;
 
-    paddle1.homingStunOrbs.forEach((orb) => {
-      orb.x += orb.x < paddle1.x ? 1 : -1;
-      orb.y += orb.y < paddle1.y ? 1 : -1;
-      if (Math.pow(orb.x - paddle1.x, 2) + Math.pow(orb.y - paddle1.y, 2) < 16)
-        orb.collided = true;
+      paddle.homingStunOrbs.forEach((orb) => {
+        orb.x += orb.x < paddle.x ? 1 : -1;
+        orb.y += orb.y < paddle.y ? 1 : -1;
+        if (Math.pow(orb.x - paddle.x, 2) + Math.pow(orb.y - paddle.y, 2) < 16)
+          orb.collided = true;
+      });
+
+      if (paddle.homingStunOrbs.some((orb) => orb.collided)) {
+        paddle.isStunned = true;
+        paddle.speed = 0;
+        paddle.stunDuration = 60 * 2;
+      }
+
+      paddle.homingStunOrbs = paddle.homingStunOrbs.filter(
+        (orb) => !orb.collided,
+      );
     });
-
-    if (paddle1.homingStunOrbs.some((orb) => orb.collided)) {
-      paddle1.isStunned = true;
-      paddle1.speed = 0;
-      paddle1.stunDuration = 60 * 2;
-    }
-
-    paddle1.homingStunOrbs = paddle1.homingStunOrbs.filter(
-      (orb) => !orb.collided,
-    );
-
-    //Paddle 2
-    const paddle2 = gameData.paddle2;
-
-    paddle2.mana += 1 / 60;
-    if (paddle2.mana > 3) paddle2.mana = 3;
-
-    paddle2.homingStunOrbs.forEach((orb) => {
-      orb.x += orb.x < paddle2.x ? 1 : -1;
-      orb.y += orb.y < paddle2.y ? 1 : -1;
-      if (Math.pow(orb.x - paddle2.x, 2) + Math.pow(orb.y - paddle2.y, 2) < 16)
-        orb.collided = true;
-    });
-
-    if (paddle2.homingStunOrbs.some((orb) => orb.collided)) {
-      paddle2.isStunned = true;
-      paddle2.speed = 0;
-      paddle2.stunDuration = 60 * 2;
-    }
-
-    paddle2.homingStunOrbs = paddle2.homingStunOrbs.filter(
-      (orb) => !orb.collided,
-    );
 
     return gameData.paddle1.homingStunOrbs
       .concat(gameData.paddle2.homingStunOrbs)
@@ -77,57 +40,35 @@ export default class SpellWeaverEntity {
   }
 
   handleAbilities(gameData: GameData) {
-    if (gameData.paddle1.isStunned) {
-      gameData.paddle1.stunDuration -= 1;
-      if (gameData.paddle1.stunDuration === 0) {
-        gameData.paddle1.isStunned = false;
-        gameData.paddle1.speed = this.defaultPaddle.speed;
+    const paddles = [gameData.paddle1, gameData.paddle2];
+
+    paddles.forEach((paddle, i) => {
+      if (paddle.isStunned) {
+        paddle.stunDuration -= 1;
+        if (paddle.stunDuration === 0) {
+          paddle.isStunned = false;
+          paddle.speed = this.defaultPaddle.speed;
+        }
+      } else if (paddle.isCasting) {
+        paddle.castDuration -= 1;
+        if (paddle.castDuration === 0) {
+          paddle.isCasting = false;
+          paddle.speed = this.defaultPaddle.speed;
+        }
+      } else if (paddle.numberPressed && !paddle.isCasting) {
+        switch (paddle.numberPressed) {
+          case '1':
+            this.spawnGravityOrb(paddle, gameData);
+            break;
+          case '2':
+            this.enhancePaddleSpeed(paddle, gameData);
+            break;
+          case '3':
+            this.spawnStunOrb(paddle, paddles[(i + 1) % 2], gameData);
+            break;
+        }
       }
-    } else if (gameData.paddle1.isCasting) {
-      gameData.paddle1.castDuration -= 1;
-      if (gameData.paddle1.castDuration === 0) {
-        gameData.paddle1.isCasting = false;
-        gameData.paddle1.speed = this.defaultPaddle.speed;
-      }
-    } else if (gameData.paddle1.numberPressed && !gameData.paddle1.isCasting) {
-      switch (gameData.paddle1.numberPressed) {
-        case '1':
-          this.spawnGravityOrb(gameData.paddle1, gameData);
-          break;
-        case '2':
-          this.enhancePaddleSpeed(gameData.paddle1, gameData);
-          break;
-        case '3':
-          this.spawnStunOrb(gameData.paddle1, gameData.paddle2, gameData);
-          break;
-      }
-    }
-    // Paddle2
-    if (gameData.paddle2.isStunned) {
-      gameData.paddle2.stunDuration -= 1;
-      if (gameData.paddle2.stunDuration === 0) {
-        gameData.paddle2.isStunned = false;
-        gameData.paddle2.speed = this.defaultPaddle.speed;
-      }
-    } else if (gameData.paddle2.isCasting) {
-      gameData.paddle2.castDuration -= 1;
-      if (gameData.paddle2.castDuration === 0) {
-        gameData.paddle2.isCasting = false;
-        gameData.paddle2.speed = this.defaultPaddle.speed;
-      }
-    } else if (gameData.paddle2.numberPressed && !gameData.paddle2.isCasting) {
-      switch (gameData.paddle2.numberPressed) {
-        case '1':
-          this.spawnGravityOrb(gameData.paddle2, gameData);
-          break;
-        case '2':
-          this.enhancePaddleSpeed(gameData.paddle2, gameData);
-          break;
-        case '3':
-          this.spawnStunOrb(gameData.paddle2, gameData.paddle1, gameData);
-          break;
-      }
-    }
+    });
   }
 
   spawnGravityOrb(paddle: Paddle, gameData: GameData) {
@@ -141,7 +82,10 @@ export default class SpellWeaverEntity {
     if (paddle.x > 50 && x < 20) x = 20;
 
     const randY = Math.floor(Math.random() * 10 + 4);
-    const y = ball.y + (ball.yDirection > 0 ? randY : -randY);
+    const y = Math.max(
+      Math.min(ball.y + (ball.yDirection > 0 ? randY : -randY), 80),
+      20,
+    );
 
     spawner.spawnNewOrb(x, y);
     paddle.mana -= 3;

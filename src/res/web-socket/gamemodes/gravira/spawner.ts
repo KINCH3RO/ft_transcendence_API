@@ -46,8 +46,8 @@ export default class GraviraSpawner {
           ball.xDirection -= 0.1;
           ball.xDirection =
             ball.xDirection < 0
-              ? this.restrictValue(ball.xDirection, -1.2, -0.8)
-              : this.restrictValue(ball.xDirection, 0.8, 1.2);
+              ? this.restrictValue(ball.xDirection, -maxBend, -minBend)
+              : this.restrictValue(ball.xDirection, minBend, maxBend);
         }
       }
     });
