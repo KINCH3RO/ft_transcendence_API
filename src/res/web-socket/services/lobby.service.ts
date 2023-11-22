@@ -54,6 +54,7 @@ export class LobbyService {
         numberPressed: null,
         height: 20,
         speed: 2,
+        castDuration: 0,
       },
       paddle2: {
         x: 99,
@@ -65,6 +66,7 @@ export class LobbyService {
         numberPressed: null,
         height: 20,
         speed: 2,
+        castDuration: 0,
       },
       ball: {
         x: 50,

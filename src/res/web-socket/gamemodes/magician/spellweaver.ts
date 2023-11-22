@@ -15,7 +15,6 @@ export default class SpellWeaverEntity {
     };
 
     this.defaultPaddle = {
-      speed: paddle.speed,
       height: paddle.height,
       isCasting: paddle.isCasting,
       isDown: paddle.isDown,
@@ -24,6 +23,8 @@ export default class SpellWeaverEntity {
       numberPressed: paddle.numberPressed,
       x: paddle.x,
       y: paddle.y,
+      castDuration: paddle.castDuration,
+      speed: paddle.speed,
     };
   }
 
@@ -36,19 +37,19 @@ export default class SpellWeaverEntity {
   }
 
   handleAbilities(gameData: GameData) {
-    if (gameData.paddle1.numberPressed && !gameData.paddle1.isCasting) {
+    if (gameData.paddle1.isCasting) {
+      gameData.paddle1.castDuration -= 1;
+      if (gameData.paddle1.castDuration === 0) {
+        gameData.paddle1.isCasting = false;
+        gameData.paddle1.speed = this.defaultPaddle.speed;
+      }
+    } else if (gameData.paddle1.numberPressed && !gameData.paddle1.isCasting) {
       switch (gameData.paddle1.numberPressed) {
         case '1':
           this.spawnGravityOrb(gameData.paddle1, gameData);
           break;
         case '2':
-          break;
-      }
-    }
-    if (gameData.paddle2.numberPressed && !gameData.paddle2.isCasting) {
-      switch (gameData.paddle2.numberPressed) {
-        case '1':
-          this.spawnGravityOrb(gameData.paddle2, gameData);
+          this.enhancePaddleSpeed(gameData.paddle1, gameData);
           break;
       }
     }
@@ -69,6 +70,16 @@ export default class SpellWeaverEntity {
 
     spawner.spawnNewOrb(x, y);
     paddle.mana -= 3;
+    gameData.resourcesUpdated = true;
+  }
+
+  enhancePaddleSpeed(paddle: Paddle, gameData: GameData) {
+    if (paddle.mana < 2) return;
+
+    paddle.speed *= 2;
+    paddle.isCasting = true;
+    paddle.castDuration = 60 * 3;
+    paddle.mana -= 2;
     gameData.resourcesUpdated = true;
   }
 

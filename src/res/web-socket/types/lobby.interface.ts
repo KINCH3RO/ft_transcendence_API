@@ -47,6 +47,7 @@ export interface Paddle {
   numberPressed: string | null;
   height: number;
   speed: number;
+  castDuration: number;
 }
 
 export interface Ball {
