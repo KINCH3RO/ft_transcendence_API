@@ -2,29 +2,16 @@ import { Ball } from '../../types/lobby.interface';
 
 export default class GraviraSpawner {
   private orbs: Orb[] = [];
-  private spawnInterval;
 
-  constructor() {
-    // this.orbs.push({
-    //   x: Math.floor(20),
-    //   y: Math.floor(30),
-    // });
-    // this.orbs.push({
-    //   x: Math.floor(20),
-    //   y: Math.floor(60),
-    // });
-    // this.orbs.push({
-    //   x: Math.floor(80),
-    //   y: Math.floor(30),
-    // });
-    // this.orbs.push({
-    //   x: Math.floor(80),
-    //   y: Math.floor(60),
-    // });
-  }
+  constructor() {}
 
   spawnNewOrb(x: number, y: number) {
     this.orbs.push({ x, y });
+  }
+
+  spawnNewStunOrb(x: number, y: number) {
+    const orb = { x, y, collided: false };
+    return orb;
   }
 
   pullBallToOrbs(ball: Ball) {
@@ -72,10 +59,6 @@ export default class GraviraSpawner {
 
   getOrbs(): Orb[] {
     return this.orbs;
-  }
-
-  destructor() {
-    clearInterval(this.spawnInterval);
   }
 }
 

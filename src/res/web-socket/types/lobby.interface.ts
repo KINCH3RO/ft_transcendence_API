@@ -42,12 +42,15 @@ export interface Paddle {
   y: number;
   mana: number;
   isCasting: boolean;
+  isStunned: boolean;
   isUP: boolean;
   isDown: boolean;
   numberPressed: string | null;
   height: number;
   speed: number;
   castDuration: number;
+  stunDuration: number;
+  homingStunOrbs: { x: number; y: number; collided: boolean }[];
 }
 
 export interface Ball {

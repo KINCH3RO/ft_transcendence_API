@@ -16,7 +16,7 @@ export class GameService {
   private ballRadius: number;
   private paddleWidth: number;
 
-  updateGame(gameData: GameData, mode: GameMode) {
+  updateGame(gameData: GameData) {
     const paddle1 = this.updatePaddle(gameData.paddle1);
     const paddle2 = this.updatePaddle(gameData.paddle2);
     // const ball = this.updateBall(
@@ -27,9 +27,10 @@ export class GameService {
     // );
 
     let orbs = [];
+    let stunOrbs = [];
 
     if (gameData.spellWeaver) {
-      gameData.spellWeaver.updatePaddleResources(gameData);
+      stunOrbs = gameData.spellWeaver.updatePaddleResources(gameData);
       gameData.spellWeaver.handleAbilities(gameData);
     }
 
@@ -40,6 +41,7 @@ export class GameService {
       paddle1,
       paddle2,
       orbs,
+      stunOrbs,
     };
     // return { ball, paddle1, paddle2, orbs };
   }
@@ -62,10 +64,6 @@ export class GameService {
 
     if (gameData.spawner) {
       gameData.spawner.pullBallToOrbs(ball);
-    }
-
-    if (gameData.spellWeaver) {
-      gameData.spellWeaver.enhanceBall(ball, gameData);
     }
 
     ball.x += ball.xSpeed * ball.xDirection;
