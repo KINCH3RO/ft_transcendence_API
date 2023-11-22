@@ -1,7 +1,6 @@
 import { Ball, GameData } from '../../types/lobby.interface';
 
 export default class SpellWeaverEntity {
-  private arcaneResources = [{ AP: 3 }, { AP: 3 }];
   private readonly defaultBall: Ball;
 
   constructor(ball: Ball) {
@@ -13,6 +12,14 @@ export default class SpellWeaverEntity {
       xSpeed: ball.xSpeed,
       ySpeed: ball.ySpeed,
     };
+  }
+
+  updatePaddleResources(gameData: GameData) {
+    gameData.paddle1.mana += 0.4;
+    if (gameData.paddle1.mana > 3) gameData.paddle1.mana = 3;
+
+    gameData.paddle2.mana += 0.4;
+    if (gameData.paddle2.mana > 3) gameData.paddle2.mana = 3;
   }
 
   enhanceBall(ball: Ball, data: GameData) {}

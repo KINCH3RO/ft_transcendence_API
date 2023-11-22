@@ -47,6 +47,8 @@ export class LobbyService {
       paddle1: {
         x: 0,
         y: 40,
+        mana: 3,
+        isCasting: false,
         isUP: false,
         isDown: false,
         numberPressed: null,
@@ -55,6 +57,8 @@ export class LobbyService {
       paddle2: {
         x: 99,
         y: 40,
+        mana: 3,
+        isCasting: false,
         isUP: false,
         isDown: false,
         numberPressed: null,
@@ -70,6 +74,7 @@ export class LobbyService {
       },
       score: [0, 0],
       scoreUpdated: false,
+      resourcesUpdated: false,
       gameStartDate: NaN,
     };
 

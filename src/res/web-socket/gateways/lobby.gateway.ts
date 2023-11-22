@@ -65,6 +65,10 @@ export class LobbyGate {
       }
       const gameData = this.gameService.updateGame(lobby.gameData, lobby.mode);
       this.io.to(lobby.id).emit('gameData', gameData);
+      if (lobby.gameData.resourcesUpdated) {
+        // this.io.to(lobby.id).emit('resourcesChange', );
+        lobby.gameData.resourcesUpdated = false;
+      }
       if (lobby.gameData.scoreUpdated) {
         this.io.to(lobby.id).emit('scoreChange', lobby.gameData.score);
         lobby.gameData.scoreUpdated = false;

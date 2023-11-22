@@ -30,6 +30,7 @@ export interface GameData {
   ball: Ball;
   score: number[];
   scoreUpdated: boolean;
+  resourcesUpdated: boolean;
   gameStartDate: number;
   timer?: number;
   spawner?: GraviraSpawner;
@@ -39,6 +40,8 @@ export interface GameData {
 export interface Paddle {
   x: number;
   y: number;
+  mana: number;
+  isCasting: boolean;
   isUP: boolean;
   isDown: boolean;
   numberPressed: string | null;

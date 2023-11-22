@@ -21,18 +21,28 @@ export class GameService {
   updateGame(gameData: GameData, mode: GameMode) {
     const paddle1 = this.updatePaddle(gameData.paddle1);
     const paddle2 = this.updatePaddle(gameData.paddle2);
-    const ball = this.updateBall(
-      gameData.ball,
-      gameData.paddle1,
-      gameData.paddle2,
-      gameData,
-    );
+    // const ball = this.updateBall(
+    //   gameData.ball,
+    //   gameData.paddle1,
+    //   gameData.paddle2,
+    //   gameData,
+    // );
 
     let orbs = [];
 
     if (gameData.spawner) orbs = gameData.spawner.getOrbs();
 
-    return { ball, paddle1, paddle2, orbs };
+    if (gameData.spellWeaver) {
+      gameData.spellWeaver.updatePaddleResources(gameData);
+    }
+
+    return {
+      ball: { x: gameData.ball.x, y: gameData.ball.y },
+      paddle1,
+      paddle2,
+      orbs,
+    };
+    // return { ball, paddle1, paddle2, orbs };
   }
 
   updateBall(
