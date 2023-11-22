@@ -45,6 +45,7 @@ test.http
 room.http
 channelUser.http
 directMsg.http
+*.http
 
 # tmps
 my_space

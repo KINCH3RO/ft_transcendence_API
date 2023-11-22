@@ -37,6 +37,7 @@ model user {
     sendDM               directMessage[]     @relation(name: "senderDM")
     receiveDM            directMessage[]     @relation(name: "receiverDM")
     sentmessages         message[]           @relation(name: "messageToUser")
+    products             product[]           @relation(name: "productsToUser")
 }
 
 model associatedAccount {
@@ -166,6 +167,15 @@ model attachment {
     type      fileType
 }
 
+model product {
+    id          String    @id @default(uuid())
+    name        String
+    category    category
+    price       Int
+    selected    Boolean
+    users       user[]    @relation(name: "productsToUser")
+}
+
 enum fileType {
     IMAGE
     VIDEO
@@ -200,4 +210,10 @@ enum actionStatus {
     NONE
     SENDER
     RECEIVER
+}
+
+enum category {
+    PADDLES
+    MAPSKIN
+    BACKGROUNDS
 }
