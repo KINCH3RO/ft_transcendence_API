@@ -220,7 +220,7 @@ export class LobbyGate {
   }
 
   @SubscribeMessage('numberPressed')
-  handleSpacePressed(socket: Socket, data: BodyData) {
+  handleNumberPressed(socket: Socket, data: BodyData) {
     const lobby: Lobby = this.lobbyService.getLobby(data.sender.id);
     if (lobby.players[0].id == data.sender.id)
       lobby.gameData.paddle1.numberPressed = data.data.numberPressed;

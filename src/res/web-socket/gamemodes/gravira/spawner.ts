@@ -5,22 +5,26 @@ export default class GraviraSpawner {
   private spawnInterval;
 
   constructor() {
-    this.orbs.push({
-      x: Math.floor(20),
-      y: Math.floor(30),
-    });
-    this.orbs.push({
-      x: Math.floor(20),
-      y: Math.floor(60),
-    });
-    this.orbs.push({
-      x: Math.floor(80),
-      y: Math.floor(30),
-    });
-    this.orbs.push({
-      x: Math.floor(80),
-      y: Math.floor(60),
-    });
+    // this.orbs.push({
+    //   x: Math.floor(20),
+    //   y: Math.floor(30),
+    // });
+    // this.orbs.push({
+    //   x: Math.floor(20),
+    //   y: Math.floor(60),
+    // });
+    // this.orbs.push({
+    //   x: Math.floor(80),
+    //   y: Math.floor(30),
+    // });
+    // this.orbs.push({
+    //   x: Math.floor(80),
+    //   y: Math.floor(60),
+    // });
+  }
+
+  spawnNewOrb(x: number, y: number) {
+    this.orbs.push({ x, y });
   }
 
   pullBallToOrbs(ball: Ball) {

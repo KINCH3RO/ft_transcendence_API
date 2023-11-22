@@ -30,11 +30,12 @@ export class GameService {
 
     let orbs = [];
 
-    if (gameData.spawner) orbs = gameData.spawner.getOrbs();
-
     if (gameData.spellWeaver) {
       gameData.spellWeaver.updatePaddleResources(gameData);
+      gameData.spellWeaver.handleAbilities(gameData);
     }
+
+    if (gameData.spawner) orbs = gameData.spawner.getOrbs();
 
     return {
       ball: { x: gameData.ball.x, y: gameData.ball.y },
