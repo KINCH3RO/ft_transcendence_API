@@ -15,7 +15,5 @@ export default class SpellWeaverEntity {
     };
   }
 
-  enhanceBall(ball: Ball, data: GameData) {
-    if (data.paddle1.isSpace) console.log('He pressed space');
-  }
+  enhanceBall(ball: Ball, data: GameData) {}
 }

@@ -41,7 +41,7 @@ export interface Paddle {
   y: number;
   isUP: boolean;
   isDown: boolean;
-  isSpace: boolean;
+  numberPressed: string | null;
   height: number;
 }
 

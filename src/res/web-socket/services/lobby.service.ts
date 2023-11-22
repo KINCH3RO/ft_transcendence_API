@@ -49,7 +49,7 @@ export class LobbyService {
         y: 40,
         isUP: false,
         isDown: false,
-        isSpace: false,
+        numberPressed: null,
         height: 20,
       },
       paddle2: {
@@ -57,7 +57,7 @@ export class LobbyService {
         y: 40,
         isUP: false,
         isDown: false,
-        isSpace: false,
+        numberPressed: null,
         height: 20,
       },
       ball: {
