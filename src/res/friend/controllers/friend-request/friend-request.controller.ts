@@ -41,7 +41,7 @@ export class FriendRequestController {
 	}
 
 	@Post("accept")
-	async acceptRequest(@ActiveUser() activeUser: ActiveUserData, @Body() createFriendRequestDto: CreateFriendRequestDb) {
+	async acceptRequest(@Body() createFriendRequestDto: CreateFriendRequestDb) {
 		return this.friendRequestService.acceptRequest(createFriendRequestDto);
 	}
 }

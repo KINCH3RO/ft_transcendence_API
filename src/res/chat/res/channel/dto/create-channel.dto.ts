@@ -2,8 +2,6 @@ import { $Enums } from "@prisma/client";
 import { IsNotEmpty, IsOptional, IsUrl, MinLength } from "class-validator";
 
 export class CreateChannelDto {
-	@IsUrl({require_tld: false})
-	@IsNotEmpty()
 	imageUrl: string;
 
 	@IsNotEmpty()
