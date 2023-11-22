@@ -213,7 +213,7 @@ enum actionStatus {
 }
 
 enum category {
-    PADDLES
+    PADDLE
     MAPSKIN
-    BACKGROUNDS
+    BACKGROUND
 }

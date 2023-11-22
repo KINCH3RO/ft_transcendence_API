@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, flatten } from '@nestjs/common';
+import { Controller, Get, Post, Body } from '@nestjs/common';
 import { ProductService } from './product.service';
 
 import { ActiveUser } from 'src/iam/authentication/decorators/active-user.decorator';
@@ -23,14 +23,8 @@ export class ProductController {
   // }
 
   @Get('items')
-  async findAll(currUserId: string) {
-    const products = await this.productService.findAll();
-
-    return products.map((item) => {
-      if (currUserId in item.users) item['owned'] = true;
-      else item['owned'] = false;
-      return item;
-    });
+  async findAll(@ActiveUser() currUserId: ActiveUserData) {
+    return this.productService.findAll(currUserId.sub);
   }
 
   @Get('user')
