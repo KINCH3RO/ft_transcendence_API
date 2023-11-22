@@ -47,7 +47,7 @@ export class LobbyService {
       paddle1: {
         x: 0,
         y: 40,
-        mana: 0,
+        mana: null,
         isCasting: false,
         isStunned: false,
         isUP: false,
@@ -62,7 +62,7 @@ export class LobbyService {
       paddle2: {
         x: 99,
         y: 40,
-        mana: 0,
+        mana: null,
         isCasting: false,
         isStunned: false,
         isUP: false,
@@ -96,6 +96,8 @@ export class LobbyService {
         data.ball.ySpeed *= 2;
         break;
       case 'Magician':
+        data.paddle1.mana = 0;
+        data.paddle2.mana = 0;
         data.spellWeaver = new SpellWeaverEntity(data.ball, data.paddle1);
         data.spawner = new GraviraSpawner();
         break;

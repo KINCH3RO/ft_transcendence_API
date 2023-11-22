@@ -40,7 +40,7 @@ export interface GameData {
 export interface Paddle {
   x: number;
   y: number;
-  mana: number;
+  mana: number | null;
   isCasting: boolean;
   isStunned: boolean;
   isUP: boolean;
