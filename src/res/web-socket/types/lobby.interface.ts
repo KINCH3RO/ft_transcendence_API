@@ -46,6 +46,7 @@ export interface Paddle {
   isDown: boolean;
   numberPressed: string | null;
   height: number;
+  speed: number;
 }
 
 export interface Ball {

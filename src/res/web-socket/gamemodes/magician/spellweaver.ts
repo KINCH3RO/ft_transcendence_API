@@ -2,8 +2,9 @@ import { Ball, GameData, Paddle } from '../../types/lobby.interface';
 
 export default class SpellWeaverEntity {
   private readonly defaultBall: Ball;
+  private readonly defaultPaddle: Paddle;
 
-  constructor(ball: Ball) {
+  constructor(ball: Ball, paddle: Paddle) {
     this.defaultBall = {
       x: ball.x,
       y: ball.y,
@@ -11,6 +12,18 @@ export default class SpellWeaverEntity {
       yDirection: ball.yDirection,
       xSpeed: ball.xSpeed,
       ySpeed: ball.ySpeed,
+    };
+
+    this.defaultPaddle = {
+      speed: paddle.speed,
+      height: paddle.height,
+      isCasting: paddle.isCasting,
+      isDown: paddle.isDown,
+      isUP: paddle.isUP,
+      mana: paddle.mana,
+      numberPressed: paddle.numberPressed,
+      x: paddle.x,
+      y: paddle.y,
     };
   }
 
@@ -27,6 +40,8 @@ export default class SpellWeaverEntity {
       switch (gameData.paddle1.numberPressed) {
         case '1':
           this.spawnGravityOrb(gameData.paddle1, gameData);
+          break;
+        case '2':
           break;
       }
     }
@@ -45,11 +60,11 @@ export default class SpellWeaverEntity {
 
     if (paddle.mana < 3) return;
 
-    let x = ball.x + (paddle.x < 50 ? 20 : -20);
+    let x = ball.x + (paddle.x < 50 ? 5 : -5);
     if (paddle.x < 50 && x > 80) x = 80;
     if (paddle.x > 50 && x < 20) x = 20;
 
-    const randY = Math.floor(Math.random() * 10 + 10);
+    const randY = Math.floor(Math.random() * 10 + 4);
     const y = ball.y + (ball.y > 50 ? randY : -randY);
 
     spawner.spawnNewOrb(x, y);

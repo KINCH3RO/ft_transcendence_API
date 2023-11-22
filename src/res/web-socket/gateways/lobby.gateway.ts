@@ -11,7 +11,7 @@ import { TokenGuard } from '../token.guard';
 import { WebSocketService } from '../services/web-socket.service';
 import { BodyData } from '../types/body-data.interface';
 import { LobbyService } from '../services/lobby.service';
-import Lobby, { GameData, LobbyCreate } from '../types/lobby.interface';
+import Lobby, { LobbyCreate } from '../types/lobby.interface';
 import queueData from '../types/queue-data.interface';
 import { GameService } from 'src/game/game.service';
 import { MatchmakingService } from '../services/matchmaking.service';

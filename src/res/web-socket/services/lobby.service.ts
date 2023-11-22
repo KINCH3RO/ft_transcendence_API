@@ -53,6 +53,7 @@ export class LobbyService {
         isDown: false,
         numberPressed: null,
         height: 20,
+        speed: 2,
       },
       paddle2: {
         x: 99,
@@ -63,6 +64,7 @@ export class LobbyService {
         isDown: false,
         numberPressed: null,
         height: 20,
+        speed: 2,
       },
       ball: {
         x: 50,
@@ -86,7 +88,7 @@ export class LobbyService {
         data.ball.ySpeed *= 2;
         break;
       case 'Magician':
-        data.spellWeaver = new SpellWeaverEntity(data.ball);
+        data.spellWeaver = new SpellWeaverEntity(data.ball, data.paddle1);
         data.spawner = new GraviraSpawner();
         break;
       case 'Gravira':

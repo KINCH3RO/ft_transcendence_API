@@ -10,12 +10,10 @@ import {
 export class GameService {
   constructor() {
     this.ballRadius = 2;
-    this.paddleSpeed = 2;
     this.paddleWidth = 1;
   }
 
   private ballRadius: number;
-  private paddleSpeed: number;
   private paddleWidth: number;
 
   updateGame(gameData: GameData, mode: GameMode) {
@@ -95,11 +93,11 @@ export class GameService {
   }
 
   updatePaddle(paddle: Paddle) {
-    if (paddle.isDown && paddle.y + paddle.height + this.paddleSpeed <= 100) {
-      paddle.y += this.paddleSpeed;
+    if (paddle.isDown && paddle.y + paddle.height + paddle.speed <= 100) {
+      paddle.y += paddle.speed;
     }
-    if (paddle.isUP && paddle.y - this.paddleSpeed >= 0) {
-      paddle.y -= this.paddleSpeed;
+    if (paddle.isUP && paddle.y - paddle.speed >= 0) {
+      paddle.y -= paddle.speed;
     }
     return { x: paddle.x, y: paddle.y };
   }
