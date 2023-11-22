@@ -30,6 +30,13 @@ export default class SpellWeaverEntity {
           break;
       }
     }
+    if (gameData.paddle2.numberPressed && !gameData.paddle2.isCasting) {
+      switch (gameData.paddle2.numberPressed) {
+        case '1':
+          this.spawnGravityOrb(gameData.paddle2, gameData);
+          break;
+      }
+    }
   }
 
   spawnGravityOrb(paddle: Paddle, gameData: GameData) {
@@ -47,6 +54,7 @@ export default class SpellWeaverEntity {
 
     spawner.spawnNewOrb(x, y);
     paddle.mana -= 3;
+    gameData.resourcesUpdated = true;
   }
 
   enhanceBall(ball: Ball, data: GameData) {}
