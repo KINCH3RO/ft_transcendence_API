@@ -15,9 +15,17 @@ export default class SpellWeaverEntity {
       if (paddle.mana > 3) paddle.mana = 3;
 
       paddle.homingStunOrbs.forEach((orb) => {
-        orb.x += orb.x < paddle.x ? 1 : -1;
-        orb.y += orb.y < paddle.y ? 1 : -1;
-        if (Math.pow(orb.x - paddle.x, 2) + Math.pow(orb.y - paddle.y, 2) < 16)
+        const dist = Math.sqrt(
+          Math.pow(orb.x - paddle.x, 2) + Math.pow(orb.y - paddle.y, 2),
+        );
+        orb.x +=
+          (Math.abs(orb.x - paddle.x) / dist) * (orb.x < paddle.x ? 1 : -1);
+        orb.y +=
+          (Math.abs(orb.y - paddle.y) / dist) * (orb.y < paddle.y ? 1 : -1);
+        if (
+          Math.pow(orb.x - paddle.x, 2) + Math.pow(orb.y - paddle.y, 2) < 16 ||
+          Math.abs(orb.x - paddle.x) < 1
+        )
           orb.collided = true;
       });
 
