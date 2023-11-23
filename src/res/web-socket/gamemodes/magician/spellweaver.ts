@@ -15,16 +15,25 @@ export default class SpellWeaverEntity {
       if (paddle.mana > 3) paddle.mana = 3;
 
       paddle.homingStunOrbs.forEach((orb) => {
+        const paddleCenter = {
+          x: paddle.x + (paddle.x > 50 ? 0.5 : -0.5),
+          y: paddle.y + paddle.height / 2,
+        };
         const dist = Math.sqrt(
-          Math.pow(orb.x - paddle.x, 2) + Math.pow(orb.y - paddle.y, 2),
+          Math.pow(orb.x - paddleCenter.x, 2) +
+            Math.pow(orb.y - paddleCenter.y, 2),
         );
         orb.x +=
-          (Math.abs(orb.x - paddle.x) / dist) * (orb.x < paddle.x ? 1 : -1);
+          (Math.abs(orb.x - paddleCenter.x) / dist) *
+          (orb.x < paddleCenter.x ? 1 : -1);
         orb.y +=
-          (Math.abs(orb.y - paddle.y) / dist) * (orb.y < paddle.y ? 1 : -1);
+          (Math.abs(orb.y - paddleCenter.y) / dist) *
+          (orb.y < paddleCenter.y ? 1 : -1);
         if (
-          Math.pow(orb.x - paddle.x, 2) + Math.pow(orb.y - paddle.y, 2) < 16 ||
-          Math.abs(orb.x - paddle.x) < 1
+          Math.pow(orb.x - paddleCenter.x, 2) +
+            Math.pow(orb.y - paddleCenter.y, 2) <
+            16 ||
+          Math.abs(orb.x - paddleCenter.x) < 1
         )
           orb.collided = true;
       });
@@ -105,7 +114,12 @@ export default class SpellWeaverEntity {
 
     if (caster.mana < 2) return;
 
-    target.homingStunOrbs.push(spawner.spawnNewStunOrb(caster.x, caster.y));
+    target.homingStunOrbs.push(
+      spawner.spawnNewStunOrb(
+        caster.x + (caster.x > 50 ? -0.5 : 0.5),
+        caster.y + caster.height / 2,
+      ),
+    );
     caster.isCasting = true;
     caster.castDuration = 60 * 2;
     caster.mana -= 2;
