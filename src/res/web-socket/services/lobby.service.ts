@@ -101,9 +101,6 @@ export class LobbyService {
         data.spellWeaver = new SpellWeaverEntity(data.ball, data.paddle1);
         data.spawner = new GraviraSpawner();
         break;
-      case 'Gravira':
-        data.spawner = new GraviraSpawner();
-        break;
     }
 
     return data;
