@@ -16,6 +16,7 @@ import { ConfigModule } from '@nestjs/config';
 import { UploadModule } from './res/upload/upload.module';
 import { WebSocketModule } from './res/web-socket/web-socket.module';
 import { ProductModule } from './res/product/product.module';
+import { RepoModule } from './res/repo/repo.module';
 
 @Module({
 	imports: [
@@ -36,6 +37,7 @@ import { ProductModule } from './res/product/product.module';
 		UploadModule,
 		WebSocketModule,
 		ProductModule,
+		RepoModule
 	],
 	controllers: [AppController],
 	providers: [AppService],

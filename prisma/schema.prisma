@@ -182,8 +182,8 @@ model product {
 model repo {
     id                  String      @id @default(uuid())
     user                user?       @relation(name: "repoToUser")
-    selectedMapSkin     String      @default("")
-    selectedPaddle      String      @default("")
+    selectedMapSkin     String?
+    selectedPaddle      String?
 }
 
 enum fileType {
