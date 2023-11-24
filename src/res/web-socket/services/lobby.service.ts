@@ -4,6 +4,8 @@ import { randomUUID } from 'crypto';
 import { ProfileService } from 'src/res/profile/profile.service';
 import UserData from '../types/user-data.interface';
 import { GameMode } from '../types/game-mode.interface';
+import GraviraSpawner from '../gamemodes/gravira/spawner';
+import SpellWeaverEntity from '../gamemodes/magician/spellweaver';
 
 @Injectable()
 export class LobbyService {
@@ -41,9 +43,37 @@ export class LobbyService {
   }
 
   initGameData(mode: GameMode): GameData {
-    const data = {
-      paddle1: { x: 0, y: 40, isUP: false, isDown: false, height: 20 },
-      paddle2: { x: 99, y: 40, isUP: false, isDown: false, height: 20 },
+    const data: GameData = {
+      paddle1: {
+        x: 0,
+        y: 40,
+        mana: null,
+        isCasting: false,
+        isStunned: false,
+        isUP: false,
+        isDown: false,
+        numberPressed: null,
+        height: 20,
+        speed: 2,
+        castDuration: 0,
+        stunDuration: 0,
+        homingStunOrbs: [],
+      },
+      paddle2: {
+        x: 99,
+        y: 40,
+        mana: null,
+        isCasting: false,
+        isStunned: false,
+        isUP: false,
+        isDown: false,
+        numberPressed: null,
+        height: 20,
+        speed: 2,
+        castDuration: 0,
+        stunDuration: 0,
+        homingStunOrbs: [],
+      },
       ball: {
         x: 50,
         y: 50,
@@ -54,6 +84,7 @@ export class LobbyService {
       },
       score: [0, 0],
       scoreUpdated: false,
+      resourcesUpdated: false,
       gameStartDate: NaN,
     };
 
@@ -64,7 +95,11 @@ export class LobbyService {
         data.ball.xSpeed *= 2;
         data.ball.ySpeed *= 2;
         break;
-      case 'Elastico':
+      case 'Magician':
+        data.paddle1.mana = 0;
+        data.paddle2.mana = 0;
+        data.spellWeaver = new SpellWeaverEntity(data.ball, data.paddle1);
+        data.spawner = new GraviraSpawner();
         break;
     }
 

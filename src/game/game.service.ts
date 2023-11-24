@@ -10,15 +10,13 @@ import {
 export class GameService {
   constructor() {
     this.ballRadius = 2;
-    this.paddleSpeed = 2;
     this.paddleWidth = 1;
   }
 
   private ballRadius: number;
-  private paddleSpeed: number;
   private paddleWidth: number;
 
-  updateGame(gameData: GameData, mode: GameMode) {
+  updateGame(gameData: GameData) {
     const paddle1 = this.updatePaddle(gameData.paddle1);
     const paddle2 = this.updatePaddle(gameData.paddle2);
     const ball = this.updateBall(
@@ -27,7 +25,24 @@ export class GameService {
       gameData.paddle2,
       gameData,
     );
-    return { ball, paddle1, paddle2 };
+
+    let orbs = [];
+    let stunOrbs = [];
+
+    if (gameData.spellWeaver) {
+      stunOrbs = gameData.spellWeaver.updatePaddleResources(gameData);
+      gameData.spellWeaver.handleAbilities(gameData);
+    }
+
+    if (gameData.spawner) orbs = gameData.spawner.getOrbs();
+
+    return {
+      ball,
+      paddle1,
+      paddle2,
+      orbs,
+      stunOrbs,
+    };
   }
 
   updateBall(
@@ -45,8 +60,14 @@ export class GameService {
       ball.yDirection *= -1;
     this.checkLeftPaddle(ball, leftPaddle);
     this.checkRightPaddle(ball, rightPaddle);
+
+    if (gameData.spawner) {
+      gameData.spawner.pullBallToOrbs(ball);
+    }
+
     ball.x += ball.xSpeed * ball.xDirection;
     ball.y += ball.ySpeed * ball.yDirection;
+
     return { x: ball.x, y: ball.y };
   }
 
@@ -69,11 +90,11 @@ export class GameService {
   }
 
   updatePaddle(paddle: Paddle) {
-    if (paddle.isDown && paddle.y + paddle.height + this.paddleSpeed <= 100) {
-      paddle.y += this.paddleSpeed;
+    if (paddle.isDown && paddle.y + paddle.height + paddle.speed <= 100) {
+      paddle.y += paddle.speed;
     }
-    if (paddle.isUP && paddle.y - this.paddleSpeed >= 0) {
-      paddle.y -= this.paddleSpeed;
+    if (paddle.isUP && paddle.y - paddle.speed >= 0) {
+      paddle.y -= paddle.speed;
     }
     return { x: paddle.x, y: paddle.y };
   }

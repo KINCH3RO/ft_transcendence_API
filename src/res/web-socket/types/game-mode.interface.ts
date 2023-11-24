@@ -1,1 +1,1 @@
-export type GameMode = 'Normal' | 'Speed Demons' | 'Elastico';
+export type GameMode = 'Normal' | 'Speed Demons' | 'Magician';
