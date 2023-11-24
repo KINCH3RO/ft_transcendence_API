@@ -43,6 +43,9 @@ export class UsersService {
 				profile: {
 					create: {},
 				},
+				repo: {
+					create: { }
+				}
 			},
 		});
 	}
@@ -133,6 +136,9 @@ export class UsersService {
 					avatarUrl: providerUserData.photo,
 					bannerUrl: this.getRandomImage("/public/assets/banners/"),
 					profile: {
+						create: {},
+					},
+					repo: {
 						create: {},
 					},
 					associatedAccounts: {

@@ -60,7 +60,8 @@ export class ProductService {
         name: true,
         category: true,
         price: true,
-        selected: true,
+        color: true,
+        img: true,
         users: {
           select: {
             id: true,

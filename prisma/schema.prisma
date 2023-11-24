@@ -38,6 +38,8 @@ model user {
     receiveDM            directMessage[]     @relation(name: "receiverDM")
     sentmessages         message[]           @relation(name: "messageToUser")
     products             product[]           @relation(name: "productsToUser")
+    repo                 repo                @relation(name: "repoToUser", fields: [repoID], references: [id], onDelete: Cascade)
+    repoID               String              @unique
 }
 
 model associatedAccount {
@@ -172,8 +174,16 @@ model product {
     name        String
     category    category
     price       Int
-    selected    Boolean
+    color       String
+    img         String
     users       user[]    @relation(name: "productsToUser")
+}
+
+model repo {
+    id                  String      @id @default(uuid())
+    user                user?       @relation(name: "repoToUser")
+    selectedMapSkin     String      @default("")
+    selectedPaddle      String      @default("")
 }
 
 enum fileType {
@@ -215,5 +225,4 @@ enum actionStatus {
 enum category {
     PADDLE
     MAPSKIN
-    BACKGROUND
 }
