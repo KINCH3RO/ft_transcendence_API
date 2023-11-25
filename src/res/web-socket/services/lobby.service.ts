@@ -37,6 +37,7 @@ export class LobbyService {
       lobbySate: lobbySate,
       isOwner: false,
       gameData: this.initGameData(mode),
+      gameInterval: null,
     };
     this.lobbies.push(createdLobby);
     return createdLobby;
