@@ -191,7 +191,6 @@ model repo {
     mapSkinID    String?
     paddleSkin   product? @relation(name: "paddleRelation", fields: [paddleSkinID], references: [id])
     paddleSkinID String?
-    // selectedPaddle String?
 }
 
 

@@ -5,9 +5,9 @@ import { IsNotEmpty, IsOptional, maxLength } from 'class-validator';
 export class UpdateRepoDto {
   @IsNotEmpty()
 	@IsOptional()
-  selectedPaddle: string;
+  mapSkinID: string;
 
 	@IsNotEmpty()
 	@IsOptional()
-	selectedMapSkin: string;
+	paddleSkinID: string;
 }
