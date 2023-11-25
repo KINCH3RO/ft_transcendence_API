@@ -169,22 +169,31 @@ model attachment {
     type      fileType
 }
 
+
 model product {
-    id          String    @id @default(uuid())
-    name        String
-    category    category
-    price       Int
-    color       String
-    img         String
-    users       user[]    @relation(name: "productsToUser")
+    id       String   @id @default(uuid())
+    name     String
+    category category
+    price    Int
+    color    String
+    img      String
+
+    users    user[]   @relation(name: "productsToUser")
+
+    mapRepo   repo[] @relation("mapRelation")
+    paddleReo   repo[] @relation("paddleRelation")
 }
 
 model repo {
-    id                  String      @id @default(uuid())
-    user                user?       @relation(name: "repoToUser")
-    selectedMapSkin     String?
-    selectedPaddle      String?
+    id           String   @id @default(uuid())
+    user         user?    @relation(name: "repoToUser")
+    mapSkin      product? @relation(name: "mapRelation", fields: [mapSkinID], references: [id])
+    mapSkinID    String?
+    paddleSkin   product? @relation(name: "paddleRelation", fields: [paddleSkinID], references: [id])
+    paddleSkinID String?
+    // selectedPaddle String?
 }
+
 
 enum fileType {
     IMAGE
