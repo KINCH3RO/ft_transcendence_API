@@ -77,6 +77,19 @@ export class LobbyGate {
         lobby.gameData.scoreUpdated = false;
         if (lobby.gameData.score[0] != 5 && lobby.gameData.score[1] != 5)
           return;
+        if (lobby.mode === 'Magician') {
+          const orbs = lobby.gameData.spawner.getOrbs();
+          let player1Orbs = 0;
+          let player2Orbs = 0;
+          orbs.forEach((orb) => {
+            orb.x > 50 ? player1Orbs++ : player2Orbs++;
+          });
+          if (lobby.gameData.score[0] === 5 && player1Orbs >= 5) {
+            lobby.gameData.achievements[0].imperturbable = true;
+          } else if (lobby.gameData.score[1] === 5 && player2Orbs >= 5) {
+            lobby.gameData.achievements[1].imperturbable = true;
+          }
+        }
         clearInterval(gameInterval);
         lobby.lobbySate = 'finishing';
         this.emitLobbyChange(lobby);

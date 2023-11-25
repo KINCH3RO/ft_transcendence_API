@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { GameMode } from 'src/res/web-socket/types/game-mode.interface';
 import {
+  AchievementUnlock,
   Ball,
   GameData,
   Paddle,
@@ -58,8 +58,8 @@ export class GameService {
     }
     if (ball.y + this.ballRadius > 100 || ball.y - this.ballRadius < 0)
       ball.yDirection *= -1;
-    this.checkLeftPaddle(ball, leftPaddle);
-    this.checkRightPaddle(ball, rightPaddle);
+    this.checkLeftPaddle(ball, leftPaddle, gameData.achievements[0]);
+    this.checkRightPaddle(ball, rightPaddle, gameData.achievements[1]);
 
     if (gameData.spawner) {
       gameData.spawner.pullBallToOrbs(ball);
@@ -71,20 +71,28 @@ export class GameService {
     return { x: ball.x, y: ball.y };
   }
 
-  checkLeftPaddle(ball: Ball, paddle: Paddle) {
+  checkLeftPaddle(ball: Ball, paddle: Paddle, achievements: AchievementUnlock) {
     if (ball.x - this.ballRadius < paddle.x + this.paddleWidth) {
       if (ball.y >= paddle.y && ball.y <= paddle.y + paddle.height) {
         ball.xDirection *= -1;
         ball.x = paddle.x + this.ballRadius + this.paddleWidth;
+        if (paddle.isStunned) achievements.stunnedSavior = true;
+        achievements.deleteGame = false;
       }
     }
   }
 
-  checkRightPaddle(ball: Ball, paddle: Paddle) {
+  checkRightPaddle(
+    ball: Ball,
+    paddle: Paddle,
+    achievements: AchievementUnlock,
+  ) {
     if (ball.x + this.ballRadius > paddle.x) {
       if (ball.y >= paddle.y && ball.y <= paddle.y + paddle.height) {
         ball.xDirection *= -1;
         ball.x = paddle.x - this.ballRadius;
+        if (paddle.isStunned) achievements.stunnedSavior = true;
+        achievements.deleteGame = false;
       }
     }
   }
@@ -100,6 +108,12 @@ export class GameService {
   }
 
   updateScore(gameData: GameData, player1: boolean) {
+    if (gameData.paddle1.speed == 4 && player1)
+      gameData.achievements[0].speedySlipup = true;
+
+    if (gameData.paddle2.speed == 4 && !player1)
+      gameData.achievements[1].speedySlipup = true;
+
     gameData.score[player1 ? 0 : 1]++;
     gameData.scoreUpdated = true;
   }

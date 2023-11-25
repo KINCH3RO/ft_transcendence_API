@@ -8,18 +8,23 @@ export class AchievementService {
   constructor(private readonly prismaService: PrismaService) {}
   private readonly logger = new Logger(AchievementService.name);
 
-  async assign(
-    user: ActiveUserData,
-    assignAchievementDto: AssignAchievementDto,
-  ) {
+  async assign(user: string, assignAchievementDto: AssignAchievementDto) {
     let result = null;
 
     try {
+      const existingAchievement =
+        await this.prismaService.achievements.findFirst({
+          where: {
+            users: { some: { id: user } },
+            id: assignAchievementDto.id,
+          },
+        });
+      if (existingAchievement) return null;
       result = await this.prismaService.achievements.update({
         where: { id: assignAchievementDto.id },
         data: {
           users: {
-            connect: { id: user.sub },
+            connect: { id: user },
           },
         },
       });
@@ -29,8 +34,6 @@ export class AchievementService {
         HttpStatus.NOT_FOUND,
       );
     }
-
-    this.logger.debug(`assign Achievement ${result.name} to ${user.username}`);
     return result;
   }
 
