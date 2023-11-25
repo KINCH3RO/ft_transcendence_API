@@ -1,12 +1,16 @@
 //Could use this for rewards of matches + achievements
 
 import { Injectable } from '@nestjs/common';
+import { AchievementService } from 'src/res/achievement/achievement.service';
 import { ProfileService } from 'src/res/profile/profile.service';
 import UserData from 'src/res/web-socket/types/user-data.interface';
 
 @Injectable()
 export class RewardsService {
-  constructor(private readonly profileService: ProfileService) {}
+  constructor(
+    private readonly profileService: ProfileService,
+    private readonly achievementService: AchievementService,
+  ) {}
 
   calculateXpRewards(winner: UserData, loser: UserData, loserScore: number) {
     let winnerXp = 600;
@@ -17,14 +21,27 @@ export class RewardsService {
     return [winnerXp, loserXp];
   }
 
-  handleLevelUp(player: UserData, XpAfterGame: number) {
+  async handleLevelUp(player: UserData, XpAfterGame: number) {
     let level = player.profile.level;
+    let achievement = null;
 
     while (XpAfterGame >= this.profileService.calculateRequiredXp(level + 1)) {
       level += 1;
+      if (level === 20) {
+        achievement = await this.achievementService.assign(player.id, {
+          id: 8,
+          name: 'General',
+        });
+      }
+      if (level === 50) {
+        achievement = await this.achievementService.assign(player.id, {
+          id: 9,
+          name: 'Veteran',
+        });
+      }
     }
 
-    return level;
+    return [level, achievement];
   }
 
   calculateCoinsRewards(winner: UserData, loser: UserData, loserScore: number) {
@@ -36,7 +53,7 @@ export class RewardsService {
     return [winnerCoins, loserCoins];
   }
 
-  calculateEloGain(winner: UserData, loser: UserData) {
+  async calculateEloGain(winner: UserData, loser: UserData) {
     const sensitivity = 50;
     const minRp = 15;
 
@@ -59,6 +76,23 @@ export class RewardsService {
     const winnerRating = Math.floor(sensitivity * (1 - EWinner)) + minRp;
     const loserRating = Math.floor(sensitivity * -ELoser) + 1 - minRp;
 
-    return [winnerRating, loserRating];
+    let achievement = null;
+    if (winner.profile.rating + winnerRating > 1000)
+      achievement = await this.achievementService.assign(winner.id, {
+        id: 5,
+        name: 'Ascendant',
+      });
+    if (winner.profile.rating + winnerRating > 2000)
+      achievement = await this.achievementService.assign(winner.id, {
+        id: 6,
+        name: 'Expert',
+      });
+    if (winner.profile.rating + winnerRating > 5000)
+      achievement = await this.achievementService.assign(winner.id, {
+        id: 7,
+        name: 'Legendary',
+      });
+
+    return [winnerRating, loserRating, achievement];
   }
 }

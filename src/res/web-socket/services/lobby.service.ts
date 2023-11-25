@@ -87,6 +87,20 @@ export class LobbyService {
       scoreUpdated: false,
       resourcesUpdated: false,
       gameStartDate: NaN,
+      achievements: [
+        {
+          deleteGame: true,
+          imperturbable: false,
+          speedySlipup: false,
+          stunnedSavior: false,
+        },
+        {
+          deleteGame: true,
+          imperturbable: false,
+          speedySlipup: false,
+          stunnedSavior: false,
+        },
+      ],
     };
 
     switch (mode) {

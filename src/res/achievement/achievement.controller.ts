@@ -20,7 +20,7 @@ export class AchievementController {
     @ActiveUser() user: ActiveUserData,
     @Body() assignAchievementDto: AssignAchievementDto,
   ) {
-    return this.achievementService.assign(user, assignAchievementDto);
+    return this.achievementService.assign(user.sub, assignAchievementDto);
   }
 
   @Get('all')

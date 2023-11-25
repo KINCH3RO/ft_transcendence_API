@@ -36,6 +36,14 @@ export interface GameData {
   timer?: number;
   spawner?: GraviraSpawner;
   spellWeaver?: SpellWeaverEntity;
+  achievements: AchievementUnlock[];
+}
+
+export interface AchievementUnlock {
+  stunnedSavior: boolean;
+  speedySlipup: boolean;
+  deleteGame: boolean;
+  imperturbable: boolean;
 }
 
 export interface Paddle {
