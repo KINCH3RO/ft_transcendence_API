@@ -175,8 +175,8 @@ model product {
     name     String
     category category
     price    Int
-    color    String
-    img      String
+    color    String?
+    img      String?
 
     users    user[]   @relation(name: "productsToUser")
 

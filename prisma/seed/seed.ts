@@ -79,7 +79,11 @@ async function main() {
     ],
   });
 
-  return Promise.all([achievementPromise]);
+  const skinsPromise = prisma.product.createMany({
+    data: [{ category: 'PADDLE', name: 'Red', price: 200, color: '#EE4B2B' }],
+  });
+
+  return Promise.all([achievementPromise, skinsPromise]);
 }
 
 main()

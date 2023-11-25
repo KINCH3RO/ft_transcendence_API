@@ -1,4 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { RepoService } from './repo.service';
 import { CreateRepoDto } from './dto/create-repo.dto';
 import { UpdateRepoDto } from './dto/update-repo.dto';
@@ -25,13 +33,15 @@ export class RepoController {
   }
 
   @Post()
-  update(@ActiveUser() user: ActiveUserData, @Body() updateRepoDto: UpdateRepoDto) {
+  update(
+    @ActiveUser() user: ActiveUserData,
+    @Body() updateRepoDto: UpdateRepoDto,
+  ) {
     return this.repoService.update(user.sub, updateRepoDto);
   }
 
-//   @Delete(':id')
-//   remove(@Param('id') id: string) {
-//     return this.repoService.remove(+id);
-//   }
-
+  //   @Delete(':id')
+  //   remove(@Param('id') id: string) {
+  //     return this.repoService.remove(+id);
+  //   }
 }
