@@ -37,6 +37,9 @@ model user {
     sendDM               directMessage[]     @relation(name: "senderDM")
     receiveDM            directMessage[]     @relation(name: "receiverDM")
     sentmessages         message[]           @relation(name: "messageToUser")
+    products             product[]           @relation(name: "productsToUser")
+    repo                 repo                @relation(name: "repoToUser", fields: [repoID], references: [id], onDelete: Cascade)
+    repoID               String              @unique
 }
 
 model associatedAccount {
@@ -166,6 +169,31 @@ model attachment {
     type      fileType
 }
 
+
+model product {
+    id       String   @id @default(uuid())
+    name     String
+    category category
+    price    Int
+    color    String
+    img      String
+
+    users    user[]   @relation(name: "productsToUser")
+
+    mapRepo   repo[] @relation("mapRelation")
+    paddleReo   repo[] @relation("paddleRelation")
+}
+
+model repo {
+    id           String   @id @default(uuid())
+    user         user?    @relation(name: "repoToUser")
+    mapSkin      product? @relation(name: "mapRelation", fields: [mapSkinID], references: [id])
+    mapSkinID    String?
+    paddleSkin   product? @relation(name: "paddleRelation", fields: [paddleSkinID], references: [id])
+    paddleSkinID String?
+}
+
+
 enum fileType {
     IMAGE
     VIDEO
@@ -200,4 +228,9 @@ enum actionStatus {
     NONE
     SENDER
     RECEIVER
+}
+
+enum category {
+    PADDLE
+    MAPSKIN
 }

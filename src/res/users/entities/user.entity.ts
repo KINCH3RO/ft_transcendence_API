@@ -16,9 +16,9 @@ export class User implements user {
 	profileID: string;
 	twoFactorAuthEnabled: boolean;
 	twoFactorAuthSecret: string;
-
 	sentRequests?: friendStatus[];
 	receivedRequests?: friendRequests[];
 	sentFriends?: friendRequests[];
 	receiveFriends?: friendRequests[];
+	repoID: string;
 }

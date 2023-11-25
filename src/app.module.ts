@@ -15,6 +15,8 @@ import { MatchModule } from './res/match/match.module';
 import { ConfigModule } from '@nestjs/config';
 import { UploadModule } from './res/upload/upload.module';
 import { WebSocketModule } from './res/web-socket/web-socket.module';
+import { ProductModule } from './res/product/product.module';
+import { RepoModule } from './res/repo/repo.module';
 
 @Module({
 	imports: [
@@ -34,6 +36,8 @@ import { WebSocketModule } from './res/web-socket/web-socket.module';
 		ConfigModule.forRoot({ isGlobal: true }),
 		UploadModule,
 		WebSocketModule,
+		ProductModule,
+		RepoModule
 	],
 	controllers: [AppController],
 	providers: [AppService],

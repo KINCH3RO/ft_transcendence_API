@@ -58,9 +58,9 @@ export class LobbyGate {
     lobby.lobbySate = 'ingame';
     lobby.gameData.gameStartDate = Date.now();
     this.io.to(lobby.id).emit('lobbyChange', lobby);
-    const gameInterval = setInterval(async () => {
+    lobby.gameInterval = setInterval(async () => {
       if (!this.lobbyService.Exist(lobby.id)) {
-        clearInterval(gameInterval);
+        clearInterval(lobby.gameInterval);
         return;
       }
       const gameData = this.gameService.updateGame(lobby.gameData);
@@ -90,7 +90,7 @@ export class LobbyGate {
             lobby.gameData.achievements[1].imperturbable = true;
           }
         }
-        clearInterval(gameInterval);
+        clearInterval(lobby.gameInterval);
         lobby.lobbySate = 'finishing';
         this.emitLobbyChange(lobby);
         lobby.gameData.timer =

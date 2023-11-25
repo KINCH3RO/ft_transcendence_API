@@ -6,7 +6,7 @@ import { ProviderUserData } from 'src/iam/interfaces/provider-data.interface';
 import { SignUpDto } from 'src/iam/authentication/dto/sign-up.dto';
 import { UpdatePasswordDto } from './dto/update-password.dto';
 import { HashingService } from 'src/hashing/hashing.service';
-import { readdir, readdirSync } from 'fs';
+import { readdirSync } from 'fs';
 
 @Injectable()
 export class UsersService {
@@ -47,6 +47,9 @@ export class UsersService {
         avatarUrl: this.getRandomImage('/public/assets/avatars/'),
         bannerUrl: this.getRandomImage('/public/assets/banners/'),
         profile: {
+          create: {},
+        },
+        repo: {
           create: {},
         },
       },
@@ -139,6 +142,9 @@ export class UsersService {
           avatarUrl: providerUserData.photo,
           bannerUrl: this.getRandomImage('/public/assets/banners/'),
           profile: {
+            create: {},
+          },
+          repo: {
             create: {},
           },
           associatedAccounts: {
