@@ -104,7 +104,7 @@ export class StatsService {
     }
     if (achievementsPlayer[0].deleteGame || achievementsPlayer[1].deleteGame) {
       deleteAchievement = await this.achievementService.assign(loser.id, {
-        id: 2,
+        id: 4,
         name: 'Delete the game',
       });
     }
@@ -114,21 +114,33 @@ export class StatsService {
       { stunned: null, speedy: null },
     ];
 
-    achievementsPlayer.forEach(async (ach, i) => {
-      if (ach.stunnedSavior)
-        stunnedSpeedyAchievements[i].stunned =
-          await this.achievementService.assign(players[i].id, {
-            id: 1,
-            name: 'Stunned Savior',
-          });
+    if (achievementsPlayer[0].stunnedSavior)
+      stunnedSpeedyAchievements[0].stunned =
+        await this.achievementService.assign(players[0].id, {
+          id: 1,
+          name: 'Stunned Savior',
+        });
 
-      if (ach.speedySlipup)
-        stunnedSpeedyAchievements[i].speedy =
-          await this.achievementService.assign(players[i].id, {
-            id: 3,
-            name: 'Speedy Slip-Up',
-          });
-    });
+    if (achievementsPlayer[0].speedySlipup)
+      stunnedSpeedyAchievements[0].speedy =
+        await this.achievementService.assign(players[0].id, {
+          id: 3,
+          name: 'Speedy Slip-Up',
+        });
+
+    if (achievementsPlayer[1].stunnedSavior)
+      stunnedSpeedyAchievements[1].stunned =
+        await this.achievementService.assign(players[1].id, {
+          id: 1,
+          name: 'Stunned Savior',
+        });
+
+    if (achievementsPlayer[1].speedySlipup)
+      stunnedSpeedyAchievements[1].speedy =
+        await this.achievementService.assign(players[1].id, {
+          id: 3,
+          name: 'Speedy Slip-Up',
+        });
 
     await Promise.all([matchPromise, winnerPromise, loserPromise]);
     return [

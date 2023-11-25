@@ -108,10 +108,10 @@ export class GameService {
   }
 
   updateScore(gameData: GameData, player1: boolean) {
-    if (gameData.paddle1.speed == 4 && player1)
+    if (gameData.paddle1.speed == 4 && !player1)
       gameData.achievements[0].speedySlipup = true;
 
-    if (gameData.paddle2.speed == 4 && !player1)
+    if (gameData.paddle2.speed == 4 && player1)
       gameData.achievements[1].speedySlipup = true;
 
     gameData.score[player1 ? 0 : 1]++;
