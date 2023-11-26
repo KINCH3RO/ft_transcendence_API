@@ -1,7 +1,7 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { JwtService } from '@nestjs/jwt';
-import { Socket, Server } from 'socket.io';
+import { Socket } from 'socket.io';
 
 @Injectable()
 export class TokenGuard implements CanActivate {
