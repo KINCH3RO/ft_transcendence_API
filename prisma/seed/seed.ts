@@ -80,7 +80,12 @@ async function main() {
   });
 
   const skinsPromise = prisma.product.createMany({
-    data: [{ category: 'PADDLE', name: 'Red', price: 200, color: '#EE4B2B' }],
+    data: [
+      { category: 'PADDLE', name: 'Red', price: 200, color: '#EE4B2B' },
+      { category: 'PADDLE', name: 'White', price: 200, color: '#FFFFFF' },
+      { category: 'PADDLE', name: 'Green', price: 200, color: '#50C878' },
+      { category: 'PADDLE', name: 'Purple', price: 200, color: '#5D3FD3' },
+    ],
   });
 
   return Promise.all([achievementPromise, skinsPromise]);
