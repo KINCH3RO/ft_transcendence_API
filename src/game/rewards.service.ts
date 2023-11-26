@@ -1,5 +1,3 @@
-//Could use this for rewards of matches + achievements
-
 import { Injectable } from '@nestjs/common';
 import { AchievementService } from 'src/res/achievement/achievement.service';
 import { ProfileService } from 'src/res/profile/profile.service';
