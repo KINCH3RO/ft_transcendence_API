@@ -28,4 +28,37 @@ export class RepoService {
       },
     });
   }
+
+  findLobbySkins(idOne: string, idTwo: string) {
+    const _skins = [
+      this.prismaService.repo.findFirst({
+        where: { user: { id: idOne } },
+        include: {
+          mapSkin: true,
+          paddleSkin: true,
+        },
+      }),
+      this.prismaService.repo.findFirst({
+        where: { user: { id: idTwo } },
+        include: {
+          mapSkin: true,
+          paddleSkin: true,
+        },
+      }),
+    ];
+
+    const skins = Promise.all(_skins);
+
+    return skins;
+  }
+
+  // const skins = this.prismaService.repo.findMany({
+  //   where: {
+  //     OR: [{ user: { id: idOne } }, { user: { id: idTwo } }],
+  //   },
+  //   include: {
+  //     mapSkin: true,
+  //     paddleSkin: true,
+  //   },
+  // });
 }

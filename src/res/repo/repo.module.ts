@@ -8,5 +8,6 @@ import { ProfileModule } from '../profile/profile.module';
   controllers: [RepoController],
   providers: [RepoService],
   imports: [PrismaModule, ProfileModule],
+  exports: [RepoService],
 })
 export class RepoModule {}

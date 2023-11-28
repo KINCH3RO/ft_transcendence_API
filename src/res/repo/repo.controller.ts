@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param } from '@nestjs/common';
 import { RepoService } from './repo.service';
 import { UpdateRepoDto } from './dto/update-repo.dto';
 import { ActiveUser } from 'src/iam/authentication/decorators/active-user.decorator';
@@ -24,5 +24,10 @@ export class RepoController {
   @Get('skins')
   findSkins(@ActiveUser() user: ActiveUserData) {
     return this.repoService.findSkins(user.sub);
+  }
+
+  @Get('skins/:id')
+  findOneById(@Param('id') id: string) {
+    return this.repoService.findSkins(id);
   }
 }
