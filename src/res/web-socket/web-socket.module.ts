@@ -11,10 +11,11 @@ import { ProfileModule } from '../profile/profile.module';
 import { GameModule } from 'src/game/game.module';
 import { PrismaModule } from 'src/prisma/prisma.module';
 import { MatchmakingService } from './services/matchmaking.service';
+import { RepoModule } from '../repo/repo.module';
 
 @Module({
   exports: [WebSocketService],
-  imports: [JwtModule, ProfileModule, GameModule, PrismaModule],
+  imports: [JwtModule, ProfileModule, GameModule, PrismaModule, RepoModule],
   providers: [
     FriendGate,
     ChatGate,

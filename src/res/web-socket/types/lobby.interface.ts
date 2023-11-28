@@ -1,3 +1,4 @@
+import { Repo } from 'src/res/repo/entities/repo.entity';
 import GraviraSpawner from '../gamemodes/gravira/spawner';
 import SpellWeaverEntity from '../gamemodes/magician/spellweaver';
 import { GameMode } from './game-mode.interface';
@@ -15,6 +16,7 @@ export default interface Lobby {
   lobbySate: 'ingame' | 'idle' | 'starting' | 'finishing';
   gameData: GameData;
   gameInterval: NodeJS.Timeout;
+  skins?: Repo[];
 }
 
 export interface LobbyCreate {
@@ -23,6 +25,7 @@ export interface LobbyCreate {
   queueLobby?: boolean;
   ranked?: boolean;
   lobbySate?: 'idle' | 'ingame' | 'starting';
+  skins?: Repo[];
 }
 
 export interface GameData {

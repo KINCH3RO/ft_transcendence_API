@@ -16,6 +16,7 @@ import queueData from '../types/queue-data.interface';
 import { GameService } from 'src/game/game.service';
 import { MatchmakingService } from '../services/matchmaking.service';
 import { StatsService } from 'src/game/stats.service';
+import { RepoService } from 'src/res/repo/repo.service';
 //handling present events
 
 @UseFilters(new BaseWsExceptionFilter())
@@ -28,6 +29,7 @@ export class LobbyGate {
     private gameService: GameService,
     private matchmakingService: MatchmakingService,
     private statsService: StatsService,
+    private readonly repoService: RepoService,
   ) {}
 
   @WebSocketServer()
@@ -120,6 +122,7 @@ export class LobbyGate {
 
   async createLobby(lobbyData: LobbyCreate) {
     const lobby = await this.lobbyService.createLobby(lobbyData);
+    lobby.skins = lobbyData.skins;
 
     this.webSocketService
       .getSockets(lobby.players[0].id)
@@ -287,12 +290,19 @@ export class LobbyGate {
 
       return;
     }
+
+    const skins = await this.repoService.findLobbySkins(
+      gameData.player.id,
+      data.sender.id,
+    );
+
     const lobby = await this.createLobby({
       players: [gameData.player.id, data.sender.id],
       mode: gameData.gameMode,
       queueLobby: true,
       ranked: gameData.player.ranked,
       lobbySate: 'starting',
+      skins,
     });
     this.io.to(lobby.id).emit('matchFound');
     this.matchCountdown(lobby);
