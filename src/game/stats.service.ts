@@ -4,6 +4,7 @@ import { ProfileService } from 'src/res/profile/profile.service';
 import Lobby from 'src/res/web-socket/types/lobby.interface';
 import { RewardsService } from './rewards.service';
 import { AchievementService } from 'src/res/achievement/achievement.service';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 @Injectable()
 export class StatsService {
@@ -12,6 +13,7 @@ export class StatsService {
     private profileService: ProfileService,
     private rewardsService: RewardsService,
     private achievementService: AchievementService,
+    private readonly eventEmitter: EventEmitter2,
   ) {}
 
   async saveGame(lobby: Lobby) {
@@ -25,6 +27,15 @@ export class StatsService {
 
     const loser =
       lobby.gameData.score[1] == 5 ? lobby.players[0] : lobby.players[1];
+
+    let [winnerFirstGameAch, loserFirstGameAch] = [null, null];
+
+    [winnerFirstGameAch] = await this.eventEmitter.emitAsync('user.firstGame', {
+      id: winner.id,
+    });
+    [loserFirstGameAch] = await this.eventEmitter.emitAsync('user.firstGame', {
+      id: loser.id,
+    });
 
     const [winnerXp, loserXp] = this.rewardsService.calculateXpRewards(
       winner,
@@ -157,6 +168,7 @@ export class StatsService {
           stunnedSpeedyAchievements[players[0].id === winner.id ? 0 : 1].speedy,
           stunnedSpeedyAchievements[players[0].id === winner.id ? 0 : 1]
             .stunned,
+          winnerFirstGameAch,
         ],
       },
       {
@@ -169,6 +181,7 @@ export class StatsService {
           deleteAchievement,
           stunnedSpeedyAchievements[players[0].id === loser.id ? 0 : 1].speedy,
           stunnedSpeedyAchievements[players[0].id === loser.id ? 0 : 1].stunned,
+          loserFirstGameAch,
         ],
       },
     ];
