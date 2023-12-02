@@ -83,16 +83,18 @@ export class MainGate implements OnGatewayConnection, OnGatewayDisconnect {
         this.matchmakingService.removePlayer(userID);
         //lobby stuff
         if (!lobby) return;
-        clearInterval(lobby.gameInterval);
         let oppnentdID = lobby.players.find((x) => x.id != userID).id;
-        if (oppnentdID == lobby.players[0].id) lobby.gameData.score[0] = 5;
-        else lobby.gameData.score[1] = 5;
-        lobby.gameData.timer =
-          (Date.now() - lobby.gameData.gameStartDate) / 1000;
-        const [winner, loser] = await this.statsService.saveGame(lobby);
-        this.io.to(winner.id).emit('gameEnd', { lobby, rewards: winner });
-        this.io.to(loser.id).emit('gameEnd', { lobby, rewards: loser });
-        this.io.to(lobby.id).emit('leaveLobby');
+        if (lobby.lobbySate !== 'starting') {
+          clearInterval(lobby.gameInterval);
+          if (oppnentdID == lobby.players[0].id) lobby.gameData.score[0] = 5;
+          else lobby.gameData.score[1] = 5;
+          lobby.gameData.timer =
+            (Date.now() - lobby.gameData.gameStartDate) / 1000;
+          const [winner, loser] = await this.statsService.saveGame(lobby);
+          this.io.to(winner.id).emit('gameEnd', { lobby, rewards: winner });
+          this.io.to(loser.id).emit('gameEnd', { lobby, rewards: loser });
+        }
+		this.io.to(lobby.id).emit('leaveLobby');
         this.webSocketService.getSockets(oppnentdID).forEach((socketID) => {
           this.io.sockets.sockets.get(socketID).leave(lobby.id);
         });
