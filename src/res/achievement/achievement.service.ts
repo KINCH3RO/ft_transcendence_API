@@ -2,6 +2,7 @@ import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { AssignAchievementDto } from './dto/assign-achievement.dto';
 import { ActiveUserData } from 'src/iam/interfaces/active-user.interface';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { OnEvent } from '@nestjs/event-emitter';
 
 @Injectable()
 export class AchievementService {
@@ -20,6 +21,7 @@ export class AchievementService {
           },
         });
       if (existingAchievement) return null;
+      console.log('userid:', user, 'achievement id:', assignAchievementDto.id);
       result = await this.prismaService.achievements.update({
         where: { id: assignAchievementDto.id },
         data: {
@@ -83,5 +85,15 @@ export class AchievementService {
 
     this.logger.verbose(result);
     return result;
+  }
+
+  @OnEvent('user.created')
+  async welcomeAchievement({ id }: { id: string }) {
+    await this.assign(id, { id: 10, name: 'Welcome' });
+  }
+
+  @OnEvent('user.firstGame')
+  async firstGameAchievement({ id }: { id: string }) {
+    return await this.assign(id, { id: 11, name: 'First Game' });
   }
 }

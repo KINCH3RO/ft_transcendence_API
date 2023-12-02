@@ -7,12 +7,14 @@ import { SignUpDto } from 'src/iam/authentication/dto/sign-up.dto';
 import { UpdatePasswordDto } from './dto/update-password.dto';
 import { HashingService } from 'src/hashing/hashing.service';
 import { readdirSync } from 'fs';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 @Injectable()
 export class UsersService {
   constructor(
     private prisma: PrismaService,
     private hashingService: HashingService,
+    private eventEmitter: EventEmitter2,
   ) {}
 
   getRandomImage(dir: string) {
@@ -37,8 +39,8 @@ export class UsersService {
     );
   }
 
-  create(signUpDto: SignUpDto) {
-    return this.prisma.user.create({
+  async create(signUpDto: SignUpDto) {
+    const user = await this.prisma.user.create({
       data: {
         email: signUpDto.email,
         fullName: signUpDto.fullname,
@@ -54,6 +56,10 @@ export class UsersService {
         },
       },
     });
+
+    this.eventEmitter.emit('user.created', { id: user.id });
+
+    return user;
   }
 
   findAll() {
@@ -156,6 +162,8 @@ export class UsersService {
           },
         },
       });
+
+      this.eventEmitter.emit('user.created', { id: user.id });
       return user;
     } catch (err) {
       return null;
