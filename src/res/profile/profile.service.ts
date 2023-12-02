@@ -13,20 +13,14 @@ export class ProfileService {
   private readonly logger = new Logger(ProfileService.name);
 
   async findSelf(user: ActiveUserData) {
-    // this.logger.log(`findSelf on user id: ${user.sub}`);
-
     const result = await this.prismaService.profile.findFirst({
       where: { user: { id: user.sub } },
     });
-
-    // this.logger.verbose(`profile for user id ${user.sub}: ${result}`);
 
     return result;
   }
 
   async findOneByUserId(id: string) {
-    // this.logger.log(`findOne Profile for user id: ${id}`);
-
     const result = await this.prismaService.profile.findFirst({
       where: {
         user: { id },
@@ -47,8 +41,6 @@ export class ProfileService {
         profile: true,
       },
     });
-
-    // this.logger.verbose(`findSelfData returned: `, result);
 
     const xpRequirements = {
       current: this.calculateRequiredXp(result.profile.level + 1),
@@ -127,7 +119,6 @@ export class ProfileService {
   }
 
   async getLeaderboardDataOffset(offset: number) {
-    // console.log('offset', offset);
     const result = await this.prismaService.user.findMany({
       select: {
         id: true,
@@ -137,7 +128,7 @@ export class ProfileService {
         profile: true,
       },
       orderBy: [{ profile: { rating: 'desc' } }, { userName: 'asc' }],
-      take: 20,
+      take: 50,
       skip: offset,
     });
 
@@ -157,8 +148,6 @@ export class ProfileService {
   }
 
   update(userId: string, updateProfileDto: UpdateProfileDto) {
-    // this.logger.log(`update Profile for user id: ${user.sub}`);
-
     const result = this.prismaService.profile.updateMany({
       data: updateProfileDto,
       where: {
