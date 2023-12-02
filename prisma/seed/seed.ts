@@ -76,6 +76,20 @@ async function main() {
         reward: 200,
         imgUrl: `${url}//assets/achievements/Level50.png`,
       },
+      {
+        id: 10,
+        description: 'Join the Pong Fury website',
+        name: 'Welcome',
+        reward: 200,
+        imgUrl: `${url}//assets/achievements/Level20.png`,
+      },
+      {
+        id: 11,
+        description: 'Play your first game of pong',
+        name: 'First Game',
+        reward: 200,
+        imgUrl: `${url}//assets/achievements/Level50.png`,
+      },
     ],
   });
 
