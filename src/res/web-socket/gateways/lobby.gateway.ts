@@ -37,12 +37,12 @@ export class LobbyGate {
 
 	clearLobby(lobby: Lobby) {
 		this.webSocketService
-			.getSockets(lobby.players[0].id)
+			?.getSockets(lobby.players[0].id)
 			.forEach((socketID) => {
 				this.io.sockets.sockets.get(socketID).leave(lobby.id);
 			});
 		this.webSocketService
-			.getSockets(lobby.players[1].id)
+			?.getSockets(lobby.players[1].id)
 			.forEach((socketID) => {
 				this.io.sockets.sockets.get(socketID).leave(lobby.id);
 			});
@@ -126,7 +126,7 @@ export class LobbyGate {
 
 		this.webSocketService
 			.getSockets(lobby.players[0].id)
-			.forEach((socketID) => {
+			?.forEach((socketID) => {
 				this.io.sockets.sockets.get(socketID).join(lobby.id);
 				lobby.isOwner = lobby.owner == lobby.players[0].id;
 				this.io.to(lobby.players[0].id).emit('lobbyData', lobby);
@@ -134,7 +134,7 @@ export class LobbyGate {
 
 		this.webSocketService
 			.getSockets(lobby.players[1].id)
-			.forEach((socketID) => {
+			?.forEach((socketID) => {
 				this.io.sockets.sockets.get(socketID).join(lobby.id);
 				lobby.isOwner = lobby.owner == lobby.players[1].id;
 				this.io.to(lobby.players[1].id).emit('lobbyData', lobby);

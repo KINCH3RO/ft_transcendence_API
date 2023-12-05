@@ -93,7 +93,7 @@ export class MainGate implements OnGatewayConnection, OnGatewayDisconnect {
 					this.io.to(winner.id).emit('gameEnd', { lobby, rewards: winner });
 				}
 				this.io.to(lobby.id).emit('leaveLobby');
-				this.webSocketService.getSockets(oppnentdID).forEach((socketID) => {
+				this.webSocketService.getSockets(oppnentdID)?.forEach((socketID) => {
 					this.io.sockets.sockets.get(socketID).leave(lobby.id);
 				});
 				this.lobbyService.deleteLobby(lobby.id);
