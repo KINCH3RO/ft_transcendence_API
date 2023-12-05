@@ -41,5 +41,15 @@ export class FriendGate {
 	 this.io.to([data.data.senderID, data.data.receiverID]).emit("unfriend", data.data)
  }
 
+ @SubscribeMessage("acceptFriend")
+ handleFriendshipAction(socket: Socket, data: BodyData) {
+	 this.io.to([data.data.senderID, data.data.receiverID]).emit("acceptFriend", data.data)
+ }
+
+ @SubscribeMessage("cancelFriendReq")
+ handleCancelFriendReqAction(socket: Socket, data: BodyData) {
+	 this.io.to(data.data.senderID).emit("cancelFriendReq", data.data)
+ }
+
 
 }
