@@ -89,10 +89,13 @@ export class MainGate implements OnGatewayConnection, OnGatewayDisconnect {
 					else lobby.gameData.score[1] = 5;
 					lobby.gameData.timer =
 						(Date.now() - lobby.gameData.gameStartDate) / 1000;
+					lobby.lobbySate = "finishing";
+					this.io.to(lobby.id).emit('lobbyChange', lobby);
+					this.lobbyService.deleteLobby(lobby.id);
 					const [winner, loser] = await this.statsService.saveGame(lobby);
 					this.io.to(winner.id).emit('gameEnd', { lobby, rewards: winner });
 				}
-				this.io.to(lobby.id).emit('leaveLobby');
+				this.io.to(lobby.id).emit('leaveLobby', lobby.players.find((x) => x.id == userID));
 				this.webSocketService.getSockets(oppnentdID)?.forEach((socketID) => {
 					this.io.sockets.sockets.get(socketID).leave(lobby.id);
 				});
