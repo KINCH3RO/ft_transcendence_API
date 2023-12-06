@@ -37,12 +37,12 @@ export class LobbyGate {
 
   clearLobby(lobby: Lobby) {
     this.webSocketService
-      .getSockets(lobby.players[0].id)
+      ?.getSockets(lobby.players[0].id)
       .forEach((socketID) => {
         this.io.sockets.sockets.get(socketID).leave(lobby.id);
       });
     this.webSocketService
-      .getSockets(lobby.players[1].id)
+      ?.getSockets(lobby.players[1].id)
       .forEach((socketID) => {
         this.io.sockets.sockets.get(socketID).leave(lobby.id);
       });
@@ -60,9 +60,9 @@ export class LobbyGate {
     lobby.lobbySate = 'ingame';
     lobby.gameData.gameStartDate = Date.now();
     this.io.to(lobby.id).emit('lobbyChange', lobby);
-    lobby.gameInterval = setInterval(async () => {
+    const gameInterval = setInterval(async () => {
       if (!this.lobbyService.Exist(lobby.id)) {
-        clearInterval(lobby.gameInterval);
+        clearInterval(gameInterval);
         return;
       }
       const gameData = this.gameService.updateGame(lobby.gameData);
@@ -92,7 +92,7 @@ export class LobbyGate {
             lobby.gameData.achievements[1].imperturbable = true;
           }
         }
-        clearInterval(lobby.gameInterval);
+        clearInterval(gameInterval);
         lobby.lobbySate = 'finishing';
         this.emitLobbyChange(lobby);
         lobby.gameData.timer =
@@ -126,7 +126,7 @@ export class LobbyGate {
 
     this.webSocketService
       .getSockets(lobby.players[0].id)
-      .forEach((socketID) => {
+      ?.forEach((socketID) => {
         this.io.sockets.sockets.get(socketID).join(lobby.id);
         lobby.isOwner = lobby.owner == lobby.players[0].id;
         this.io.to(lobby.players[0].id).emit('lobbyData', lobby);
@@ -134,7 +134,7 @@ export class LobbyGate {
 
     this.webSocketService
       .getSockets(lobby.players[1].id)
-      .forEach((socketID) => {
+      ?.forEach((socketID) => {
         this.io.sockets.sockets.get(socketID).join(lobby.id);
         lobby.isOwner = lobby.owner == lobby.players[1].id;
         this.io.to(lobby.players[1].id).emit('lobbyData', lobby);

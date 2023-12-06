@@ -4,7 +4,8 @@ datasource db {
 }
 
 generator client {
-    provider = "prisma-client-js"
+    provider      = "prisma-client-js"
+    binaryTargets = ["native", "debian-openssl-1.1.x"]
 }
 
 model user {
@@ -169,7 +170,6 @@ model attachment {
     type      fileType
 }
 
-
 model product {
     id       String   @id @default(uuid())
     name     String
@@ -178,10 +178,10 @@ model product {
     color    String?
     img      String?
 
-    users    user[]   @relation(name: "productsToUser")
+    users user[] @relation(name: "productsToUser")
 
     mapRepo   repo[] @relation("mapRelation")
-    paddleReo   repo[] @relation("paddleRelation")
+    paddleReo repo[] @relation("paddleRelation")
 }
 
 model repo {
@@ -192,7 +192,6 @@ model repo {
     paddleSkin   product? @relation(name: "paddleRelation", fields: [paddleSkinID], references: [id])
     paddleSkinID String?
 }
-
 
 enum fileType {
     IMAGE
