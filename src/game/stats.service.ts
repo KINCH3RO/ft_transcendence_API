@@ -37,17 +37,11 @@ export class StatsService {
       id: loser.id,
     });
 
-    const [winnerXp, loserXp] = this.rewardsService.calculateXpRewards(
-      winner,
-      loser,
-      loserScore,
-    );
+    const [winnerXp, loserXp] =
+      this.rewardsService.calculateXpRewards(loserScore);
 
-    const [winnerCoins, loserCoins] = this.rewardsService.calculateCoinsRewards(
-      winner,
-      loser,
-      loserScore,
-    );
+    const [winnerCoins, loserCoins] =
+      this.rewardsService.calculateCoinsRewards(loserScore);
 
     const [winnerRating, loserRating, ratingAchievement] =
       await this.rewardsService.calculateEloGain(winner, loser);
@@ -69,8 +63,8 @@ export class StatsService {
 
     const [loserLevel, loserAchievement] =
       await this.rewardsService.handleLevelUp(
-        winner,
-        winner.profile.xp + winnerXp,
+        loser,
+        loser.profile.xp + loserXp,
       );
 
     const winnerPromise = this.profileService.update(winner.id, {

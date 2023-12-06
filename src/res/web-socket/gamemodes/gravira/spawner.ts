@@ -15,8 +15,8 @@ export default class GraviraSpawner {
   }
 
   pullBallToOrbs(ball: Ball) {
-    const maxBend = 1.3;
-    const minBend = 0.7;
+    const maxBend = 1.6;
+    const minBend = 1;
     this.orbs.map((orb) => {
       if (
         Math.pow(Math.abs(orb.x - ball.x), 2) +
