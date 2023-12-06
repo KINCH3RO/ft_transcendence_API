@@ -10,7 +10,7 @@ export class RewardsService {
     private readonly achievementService: AchievementService,
   ) {}
 
-  calculateXpRewards(winner: UserData, loser: UserData, loserScore: number) {
+  calculateXpRewards(loserScore: number) {
     let winnerXp = 600;
     const loserXp = 400;
 
@@ -42,7 +42,7 @@ export class RewardsService {
     return [level, achievement];
   }
 
-  calculateCoinsRewards(winner: UserData, loser: UserData, loserScore: number) {
+  calculateCoinsRewards(loserScore: number) {
     let winnerCoins = 100;
     const loserCoins = 40;
 

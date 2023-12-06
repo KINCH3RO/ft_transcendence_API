@@ -37,17 +37,11 @@ export class StatsService {
       id: loser.id,
     });
 
-    const [winnerXp, loserXp] = this.rewardsService.calculateXpRewards(
-      winner,
-      loser,
-      loserScore,
-    );
+    const [winnerXp, loserXp] =
+      this.rewardsService.calculateXpRewards(loserScore);
 
-    const [winnerCoins, loserCoins] = this.rewardsService.calculateCoinsRewards(
-      winner,
-      loser,
-      loserScore,
-    );
+    const [winnerCoins, loserCoins] =
+      this.rewardsService.calculateCoinsRewards(loserScore);
 
     const [winnerRating, loserRating, ratingAchievement] =
       await this.rewardsService.calculateEloGain(winner, loser);
