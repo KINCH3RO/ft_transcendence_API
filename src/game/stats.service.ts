@@ -69,8 +69,8 @@ export class StatsService {
 
     const [loserLevel, loserAchievement] =
       await this.rewardsService.handleLevelUp(
-        winner,
-        winner.profile.xp + winnerXp,
+        loser,
+        loser.profile.xp + loserXp,
       );
 
     const winnerPromise = this.profileService.update(winner.id, {

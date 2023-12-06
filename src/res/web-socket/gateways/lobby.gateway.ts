@@ -84,7 +84,7 @@ export class LobbyGate {
           let player1Orbs = 0;
           let player2Orbs = 0;
           orbs.forEach((orb) => {
-            orb.x > 50 ? player1Orbs++ : player2Orbs++;
+            orb.x < 50 ? player1Orbs++ : player2Orbs++;
           });
           if (lobby.gameData.score[0] === 5 && player1Orbs >= 5) {
             lobby.gameData.achievements[0].imperturbable = true;
