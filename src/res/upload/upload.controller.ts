@@ -1,11 +1,13 @@
 import {
   Controller,
+  Get,
   HttpException,
   HttpStatus,
   Param,
   Post,
   Query,
   Req,
+  Res,
   UploadedFiles,
   UseInterceptors,
 } from '@nestjs/common';
@@ -14,11 +16,32 @@ import { AnyFilesInterceptor } from '@nestjs/platform-express';
 import { Public } from 'src/iam/authentication/decorators/public.decorator';
 import { createWriteStream, existsSync, writeSync } from 'fs';
 import { UploadedFile } from './uploaded-file/uploaded-file.interface';
-import { resolve } from 'path';
+import { join, resolve } from 'path';
+import { Response } from 'express';
 
 @Controller('upload')
 export class UploadController {
   constructor(private readonly uploadService: UploadService) {}
+
+
+  @Public()
+  @Get(":dir/:file")
+  resFiles(@Res() res: Response, @Param("dir") dir: string, @Param("file") file: string) {
+
+
+	  const allowedDirs = ['banners', 'avatars', 'messages', 'channels'];
+	  if (!allowedDirs.includes(dir))
+	  {
+		  res.status(HttpStatus.FORBIDDEN).send("Forbidden");
+		  return;
+	  }
+
+	  res.sendFile(file, { root: join('public', 'upload', dir) }, (err) => {
+		  if(err)
+		  res.status(HttpStatus.NOT_FOUND).send("file not found");
+	  });
+
+  }
 
   @Public()
   @Post('/:dir')
