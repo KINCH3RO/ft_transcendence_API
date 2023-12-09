@@ -7,7 +7,6 @@ export class UpdateChannelDto {
 	@IsOptional()
 	id: string;
 
-	@IsUrl({require_tld: false})
 	@IsNotEmpty()
 	@IsOptional()
 	imageUrl: string;
