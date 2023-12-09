@@ -266,9 +266,12 @@ export class LobbyGate {
   @SubscribeMessage('createPrivateGame')
   handeCreateGame(socket: Socket, data: BodyData) {
     const lobby = this.lobbyService.getLobby(data.sender.id);
+    this.resetGameData(lobby);
     if (!lobby) return;
     lobby.lobbySate = 'starting';
     this.io.to(lobby.id).emit('lobbyChange', lobby);
+    console.log(lobby);
+
     // console.log("counting down");
     this.matchCountdown(lobby);
   }
